@@ -25,7 +25,8 @@ export default function Hero({ profile }: { profile: any }) {
                 {profile.designation}
               </p>
               <p className="max-w-xl text-lg text-gray-500 dark:text-gray-400 leading-relaxed">
-                {profile.aboutMe.substring(0, 150)}...
+                {/* {profile.aboutMe.substring(0, 150)}... */}
+                I build modern web applications with clean code and scalable architecture using the MERN stack. Passionate about graphics design, backend systems, and continuously expanding into cybersecurity. Always learning. Always building.
               </p>
             </div>
 
