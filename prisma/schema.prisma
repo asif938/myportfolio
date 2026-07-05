@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String @id @default(uuid())
+  username String @unique
+  password String
+}
+
+model Profile {
+  id           String  @id @default(uuid())
+  name         String
+  designation  String
+  aboutMe      String
+  aboutPhotoUrl String?
+  email        String?
+  phone        String?
+  whatsapp     String?
+  resumeUrl    String?
+  githubUrl    String?
+  linkedinUrl  String?
+  facebookUrl  String?
+  heroPhotoUrl String?
+}
+
+model Skill {
+  id       String  @id @default(uuid())
+  name     String
+  category String
+  imageUrl String?
+}
+
+model Education {
+  id          String @id @default(uuid())
+  institution String
+  degree      String
+  startYear   String
+  endYear     String
+  description String
+}
+
+model Project {
+  id              String   @id @default(uuid())
+  name            String
+  imageUrl        String?
+  mainTechStack   String[]
+  description     String
+  liveLink        String?
+  githubLink      String?
+  challenges      String
+  futurePlans     String
+}
