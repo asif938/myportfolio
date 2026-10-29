@@ -4,6 +4,8 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+const RATE_LIMIT_PREFIX = "Too many login attempts";
+
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -21,7 +23,9 @@ export default function LoginPage() {
     });
 
     if (res?.error) {
-      setError("Invalid username or password");
+      setError(
+        res.error.startsWith(RATE_LIMIT_PREFIX) ? res.error : "Invalid username or password",
+      );
     } else {
       router.push("/admin");
     }

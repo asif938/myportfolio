@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { addEducation, updateEducation, deleteEducation } from "@/app/actions/educationActions";
 import { Pencil, Trash2 } from "lucide-react";
+import type { Education } from "@prisma/client";
+import { runAdminAction } from "@/lib/adminFeedback";
 
-export default function EducationAdminClient({ initialEducation }: { initialEducation: any[] }) {
+export default function EducationAdminClient({ initialEducation }: { initialEducation: Education[] }) {
   const [educations, setEducations] = useState(initialEducation);
   const [isEditing, setIsEditing] = useState(false);
   const [currentEdu, setCurrentEdu] = useState({ 
@@ -26,23 +28,22 @@ export default function EducationAdminClient({ initialEducation }: { initialEduc
     e.preventDefault();
     setSaving(true);
     
-    const eduData = { ...currentEdu };
-    // @ts-ignore
-    delete eduData.id;
+    const { id, ...eduData } = currentEdu;
 
-    if (isEditing) {
-      await updateEducation(currentEdu.id, eduData);
+    const ok = await runAdminAction(() =>
+      isEditing ? updateEducation(id, eduData) : addEducation(eduData),
+    );
+    if (ok) {
       window.location.reload();
     } else {
-      await addEducation(eduData);
-      window.location.reload();
+      setSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this education entry?")) {
-      await deleteEducation(id);
-      setEducations(educations.filter(e => e.id !== id));
+      const ok = await runAdminAction(() => deleteEducation(id));
+      if (ok) setEducations(educations.filter(e => e.id !== id));
     }
   };
 

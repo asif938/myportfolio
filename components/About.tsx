@@ -46,7 +46,7 @@ export default function About({ profile }: { profile: any }) {
                   <p className="text-gray-600 dark:text-gray-400">{profile.email}</p>
                 </div>
               )}
-              {profile.phone && (
+              {profile.showPhone && profile.phone && (
                 <div>
                   <h4 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-1">Phone</h4>
                   <p className="text-gray-600 dark:text-gray-400">{profile.phone}</p>

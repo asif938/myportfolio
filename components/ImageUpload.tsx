@@ -2,6 +2,7 @@
 
 import { CldUploadWidget } from "next-cloudinary";
 import { UploadCloud } from "lucide-react";
+import { ALLOWED_IMAGE_FORMATS, CLOUDINARY_UPLOAD_FOLDER } from "@/lib/cloudinary";
 
 interface ImageUploadProps {
   onUploadAction: (url: string) => void;
@@ -12,9 +13,17 @@ export default function ImageUpload({ onUploadAction, buttonText = "Upload Image
   return (
     <CldUploadWidget
       signatureEndpoint="/api/cloudinary/sign"
-      onSuccess={(result: any) => {
-        if (result?.info?.secure_url) {
-          onUploadAction(result.info.secure_url);
+      options={{
+        folder: CLOUDINARY_UPLOAD_FOLDER,
+        resourceType: "image",
+        clientAllowedFormats: ALLOWED_IMAGE_FORMATS,
+        maxFileSize: 10_000_000,
+        multiple: false,
+      }}
+      onSuccess={(result) => {
+        const info = result?.info;
+        if (info && typeof info === "object" && typeof info.secure_url === "string") {
+          onUploadAction(info.secure_url);
         }
       }}
     >

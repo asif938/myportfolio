@@ -2,21 +2,43 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { requireAdmin } from "@/lib/requireAdmin";
+import { runSafely, runValidated } from "@/lib/actionHelpers";
+import { idSchema, projectSchema, type ActionResult } from "@/lib/validations";
 
-export async function addProject(data: any) {
-  await prisma.project.create({ data });
+function revalidateProject() {
   revalidatePath("/admin/projects");
-  revalidatePath("/");
+  revalidatePath("/", "layout");
 }
 
-export async function updateProject(id: string, data: any) {
-  await prisma.project.update({ where: { id }, data });
-  revalidatePath("/admin/projects");
-  revalidatePath("/");
+export async function addProject(input: unknown): Promise<ActionResult> {
+  await requireAdmin();
+
+  const result = await runValidated(projectSchema, input, (data) => prisma.project.create({ data }));
+  if (result.ok) revalidateProject();
+  return result;
 }
 
-export async function deleteProject(id: string) {
-  await prisma.project.delete({ where: { id } });
-  revalidatePath("/admin/projects");
-  revalidatePath("/");
+export async function updateProject(id: unknown, input: unknown): Promise<ActionResult> {
+  await requireAdmin();
+
+  const parsedId = idSchema.safeParse(id);
+  if (!parsedId.success) return { ok: false, error: "Invalid id" };
+
+  const result = await runValidated(projectSchema, input, (data) =>
+    prisma.project.update({ where: { id: parsedId.data }, data }),
+  );
+  if (result.ok) revalidateProject();
+  return result;
+}
+
+export async function deleteProject(id: unknown): Promise<ActionResult> {
+  await requireAdmin();
+
+  const parsedId = idSchema.safeParse(id);
+  if (!parsedId.success) return { ok: false, error: "Invalid id" };
+
+  const result = await runSafely(() => prisma.project.delete({ where: { id: parsedId.data } }));
+  if (result.ok) revalidateProject();
+  return result;
 }

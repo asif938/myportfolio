@@ -5,8 +5,10 @@ import ImageUpload from "@/components/ImageUpload";
 import { addProject, updateProject, deleteProject } from "@/app/actions/projectActions";
 import Image from "next/image";
 import { Pencil, Trash2 } from "lucide-react";
+import type { Project } from "@prisma/client";
+import { runAdminAction } from "@/lib/adminFeedback";
 
-export default function ProjectsAdminClient({ initialProjects }: { initialProjects: any[] }) {
+export default function ProjectsAdminClient({ initialProjects }: { initialProjects: Project[] }) {
   const [projects, setProjects] = useState(initialProjects);
   const [isEditing, setIsEditing] = useState(false);
   const [currentProject, setCurrentProject] = useState({ 
@@ -20,10 +22,17 @@ export default function ProjectsAdminClient({ initialProjects }: { initialProjec
     setIsEditing(false);
   };
 
-  const handleEditClick = (project: any) => {
+  const handleEditClick = (project: Project) => {
     setCurrentProject({
-      ...project,
-      mainTechStack: Array.isArray(project.mainTechStack) ? project.mainTechStack.join(", ") : project.mainTechStack
+      id: project.id,
+      name: project.name,
+      imageUrl: project.imageUrl ?? "",
+      mainTechStack: project.mainTechStack.join(", "),
+      description: project.description,
+      liveLink: project.liveLink ?? "",
+      githubLink: project.githubLink ?? "",
+      challenges: project.challenges,
+      futurePlans: project.futurePlans,
     });
     setIsEditing(true);
   };
@@ -36,26 +45,26 @@ export default function ProjectsAdminClient({ initialProjects }: { initialProjec
     e.preventDefault();
     setSaving(true);
     
+    const { id, ...rest } = currentProject;
     const projectData = {
-      ...currentProject,
-      mainTechStack: currentProject.mainTechStack.split(",").map(t => t.trim()).filter(Boolean)
+      ...rest,
+      mainTechStack: rest.mainTechStack.split(",").map(t => t.trim()).filter(Boolean)
     };
-    // @ts-ignore
-    delete projectData.id;
 
-    if (isEditing) {
-      await updateProject(currentProject.id, projectData);
+    const ok = await runAdminAction(() =>
+      isEditing ? updateProject(id, projectData) : addProject(projectData),
+    );
+    if (ok) {
       window.location.reload();
     } else {
-      await addProject(projectData);
-      window.location.reload();
+      setSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this project?")) {
-      await deleteProject(id);
-      setProjects(projects.filter(p => p.id !== id));
+      const ok = await runAdminAction(() => deleteProject(id));
+      if (ok) setProjects(projects.filter(p => p.id !== id));
     }
   };
 

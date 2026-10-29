@@ -5,8 +5,10 @@ import ImageUpload from "@/components/ImageUpload";
 import { addSkill, updateSkill, deleteSkill } from "@/app/actions/skillActions";
 import Image from "next/image";
 import { Pencil, Trash2 } from "lucide-react";
+import type { Skill } from "@prisma/client";
+import { runAdminAction } from "@/lib/adminFeedback";
 
-export default function SkillsAdminClient({ initialSkills }: { initialSkills: any[] }) {
+export default function SkillsAdminClient({ initialSkills }: { initialSkills: Skill[] }) {
   const [skills, setSkills] = useState(initialSkills);
   const [isEditing, setIsEditing] = useState(false);
   const [currentSkill, setCurrentSkill] = useState({ id: "", name: "", category: "Frontend", imageUrl: "" });
@@ -22,32 +24,31 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: an
     e.preventDefault();
     setSaving(true);
     
+    const skillData = {
+      name: currentSkill.name,
+      category: currentSkill.category,
+      imageUrl: currentSkill.imageUrl,
+    };
+
     if (isEditing) {
-      await updateSkill(currentSkill.id, {
-        name: currentSkill.name,
-        category: currentSkill.category,
-        imageUrl: currentSkill.imageUrl,
-      });
-      setSkills(skills.map(s => s.id === currentSkill.id ? currentSkill : s));
+      const ok = await runAdminAction(() => updateSkill(currentSkill.id, skillData));
+      if (ok) {
+        setSkills(skills.map(s => s.id === currentSkill.id ? { ...s, ...skillData, imageUrl: skillData.imageUrl || null } : s));
+        resetForm();
+      }
     } else {
-      await addSkill({
-        name: currentSkill.name,
-        category: currentSkill.category,
-        imageUrl: currentSkill.imageUrl,
-      });
-      // A full page reload or optimistic update. Next.js server actions with revalidatePath will refresh the data if we use router.refresh() 
-      // But for simplicity, we just reload the page to get the new ID from the server
-      window.location.reload();
+      const ok = await runAdminAction(() => addSkill(skillData));
+      // Reload to get the new skill (with its id) from the server.
+      if (ok) window.location.reload();
     }
-    
+
     setSaving(false);
-    resetForm();
   };
 
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this skill?")) {
-      await deleteSkill(id);
-      setSkills(skills.filter(s => s.id !== id));
+      const ok = await runAdminAction(() => deleteSkill(id));
+      if (ok) setSkills(skills.filter(s => s.id !== id));
     }
   };
 
@@ -115,7 +116,7 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: an
                   <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{skill.name}</td>
                   <td className="px-4 py-3">{skill.category}</td>
                   <td className="px-4 py-3 flex gap-2">
-                    <button onClick={() => { setIsEditing(true); setCurrentSkill(skill); }} className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"><Pencil size={18} /></button>
+                    <button onClick={() => { setIsEditing(true); setCurrentSkill({ id: skill.id, name: skill.name, category: skill.category, imageUrl: skill.imageUrl ?? "" }); }} className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"><Pencil size={18} /></button>
                     <button onClick={() => handleDelete(skill.id)} className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"><Trash2 size={18} /></button>
                   </td>
                 </tr>

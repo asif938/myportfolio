@@ -4,15 +4,34 @@ import { useState } from "react";
 import ImageUpload from "@/components/ImageUpload";
 import { updateProfile } from "@/app/actions/profileActions";
 import Image from "next/image";
+import type { Profile } from "@prisma/client";
+import type { ProfileInput } from "@/lib/validations";
 
-export default function ProfileAdmin({ initialProfile }: { initialProfile: any }) {
-  const [formData, setFormData] = useState(initialProfile || {
-    name: "", designation: "", aboutMe: "", email: "", phone: "", whatsapp: "",
-    resumeUrl: "", githubUrl: "", linkedinUrl: "", facebookUrl: "", heroPhotoUrl: "", aboutPhotoUrl: ""
-  });
-  
+type ProfileFormState = Required<{ [K in keyof ProfileInput]: NonNullable<ProfileInput[K]> }>;
+
+function toFormState(profile: Profile | null): ProfileFormState {
+  return {
+    name: profile?.name ?? "",
+    designation: profile?.designation ?? "",
+    aboutMe: profile?.aboutMe ?? "",
+    email: profile?.email ?? "",
+    phone: profile?.phone ?? "",
+    showPhone: profile?.showPhone ?? false,
+    whatsapp: profile?.whatsapp ?? "",
+    resumeUrl: profile?.resumeUrl ?? "",
+    githubUrl: profile?.githubUrl ?? "",
+    linkedinUrl: profile?.linkedinUrl ?? "",
+    facebookUrl: profile?.facebookUrl ?? "",
+    heroPhotoUrl: profile?.heroPhotoUrl ?? "",
+    aboutPhotoUrl: profile?.aboutPhotoUrl ?? "",
+  };
+}
+
+export default function ProfileAdmin({ initialProfile }: { initialProfile: Profile | null }) {
+  const [formData, setFormData] = useState<ProfileFormState>(() => toFormState(initialProfile));
+
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -21,12 +40,16 @@ export default function ProfileAdmin({ initialProfile }: { initialProfile: any }
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setMessage("");
+    setMessage(null);
     try {
-      await updateProfile(formData);
-      setMessage("Profile saved successfully!");
-    } catch (err) {
-      setMessage("Error saving profile.");
+      const result = await updateProfile(formData);
+      setMessage(
+        result.ok
+          ? { type: "success", text: "Profile saved successfully!" }
+          : { type: "error", text: result.error },
+      );
+    } catch {
+      setMessage({ type: "error", text: "Error saving profile. Your session may have expired." });
     }
     setSaving(false);
   };
@@ -35,7 +58,18 @@ export default function ProfileAdmin({ initialProfile }: { initialProfile: any }
     <div className="max-w-4xl rounded-lg bg-white p-8 shadow-sm dark:bg-gray-800">
       <h2 className="mb-6 text-2xl font-semibold text-gray-800 dark:text-white">Profile & Hero Section</h2>
       
-      {message && <div className="mb-4 rounded bg-green-100 p-3 text-sm text-green-700 dark:bg-green-900/30 dark:text-green-400">{message}</div>}
+      {message && (
+        <div
+          role="status"
+          className={
+            message.type === "success"
+              ? "mb-4 rounded bg-green-100 p-3 text-sm text-green-700 dark:bg-green-900/30 dark:text-green-400"
+              : "mb-4 rounded bg-red-100 p-3 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-400"
+          }
+        >
+          {message.text}
+        </div>
+      )}
       
       <form onSubmit={handleSave} className="space-y-6">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -88,6 +122,15 @@ export default function ProfileAdmin({ initialProfile }: { initialProfile: any }
           <div>
             <label className="block text-sm font-medium">Phone</label>
             <input type="text" name="phone" value={formData.phone || ""} onChange={handleChange} className="mt-1 block w-full rounded-md border p-2 dark:bg-gray-700 dark:border-gray-600" />
+            <label className="mt-2 flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                name="showPhone"
+                checked={formData.showPhone}
+                onChange={(e) => setFormData({ ...formData, showPhone: e.target.checked })}
+              />
+              Show phone number on the public site
+            </label>
           </div>
           <div>
             <label className="block text-sm font-medium">WhatsApp</label>

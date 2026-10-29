@@ -21,6 +21,7 @@ model Profile {
   aboutPhotoUrl String?
   email        String?
   phone        String?
+  showPhone    Boolean @default(false)
   whatsapp     String?
   resumeUrl    String?
   githubUrl    String?

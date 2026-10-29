@@ -2,21 +2,43 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { requireAdmin } from "@/lib/requireAdmin";
+import { runSafely, runValidated } from "@/lib/actionHelpers";
+import { idSchema, skillSchema, type ActionResult } from "@/lib/validations";
 
-export async function addSkill(data: { name: string; category: string; imageUrl?: string }) {
-  await prisma.skill.create({ data });
+function revalidateSkill() {
   revalidatePath("/admin/skills");
-  revalidatePath("/");
+  revalidatePath("/", "layout");
 }
 
-export async function updateSkill(id: string, data: { name: string; category: string; imageUrl?: string }) {
-  await prisma.skill.update({ where: { id }, data });
-  revalidatePath("/admin/skills");
-  revalidatePath("/");
+export async function addSkill(input: unknown): Promise<ActionResult> {
+  await requireAdmin();
+
+  const result = await runValidated(skillSchema, input, (data) => prisma.skill.create({ data }));
+  if (result.ok) revalidateSkill();
+  return result;
 }
 
-export async function deleteSkill(id: string) {
-  await prisma.skill.delete({ where: { id } });
-  revalidatePath("/admin/skills");
-  revalidatePath("/");
+export async function updateSkill(id: unknown, input: unknown): Promise<ActionResult> {
+  await requireAdmin();
+
+  const parsedId = idSchema.safeParse(id);
+  if (!parsedId.success) return { ok: false, error: "Invalid id" };
+
+  const result = await runValidated(skillSchema, input, (data) =>
+    prisma.skill.update({ where: { id: parsedId.data }, data }),
+  );
+  if (result.ok) revalidateSkill();
+  return result;
+}
+
+export async function deleteSkill(id: unknown): Promise<ActionResult> {
+  await requireAdmin();
+
+  const parsedId = idSchema.safeParse(id);
+  if (!parsedId.success) return { ok: false, error: "Invalid id" };
+
+  const result = await runSafely(() => prisma.skill.delete({ where: { id: parsedId.data } }));
+  if (result.ok) revalidateSkill();
+  return result;
 }

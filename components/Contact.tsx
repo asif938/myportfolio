@@ -4,17 +4,40 @@ import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { Mail, Phone, Send } from "lucide-react";
 
+const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
+
 export default function Contact({ profile }: { profile: any }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!profile) return null;
+  const publicPhone = profile.showPhone ? profile.phone : null;
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitting(true);
     
-    const formData = new FormData(event.currentTarget);
-    formData.append("access_key", "ed31fac3-70cf-4736-a6db-4c26478d0144");
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    // Honeypot: real visitors never see or tick this box.
+    if (formData.get("botcheck")) {
+      setIsSubmitting(false);
+      form.reset();
+      return;
+    }
+
+    if (!WEB3FORMS_KEY) {
+      console.error("NEXT_PUBLIC_WEB3FORMS_KEY is not set");
+      Swal.fire({
+        title: "Error!",
+        text: "The contact form is not available right now. Please email me instead.",
+        icon: "error",
+        confirmButtonColor: "#4f46e5",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+    formData.append("access_key", WEB3FORMS_KEY);
 
     const object = Object.fromEntries(formData);
     const json = JSON.stringify(object);
@@ -36,7 +59,7 @@ export default function Contact({ profile }: { profile: any }) {
           icon: "success",
           confirmButtonColor: "#4f46e5",
         });
-        (event.target as HTMLFormElement).reset();
+        form.reset();
       } else {
         Swal.fire({
           title: "Error!",
@@ -45,7 +68,7 @@ export default function Contact({ profile }: { profile: any }) {
           confirmButtonColor: "#4f46e5",
         });
       }
-    } catch (error) {
+    } catch {
       Swal.fire({
         title: "Error!",
         text: "Failed to send message.",
@@ -66,13 +89,13 @@ export default function Contact({ profile }: { profile: any }) {
           </h2>
           <div className="mt-4 h-1 w-20 bg-indigo-600 mx-auto rounded-full mb-12" />
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-12">
-            I'm currently open for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
+            I&apos;m currently open for new opportunities. Whether you have a question or just want to say hi, I&apos;ll try my best to get back to you!
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <div className="flex flex-col justify-center space-y-8 lg:pr-8">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Let's Talk</h3>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Let&apos;s Talk</h3>
             <p className="text-gray-600 dark:text-gray-400">
               Feel free to reach out to me via email or phone. I usually respond within 24 hours.
             </p>
@@ -93,9 +116,9 @@ export default function Contact({ profile }: { profile: any }) {
                 </a>
               )}
               
-              {(profile.phone || profile.whatsapp) && (
-                <a 
-                  href={profile.whatsapp ? `https://wa.me/${profile.whatsapp}` : `tel:${profile.phone}`}
+              {(publicPhone || profile.whatsapp) && (
+                <a
+                  href={profile.whatsapp ? `https://wa.me/${profile.whatsapp.replace(/\D/g, "")}` : `tel:${publicPhone}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 p-4 rounded-xl border border-gray-100 dark:border-gray-800 hover:border-indigo-500 hover:shadow-md transition-all group"
@@ -105,7 +128,7 @@ export default function Contact({ profile }: { profile: any }) {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 dark:text-white">{profile.whatsapp ? "WhatsApp" : "Phone"}</h4>
-                    <p className="text-gray-600 dark:text-gray-400">{profile.whatsapp || profile.phone}</p>
+                    <p className="text-gray-600 dark:text-gray-400">{profile.whatsapp || publicPhone}</p>
                   </div>
                 </a>
               )}
@@ -116,6 +139,14 @@ export default function Contact({ profile }: { profile: any }) {
           <div className="bg-gray-50 dark:bg-gray-950 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Send Me a Message</h3>
             <form onSubmit={onSubmit} className="space-y-6">
+              <input
+                type="checkbox"
+                name="botcheck"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                className="hidden"
+              />
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Your Name
