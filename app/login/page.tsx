@@ -47,7 +47,9 @@ export default function LoginPage() {
           )}
           <div className="space-y-4 rounded-md shadow-sm">
             <div>
-              <label className="sr-only" htmlFor="username">Username</label>
+              <label className="sr-only" htmlFor="username">
+                Username
+              </label>
               <input
                 id="username"
                 name="username"
@@ -60,7 +62,9 @@ export default function LoginPage() {
               />
             </div>
             <div>
-              <label className="sr-only" htmlFor="password">Password</label>
+              <label className="sr-only" htmlFor="password">
+                Password
+              </label>
               <input
                 id="password"
                 name="password"

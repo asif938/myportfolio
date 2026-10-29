@@ -17,7 +17,11 @@ const MIN_LENGTH = 12;
 
 function askHidden(question: string): Promise<string> {
   return new Promise((resolve) => {
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout, terminal: true });
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+      terminal: true,
+    });
     const output = rl as unknown as { _writeToOutput: (s: string) => void };
     let muted = false;
     output._writeToOutput = (s: string) => {
@@ -34,7 +38,8 @@ function askHidden(question: string): Promise<string> {
 async function getNewPassword(): Promise<string> {
   if (!process.stdin.isTTY) {
     const fromEnv = process.env.ADMIN_NEW_PASSWORD;
-    if (!fromEnv) throw new Error("Not a terminal: set ADMIN_NEW_PASSWORD to provide the new password.");
+    if (!fromEnv)
+      throw new Error("Not a terminal: set ADMIN_NEW_PASSWORD to provide the new password.");
     return fromEnv;
   }
   const first = await askHidden("New password: ");

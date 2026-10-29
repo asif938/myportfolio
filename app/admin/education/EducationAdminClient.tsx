@@ -8,7 +8,10 @@ import { addEducation, updateEducation, deleteEducation } from "@/app/actions/ed
 import { confirmDelete, runAdminAction } from "@/lib/adminFeedback";
 import { inputClass, labelClass, primaryButtonClass, secondaryButtonClass } from "../formStyles";
 
-type EducationForm = Pick<Education, "id" | "institution" | "degree" | "startYear" | "endYear" | "description">;
+type EducationForm = Pick<
+  Education,
+  "id" | "institution" | "degree" | "startYear" | "endYear" | "description"
+>;
 
 const emptyEducation: EducationForm = {
   id: "",
@@ -19,7 +22,11 @@ const emptyEducation: EducationForm = {
   description: "",
 };
 
-export default function EducationAdminClient({ initialEducation }: { initialEducation: Education[] }) {
+export default function EducationAdminClient({
+  initialEducation,
+}: {
+  initialEducation: Education[];
+}) {
   const router = useRouter();
   const educations = initialEducation;
   const [currentEdu, setCurrentEdu] = useState<EducationForm>(emptyEducation);
@@ -62,37 +69,96 @@ export default function EducationAdminClient({ initialEducation }: { initialEduc
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-      <div className="h-fit rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-1">
-        <h3 className="mb-4 text-lg font-semibold">{isEditing ? "Edit Education" : "Add Education"}</h3>
+      <div className="h-fit rounded-lg bg-white p-6 shadow-sm lg:col-span-1 dark:bg-gray-800">
+        <h3 className="mb-4 text-lg font-semibold">
+          {isEditing ? "Edit Education" : "Add Education"}
+        </h3>
         <form onSubmit={handleSave} className="space-y-4">
           <div>
-            <label htmlFor="edu-institution" className={labelClass}>Institution</label>
-            <input id="edu-institution" required type="text" name="institution" value={currentEdu.institution} onChange={handleChange} className={inputClass} />
+            <label htmlFor="edu-institution" className={labelClass}>
+              Institution
+            </label>
+            <input
+              id="edu-institution"
+              required
+              type="text"
+              name="institution"
+              value={currentEdu.institution}
+              onChange={handleChange}
+              className={inputClass}
+            />
           </div>
           <div>
-            <label htmlFor="edu-degree" className={labelClass}>Degree / Qualification</label>
-            <input id="edu-degree" required type="text" name="degree" value={currentEdu.degree} onChange={handleChange} className={inputClass} />
+            <label htmlFor="edu-degree" className={labelClass}>
+              Degree / Qualification
+            </label>
+            <input
+              id="edu-degree"
+              required
+              type="text"
+              name="degree"
+              value={currentEdu.degree}
+              onChange={handleChange}
+              className={inputClass}
+            />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label htmlFor="edu-start" className={labelClass}>Start Year</label>
-              <input id="edu-start" required type="text" name="startYear" value={currentEdu.startYear} onChange={handleChange} placeholder="e.g. 2018" className={inputClass} />
+              <label htmlFor="edu-start" className={labelClass}>
+                Start Year
+              </label>
+              <input
+                id="edu-start"
+                required
+                type="text"
+                name="startYear"
+                value={currentEdu.startYear}
+                onChange={handleChange}
+                placeholder="e.g. 2018"
+                className={inputClass}
+              />
             </div>
             <div>
-              <label htmlFor="edu-end" className={labelClass}>End Year</label>
-              <input id="edu-end" required type="text" name="endYear" value={currentEdu.endYear} onChange={handleChange} placeholder="e.g. 2022 or Present" className={inputClass} />
+              <label htmlFor="edu-end" className={labelClass}>
+                End Year
+              </label>
+              <input
+                id="edu-end"
+                required
+                type="text"
+                name="endYear"
+                value={currentEdu.endYear}
+                onChange={handleChange}
+                placeholder="e.g. 2022 or Present"
+                className={inputClass}
+              />
             </div>
           </div>
           <div>
-            <label htmlFor="edu-description" className={labelClass}>Description</label>
-            <textarea id="edu-description" required name="description" rows={3} value={currentEdu.description} onChange={handleChange} className={inputClass} />
+            <label htmlFor="edu-description" className={labelClass}>
+              Description
+            </label>
+            <textarea
+              id="edu-description"
+              required
+              name="description"
+              rows={3}
+              value={currentEdu.description}
+              onChange={handleChange}
+              className={inputClass}
+            />
           </div>
           <div className="flex gap-2">
             <button type="submit" disabled={saving} className={primaryButtonClass}>
               {saving ? "Saving..." : "Save"}
             </button>
             {isEditing && (
-              <button type="button" onClick={resetForm} disabled={saving} className={secondaryButtonClass}>
+              <button
+                type="button"
+                onClick={resetForm}
+                disabled={saving}
+                className={secondaryButtonClass}
+              >
                 Cancel
               </button>
             )}
@@ -100,15 +166,22 @@ export default function EducationAdminClient({ initialEducation }: { initialEduc
         </form>
       </div>
 
-      <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-2">
+      <div className="rounded-lg bg-white p-6 shadow-sm lg:col-span-2 dark:bg-gray-800">
         <h3 className="mb-4 text-lg font-semibold">Educational Qualifications</h3>
         <div className="space-y-4">
           {educations.map((edu) => (
-            <div key={edu.id} className="flex items-start justify-between rounded-lg border p-4 dark:border-gray-700">
+            <div
+              key={edu.id}
+              className="flex items-start justify-between rounded-lg border p-4 dark:border-gray-700"
+            >
               <div className="min-w-0">
                 <h4 className="text-lg font-bold">{edu.degree}</h4>
-                <p className="font-medium text-indigo-600 dark:text-indigo-400">{edu.institution}</p>
-                <p className="mb-2 text-sm text-gray-500">{edu.startYear} - {edu.endYear}</p>
+                <p className="font-medium text-indigo-600 dark:text-indigo-400">
+                  {edu.institution}
+                </p>
+                <p className="mb-2 text-sm text-gray-500">
+                  {edu.startYear} - {edu.endYear}
+                </p>
                 <p className="text-sm text-gray-700 dark:text-gray-300">{edu.description}</p>
               </div>
               <div className="ml-4 flex shrink-0 gap-2">
@@ -132,7 +205,9 @@ export default function EducationAdminClient({ initialEducation }: { initialEduc
               </div>
             </div>
           ))}
-          {educations.length === 0 && <p className="text-gray-500">No education entries added yet.</p>}
+          {educations.length === 0 && (
+            <p className="text-gray-500">No education entries added yet.</p>
+          )}
         </div>
       </div>
     </div>

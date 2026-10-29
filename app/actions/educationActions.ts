@@ -14,7 +14,9 @@ function revalidateEducation() {
 export async function addEducation(input: unknown): Promise<ActionResult> {
   await requireAdmin();
 
-  const result = await runValidated(educationSchema, input, (data) => prisma.education.create({ data }));
+  const result = await runValidated(educationSchema, input, (data) =>
+    prisma.education.create({ data }),
+  );
   if (result.ok) revalidateEducation();
   return result;
 }

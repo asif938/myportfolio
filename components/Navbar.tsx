@@ -38,15 +38,16 @@ export default function Navbar() {
   return (
     <header
       className={`fixed top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled
-          ? "bg-white/80 shadow-md backdrop-blur-md dark:bg-gray-950/80"
-          : "bg-transparent"
+        isScrolled ? "bg-white/80 shadow-md backdrop-blur-md dark:bg-gray-950/80" : "bg-transparent"
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex-shrink-0">
-            <Link href="/" className="text-2xl font-extrabold tracking-tighter text-indigo-600 dark:text-indigo-400">
+            <Link
+              href="/"
+              className="text-2xl font-extrabold tracking-tighter text-indigo-600 dark:text-indigo-400"
+            >
               Portfolio<span className="text-gray-900 dark:text-white">.</span>
             </Link>
           </div>
@@ -81,7 +82,11 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <nav id="mobile-menu" aria-label="Mobile" className="bg-white px-2 pb-3 pt-2 shadow-lg dark:bg-gray-900 md:hidden">
+        <nav
+          id="mobile-menu"
+          aria-label="Mobile"
+          className="bg-white px-2 pb-3 pt-2 shadow-lg md:hidden dark:bg-gray-900"
+        >
           {navLinks.map((link) => (
             <Link
               key={link.name}

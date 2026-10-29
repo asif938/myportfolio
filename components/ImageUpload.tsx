@@ -9,7 +9,10 @@ interface ImageUploadProps {
   buttonText?: string;
 }
 
-export default function ImageUpload({ onUploadAction, buttonText = "Upload Image" }: ImageUploadProps) {
+export default function ImageUpload({
+  onUploadAction,
+  buttonText = "Upload Image",
+}: ImageUploadProps) {
   return (
     <CldUploadWidget
       signatureEndpoint="/api/cloudinary/sign"

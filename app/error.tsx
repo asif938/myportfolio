@@ -20,7 +20,9 @@ export default function Error({
       <p className="text-sm font-semibold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
         Error
       </p>
-      <h1 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">Something went wrong</h1>
+      <h1 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
+        Something went wrong
+      </h1>
       <p className="mt-4 max-w-md text-gray-600 dark:text-gray-400">
         An unexpected error occurred. Please try again.
       </p>

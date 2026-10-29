@@ -5,7 +5,7 @@ export const revalidate = 0;
 
 export default async function ProjectsPage() {
   const projects = await prisma.project.findMany();
-  
+
   return (
     <div>
       <ProjectsAdminClient initialProjects={projects} />

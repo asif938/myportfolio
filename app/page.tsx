@@ -19,7 +19,7 @@ export default async function Home() {
   ]);
 
   return (
-    <div className="bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 selection:bg-indigo-500 selection:text-white">
+    <div className="bg-gray-50 text-gray-900 selection:bg-indigo-500 selection:text-white dark:bg-gray-950 dark:text-gray-100">
       <Navbar />
       <main>
         <Hero profile={profile} />

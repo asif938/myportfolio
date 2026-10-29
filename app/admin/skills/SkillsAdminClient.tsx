@@ -58,11 +58,13 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-      <div className="h-fit rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-1">
+      <div className="h-fit rounded-lg bg-white p-6 shadow-sm lg:col-span-1 dark:bg-gray-800">
         <h3 className="mb-4 text-lg font-semibold">{isEditing ? "Edit Skill" : "Add New Skill"}</h3>
         <form onSubmit={handleSave} className="space-y-4">
           <div>
-            <label htmlFor="skill-name" className={labelClass}>Name</label>
+            <label htmlFor="skill-name" className={labelClass}>
+              Name
+            </label>
             <input
               id="skill-name"
               required
@@ -73,7 +75,9 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
             />
           </div>
           <div>
-            <label htmlFor="skill-category" className={labelClass}>Category</label>
+            <label htmlFor="skill-category" className={labelClass}>
+              Category
+            </label>
             <select
               id="skill-category"
               value={currentSkill.category}
@@ -81,7 +85,9 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
               className={inputClass}
             >
               {categories.map((category) => (
-                <option key={category} value={category}>{category}</option>
+                <option key={category} value={category}>
+                  {category}
+                </option>
               ))}
             </select>
           </div>
@@ -89,7 +95,13 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
             <span className={labelClass}>Logo/Image (Optional)</span>
             {currentSkill.imageUrl && (
               <div className="mb-2 flex items-center gap-3">
-                <Image src={currentSkill.imageUrl} alt="Skill logo preview" width={48} height={48} className="object-contain" />
+                <Image
+                  src={currentSkill.imageUrl}
+                  alt="Skill logo preview"
+                  width={48}
+                  height={48}
+                  className="object-contain"
+                />
                 <button
                   type="button"
                   onClick={() => setCurrentSkill({ ...currentSkill, imageUrl: "" })}
@@ -109,7 +121,12 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
               {saving ? "Saving..." : "Save"}
             </button>
             {isEditing && (
-              <button type="button" onClick={resetForm} disabled={saving} className={secondaryButtonClass}>
+              <button
+                type="button"
+                onClick={resetForm}
+                disabled={saving}
+                className={secondaryButtonClass}
+              >
                 Cancel
               </button>
             )}
@@ -117,32 +134,59 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
         </form>
       </div>
 
-      <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-2">
+      <div className="rounded-lg bg-white p-6 shadow-sm lg:col-span-2 dark:bg-gray-800">
         <h3 className="mb-4 text-lg font-semibold">Existing Skills</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
             <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
               <tr>
-                <th scope="col" className="px-4 py-3">Logo</th>
-                <th scope="col" className="px-4 py-3">Name</th>
-                <th scope="col" className="px-4 py-3">Category</th>
-                <th scope="col" className="px-4 py-3">Actions</th>
+                <th scope="col" className="px-4 py-3">
+                  Logo
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  Name
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  Category
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
               {skills.map((skill) => (
                 <tr key={skill.id} className="border-b dark:border-gray-700">
                   <td className="px-4 py-3">
-                    {skill.imageUrl ? <Image src={skill.imageUrl} alt={skill.name} width={32} height={32} className="object-contain" /> : "-"}
+                    {skill.imageUrl ? (
+                      <Image
+                        src={skill.imageUrl}
+                        alt={skill.name}
+                        width={32}
+                        height={32}
+                        className="object-contain"
+                      />
+                    ) : (
+                      "-"
+                    )}
                   </td>
-                  <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{skill.name}</td>
+                  <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                    {skill.name}
+                  </td>
                   <td className="px-4 py-3">{skill.category}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
                       <button
                         type="button"
                         aria-label={`Edit ${skill.name}`}
-                        onClick={() => setCurrentSkill({ id: skill.id, name: skill.name, category: skill.category, imageUrl: skill.imageUrl ?? "" })}
+                        onClick={() =>
+                          setCurrentSkill({
+                            id: skill.id,
+                            name: skill.name,
+                            category: skill.category,
+                            imageUrl: skill.imageUrl ?? "",
+                          })
+                        }
                         className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                       >
                         <Pencil size={18} />
@@ -162,7 +206,9 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
               ))}
               {skills.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-4 py-4 text-center">No skills added yet.</td>
+                  <td colSpan={4} className="px-4 py-4 text-center">
+                    No skills added yet.
+                  </td>
                 </tr>
               )}
             </tbody>

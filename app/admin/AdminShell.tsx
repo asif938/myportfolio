@@ -38,7 +38,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4 dark:border-gray-700 dark:bg-gray-800 lg:hidden">
+      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4 lg:hidden dark:border-gray-700 dark:bg-gray-800">
         <span className="text-lg font-bold">Admin Panel</span>
         <button
           type="button"
@@ -63,17 +63,17 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
       <aside
         id="admin-sidebar"
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white shadow-md transition-transform duration-200 dark:bg-gray-800 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white shadow-md transition-transform duration-200 lg:translate-x-0 dark:bg-gray-800 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex h-16 shrink-0 items-center justify-between border-b border-gray-200 px-4 dark:border-gray-700 lg:justify-center">
+        <div className="flex h-16 shrink-0 items-center justify-between border-b border-gray-200 px-4 lg:justify-center dark:border-gray-700">
           <span className="text-xl font-bold text-gray-800 dark:text-white">Admin Panel</span>
           <button
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Close admin menu"
-            className="rounded-md p-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 lg:hidden"
+            className="rounded-md p-2 text-gray-700 hover:bg-gray-100 lg:hidden dark:text-gray-200 dark:hover:bg-gray-700"
           >
             <X size={20} />
           </button>

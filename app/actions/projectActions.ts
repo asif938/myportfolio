@@ -14,7 +14,9 @@ function revalidateProject() {
 export async function addProject(input: unknown): Promise<ActionResult> {
   await requireAdmin();
 
-  const result = await runValidated(projectSchema, input, (data) => prisma.project.create({ data }));
+  const result = await runValidated(projectSchema, input, (data) =>
+    prisma.project.create({ data }),
+  );
   if (result.ok) revalidateProject();
   return result;
 }
