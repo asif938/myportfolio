@@ -2,10 +2,15 @@
 
 import React, { useState } from "react";
 import type { Profile } from "@prisma/client";
-import Swal from "sweetalert2";
 import { Mail, Phone, Send } from "lucide-react";
 
 const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
+
+/** SweetAlert2 is only needed after a submit, so it is loaded on demand. */
+async function showAlert(options: { title: string; text: string; icon: "success" | "error" }) {
+  const { default: Swal } = await import("sweetalert2");
+  await Swal.fire({ ...options, confirmButtonColor: "#4f46e5" });
+}
 
 export default function Contact({ profile }: { profile: Profile | null }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,11 +34,10 @@ export default function Contact({ profile }: { profile: Profile | null }) {
 
     if (!WEB3FORMS_KEY) {
       console.error("NEXT_PUBLIC_WEB3FORMS_KEY is not set");
-      Swal.fire({
+      void showAlert({
         title: "Error!",
         text: "The contact form is not available right now. Please email me instead.",
         icon: "error",
-        confirmButtonColor: "#4f46e5",
       });
       setIsSubmitting(false);
       return;
@@ -54,28 +58,17 @@ export default function Contact({ profile }: { profile: Profile | null }) {
       }).then((res) => res.json());
 
       if (res.success) {
-        Swal.fire({
-          title: "Success!",
-          text: "Message Sent Successfully!",
-          icon: "success",
-          confirmButtonColor: "#4f46e5",
-        });
+        void showAlert({ title: "Success!", text: "Message Sent Successfully!", icon: "success" });
         form.reset();
       } else {
-        Swal.fire({
+        void showAlert({
           title: "Error!",
           text: "Something went wrong, please try again later.",
           icon: "error",
-          confirmButtonColor: "#4f46e5",
         });
       }
     } catch {
-      Swal.fire({
-        title: "Error!",
-        text: "Failed to send message.",
-        icon: "error",
-        confirmButtonColor: "#4f46e5",
-      });
+      void showAlert({ title: "Error!", text: "Failed to send message.", icon: "error" });
     } finally {
       setIsSubmitting(false);
     }

@@ -69,8 +69,13 @@ export default function ProjectsExplorer({ projects }: { projects: ProjectCardDa
       </p>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {visible.map((project) => (
-          <ProjectCard key={project.id} project={project} headingLevel="h2" />
+        {visible.map((project, index) => (
+          <ProjectCard
+            key={project.id}
+            project={project}
+            headingLevel="h2"
+            priority={index === 0}
+          />
         ))}
       </div>
     </div>

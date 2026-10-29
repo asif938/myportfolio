@@ -6,11 +6,11 @@ import Footer from "@/components/Footer";
 import ProjectsExplorer from "@/components/ProjectsExplorer";
 import { getExperience, getProfile, getProjects } from "@/lib/data";
 
-export const revalidate = 60;
-
 export const metadata: Metadata = {
   title: "Projects",
   description: "All projects, filterable by technology.",
+  alternates: { canonical: "/projects" },
+  openGraph: { url: "/projects", title: "Projects" },
 };
 
 export default async function ProjectsPage() {

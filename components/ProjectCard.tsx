@@ -11,9 +11,12 @@ export type ProjectCardData = Pick<
 export default function ProjectCard({
   project,
   headingLevel = "h3",
+  priority = false,
 }: {
   project: ProjectCardData;
   headingLevel?: "h2" | "h3";
+  /** Load the cover eagerly (use for cards visible on first paint). */
+  priority?: boolean;
 }) {
   const Heading = headingLevel;
   return (
@@ -24,6 +27,7 @@ export default function ProjectCard({
             src={project.imageUrl}
             alt={project.name}
             fill
+            priority={priority}
             sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />

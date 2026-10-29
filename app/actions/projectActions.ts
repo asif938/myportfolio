@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { CACHE_TAGS } from "@/lib/data";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
 import { ActionError, nextOrder, runReorder, runSafely, runValidated } from "@/lib/actionHelpers";
@@ -9,7 +10,7 @@ import { idSchema, projectSchema, type ActionResult } from "@/lib/validations";
 
 function revalidateProjects() {
   revalidatePath("/admin/projects");
-  revalidatePath("/", "layout");
+  revalidateTag(CACHE_TAGS.projects);
 }
 
 async function slugTakenByOther(slug: string, ownId?: string): Promise<boolean> {

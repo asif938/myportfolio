@@ -6,11 +6,11 @@ const isDev = process.env.NODE_ENV !== "production";
 // 'unsafe-eval' is only needed by the dev server (React Refresh).
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://upload-widget.cloudinary.com https://widget.cloudinary.com`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://upload-widget.cloudinary.com https://widget.cloudinary.com https://va.vercel-scripts.com`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://res.cloudinary.com",
   "font-src 'self' data:",
-  "connect-src 'self' https://api.web3forms.com https://api.cloudinary.com",
+  "connect-src 'self' https://api.web3forms.com https://api.cloudinary.com https://va.vercel-scripts.com",
   "frame-src https://upload-widget.cloudinary.com https://widget.cloudinary.com",
   "object-src 'none'",
   "base-uri 'self'",
@@ -35,6 +35,9 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   images: {
+    // Cloudinary resizes and converts images itself (see lib/cloudinaryLoader.ts).
+    loader: "custom",
+    loaderFile: "./lib/cloudinaryLoader.ts",
     remotePatterns: [
       {
         protocol: "https",

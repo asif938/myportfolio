@@ -16,9 +16,9 @@ export default function Hero({ profile }: { profile: Profile | null }) {
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
           <div className="order-2 space-y-8 lg:order-1">
             <div className="space-y-4">
-              <h2 className="text-xl font-medium uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
+              <p className="text-xl font-medium uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
                 Hello, I am
-              </h2>
+              </p>
               <h1 className="text-5xl font-extrabold tracking-tight text-gray-900 sm:text-6xl dark:text-white">
                 {profile.name}
               </h1>

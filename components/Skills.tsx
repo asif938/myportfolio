@@ -41,8 +41,8 @@ export default function Skills({ skills }: { skills: Skill[] }) {
                           />
                         </div>
                       ) : (
-                        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-xs font-bold text-gray-400 dark:bg-gray-800">
-                          {skill.name.charAt(0)}
+                        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-xs font-bold text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                          <span aria-hidden="true">{skill.name.charAt(0)}</span>
                         </div>
                       )}
                       <span className="text-center text-sm font-medium text-gray-700 dark:text-gray-300">

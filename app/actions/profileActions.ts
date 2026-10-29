@@ -1,7 +1,8 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { CACHE_TAGS } from "@/lib/data";
 import { requireAdmin } from "@/lib/requireAdmin";
 import { runValidated } from "@/lib/actionHelpers";
 import { profileSchema, type ActionResult } from "@/lib/validations";
@@ -19,7 +20,7 @@ export async function updateProfile(input: unknown): Promise<ActionResult> {
   });
 
   if (result.ok) {
-    revalidatePath("/", "layout");
+    revalidateTag(CACHE_TAGS.profile);
     revalidatePath("/admin/profile");
   }
   return result;

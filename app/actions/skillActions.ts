@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { CACHE_TAGS } from "@/lib/data";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
 import { nextOrder, runReorder, runSafely, runValidated } from "@/lib/actionHelpers";
@@ -8,7 +9,7 @@ import { idSchema, skillSchema, type ActionResult } from "@/lib/validations";
 
 function revalidateSkills() {
   revalidatePath("/admin/skills");
-  revalidatePath("/", "layout");
+  revalidateTag(CACHE_TAGS.skills);
 }
 
 export async function addSkill(input: unknown): Promise<ActionResult> {

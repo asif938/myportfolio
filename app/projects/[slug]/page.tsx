@@ -5,9 +5,40 @@ import { ArrowLeft, Code2, ExternalLink, Github } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProjectGallery from "@/components/ProjectGallery";
-import { getExperience, getProfile, getProjectBySlug, getProjectSlugById } from "@/lib/data";
+import type { Metadata } from "next";
+import {
+  getExperience,
+  getProfile,
+  getProjectBySlug,
+  getProjectSlugById,
+  getProjects,
+} from "@/lib/data";
+import { SITE_URL, absoluteUrl, jsonLd, truncate } from "@/lib/site";
 
-export const revalidate = 60;
+type Params = { params: { slug: string } };
+
+/** Pre-render every project page at build time; new projects render on first request. */
+export async function generateStaticParams() {
+  const projects = await getProjects();
+  return projects.map((p) => ({ slug: p.slug }));
+}
+
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const project = await getProjectBySlug(params.slug);
+  if (!project) return {};
+
+  const path = `/projects/${project.slug}`;
+  const description = truncate(project.description);
+  // The Open Graph image comes from ./opengraph-image.tsx (it includes the cover image).
+  return {
+    title: project.name,
+    description,
+    keywords: project.mainTechStack,
+    alternates: { canonical: path },
+    openGraph: { type: "article", url: path, title: project.name, description },
+    twitter: { card: "summary_large_image", title: project.name, description },
+  };
+}
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -26,7 +57,7 @@ function Prose({ text }: { text: string }) {
   );
 }
 
-export default async function ProjectDetails({ params }: { params: { slug: string } }) {
+export default async function ProjectDetails({ params }: Params) {
   const [project, profile, experience] = await Promise.all([
     getProjectBySlug(params.slug),
     getProfile(),
@@ -53,8 +84,35 @@ export default async function ProjectDetails({ params }: { params: { slug: strin
   const hasText = (s: { text: string | null }): s is { title: string; text: string } =>
     Boolean(s.text?.trim());
 
+  const url = absoluteUrl(`/projects/${project.slug}`);
+  const author = profile ? { "@type": "Person", name: profile.name, url: SITE_URL } : undefined;
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": project.githubLink ? "SoftwareSourceCode" : "CreativeWork",
+    name: project.name,
+    description: project.description,
+    url,
+    image: [project.imageUrl, ...project.images].filter(Boolean),
+    keywords: project.mainTechStack.join(", "),
+    author,
+    creator: author,
+    dateCreated: project.createdAt.toISOString(),
+    dateModified: project.updatedAt.toISOString(),
+    ...(project.githubLink
+      ? {
+          codeRepository: project.githubLink,
+          programmingLanguage: project.mainTechStack,
+        }
+      : {}),
+    ...(project.liveLink ? { sameAs: project.liveLink } : {}),
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(structuredData) }}
+      />
       <Navbar showExperience={experience.length > 0} />
 
       <main className="flex-1 pb-16 pt-24">
