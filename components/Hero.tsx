@@ -1,8 +1,9 @@
+import type { Profile } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { Download, ArrowRight, Github, Linkedin, Facebook } from "lucide-react";
 
-export default function Hero({ profile }: { profile: any }) {
+export default function Hero({ profile }: { profile: Profile | null }) {
   if (!profile) return null;
 
   return (
@@ -89,6 +90,7 @@ export default function Hero({ profile }: { profile: any }) {
                   src={profile.heroPhotoUrl}
                   alt={profile.name}
                   fill
+                  sizes="(min-width: 640px) 450px, 350px"
                   className="rounded-full object-cover shadow-2xl p-4"
                   priority
                 />

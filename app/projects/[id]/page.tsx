@@ -9,10 +9,10 @@ import Footer from "@/components/Footer";
 export const revalidate = 60;
 
 export default async function ProjectDetails({ params }: { params: { id: string } }) {
-  const project = await prisma.project.findUnique({
-    where: { id: params.id }
-  });
-  const profile = await prisma.profile.findFirst();
+  const [project, profile] = await Promise.all([
+    prisma.project.findUnique({ where: { id: params.id } }),
+    prisma.profile.findFirst(),
+  ]);
 
   if (!project) {
     notFound();
@@ -31,7 +31,7 @@ export default async function ProjectDetails({ params }: { params: { id: string 
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-6">{project.name}</h1>
           
           <div className="flex flex-wrap gap-2 mb-8">
-            {project.mainTechStack.map((tech: string, i: number) => (
+            {project.mainTechStack.map((tech, i) => (
               <span key={i} className="px-3 py-1.5 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 text-sm font-semibold rounded-lg">
                 {tech}
               </span>
@@ -44,6 +44,7 @@ export default async function ProjectDetails({ params }: { params: { id: string 
                 src={project.imageUrl} 
                 alt={project.name} 
                 fill 
+                sizes="(min-width: 896px) 896px, 100vw"
                 className="object-cover"
                 priority
               />
@@ -70,21 +71,21 @@ export default async function ProjectDetails({ params }: { params: { id: string 
           <div className="space-y-12">
             <section>
               <h2 className="text-2xl font-bold mb-4 border-b pb-2 dark:border-gray-800">About this Project</h2>
-              <div className="prose prose-lg dark:prose-invert text-gray-700 dark:text-gray-300 whitespace-pre-line">
+              <div className="prose prose-lg max-w-none dark:prose-invert text-gray-700 dark:text-gray-300 whitespace-pre-line">
                 {project.description}
               </div>
             </section>
 
             <section>
               <h2 className="text-2xl font-bold mb-4 border-b pb-2 dark:border-gray-800">Challenges Faced</h2>
-              <div className="prose prose-lg dark:prose-invert text-gray-700 dark:text-gray-300 whitespace-pre-line">
+              <div className="prose prose-lg max-w-none dark:prose-invert text-gray-700 dark:text-gray-300 whitespace-pre-line">
                 {project.challenges}
               </div>
             </section>
 
             <section>
               <h2 className="text-2xl font-bold mb-4 border-b pb-2 dark:border-gray-800">Future Plans & Improvements</h2>
-              <div className="prose prose-lg dark:prose-invert text-gray-700 dark:text-gray-300 whitespace-pre-line">
+              <div className="prose prose-lg max-w-none dark:prose-invert text-gray-700 dark:text-gray-300 whitespace-pre-line">
                 {project.futurePlans}
               </div>
             </section>

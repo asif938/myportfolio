@@ -1,6 +1,7 @@
+import type { Profile } from "@prisma/client";
 import { Github, Linkedin, Facebook } from "lucide-react";
 
-export default function Footer({ profile }: { profile: any }) {
+export default function Footer({ profile }: { profile: Profile | null }) {
   if (!profile) return null;
   const year = new Date().getFullYear();
 

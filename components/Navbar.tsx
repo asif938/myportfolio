@@ -12,9 +12,19 @@ export default function Navbar() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMobileMenuOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isMobileMenuOpen]);
 
   const navLinks = [
     { name: "Home", href: "#home" },
@@ -56,8 +66,12 @@ export default function Navbar() {
           </nav>
           <div className="md:hidden">
             <button
+              type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-gray-700 focus:outline-none dark:text-gray-300"
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-menu"
+              className="rounded-md p-1 text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:text-gray-300"
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -67,7 +81,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="bg-white px-2 pb-3 pt-2 shadow-lg dark:bg-gray-900 md:hidden">
+        <nav id="mobile-menu" aria-label="Mobile" className="bg-white px-2 pb-3 pt-2 shadow-lg dark:bg-gray-900 md:hidden">
           {navLinks.map((link) => (
             <Link
               key={link.name}
@@ -78,7 +92,7 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
-        </div>
+        </nav>
       )}
     </header>
   );

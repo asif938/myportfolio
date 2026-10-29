@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
+import type { Profile } from "@prisma/client";
 import Swal from "sweetalert2";
 import { Mail, Phone, Send } from "lucide-react";
 
 const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
 
-export default function Contact({ profile }: { profile: any }) {
+export default function Contact({ profile }: { profile: Profile | null }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!profile) return null;

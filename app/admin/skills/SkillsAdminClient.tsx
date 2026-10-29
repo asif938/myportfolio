@@ -1,93 +1,115 @@
 "use client";
 
 import { useState } from "react";
-import ImageUpload from "@/components/ImageUpload";
-import { addSkill, updateSkill, deleteSkill } from "@/app/actions/skillActions";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Pencil, Trash2 } from "lucide-react";
 import type { Skill } from "@prisma/client";
-import { runAdminAction } from "@/lib/adminFeedback";
+import ImageUpload from "@/components/ImageUpload";
+import { addSkill, updateSkill, deleteSkill } from "@/app/actions/skillActions";
+import { confirmDelete, runAdminAction } from "@/lib/adminFeedback";
+import { inputClass, labelClass, primaryButtonClass, secondaryButtonClass } from "../formStyles";
+
+type SkillForm = { id: string; name: string; category: string; imageUrl: string };
+
+const CATEGORIES = ["Frontend", "Backend", "Tools", "Other"];
+const emptySkill: SkillForm = { id: "", name: "", category: "Frontend", imageUrl: "" };
 
 export default function SkillsAdminClient({ initialSkills }: { initialSkills: Skill[] }) {
-  const [skills, setSkills] = useState(initialSkills);
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentSkill, setCurrentSkill] = useState({ id: "", name: "", category: "Frontend", imageUrl: "" });
-  
+  const router = useRouter();
+  const skills = initialSkills;
+  const [currentSkill, setCurrentSkill] = useState<SkillForm>(emptySkill);
   const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const isEditing = currentSkill.id !== "";
 
-  const resetForm = () => {
-    setCurrentSkill({ id: "", name: "", category: "Frontend", imageUrl: "" });
-    setIsEditing(false);
-  };
+  const categories = CATEGORIES.includes(currentSkill.category)
+    ? CATEGORIES
+    : [...CATEGORIES, currentSkill.category];
+
+  const resetForm = () => setCurrentSkill(emptySkill);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    
-    const skillData = {
-      name: currentSkill.name,
-      category: currentSkill.category,
-      imageUrl: currentSkill.imageUrl,
-    };
 
-    if (isEditing) {
-      const ok = await runAdminAction(() => updateSkill(currentSkill.id, skillData));
-      if (ok) {
-        setSkills(skills.map(s => s.id === currentSkill.id ? { ...s, ...skillData, imageUrl: skillData.imageUrl || null } : s));
-        resetForm();
-      }
-    } else {
-      const ok = await runAdminAction(() => addSkill(skillData));
-      // Reload to get the new skill (with its id) from the server.
-      if (ok) window.location.reload();
+    const { id, ...skillData } = currentSkill;
+    const ok = await runAdminAction(
+      () => (isEditing ? updateSkill(id, skillData) : addSkill(skillData)),
+      isEditing ? "Skill updated" : "Skill added",
+    );
+    if (ok) {
+      resetForm();
+      router.refresh();
     }
-
     setSaving(false);
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this skill?")) {
-      const ok = await runAdminAction(() => deleteSkill(id));
-      if (ok) setSkills(skills.filter(s => s.id !== id));
+  const handleDelete = async (skill: Skill) => {
+    if (!(await confirmDelete(`"${skill.name}"`))) return;
+    setDeletingId(skill.id);
+    const ok = await runAdminAction(() => deleteSkill(skill.id), "Skill deleted");
+    if (ok) {
+      if (currentSkill.id === skill.id) resetForm();
+      router.refresh();
     }
+    setDeletingId(null);
   };
 
   return (
-    <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-      <div className="md:col-span-1 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 h-fit">
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+      <div className="h-fit rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-1">
         <h3 className="mb-4 text-lg font-semibold">{isEditing ? "Edit Skill" : "Add New Skill"}</h3>
         <form onSubmit={handleSave} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium">Name</label>
-            <input required type="text" value={currentSkill.name} onChange={(e) => setCurrentSkill({ ...currentSkill, name: e.target.value })} className="mt-1 block w-full rounded-md border p-2 dark:bg-gray-700 dark:border-gray-600" />
+            <label htmlFor="skill-name" className={labelClass}>Name</label>
+            <input
+              id="skill-name"
+              required
+              type="text"
+              value={currentSkill.name}
+              onChange={(e) => setCurrentSkill({ ...currentSkill, name: e.target.value })}
+              className={inputClass}
+            />
           </div>
           <div>
-            <label className="block text-sm font-medium">Category</label>
-            <select value={currentSkill.category} onChange={(e) => setCurrentSkill({ ...currentSkill, category: e.target.value })} className="mt-1 block w-full rounded-md border p-2 dark:bg-gray-700 dark:border-gray-600">
-              <option value="Frontend">Frontend</option>
-              <option value="Backend">Backend</option>
-              <option value="Tools">Tools</option>
-              <option value="Other">Other</option>
+            <label htmlFor="skill-category" className={labelClass}>Category</label>
+            <select
+              id="skill-category"
+              value={currentSkill.category}
+              onChange={(e) => setCurrentSkill({ ...currentSkill, category: e.target.value })}
+              className={inputClass}
+            >
+              {categories.map((category) => (
+                <option key={category} value={category}>{category}</option>
+              ))}
             </select>
           </div>
           <div className="space-y-2">
-            <label className="block text-sm font-medium">Logo/Image (Optional)</label>
+            <span className={labelClass}>Logo/Image (Optional)</span>
             {currentSkill.imageUrl && (
-              <div className="mb-2">
-                <Image src={currentSkill.imageUrl} alt="Skill Logo" width={48} height={48} className="object-contain" />
+              <div className="mb-2 flex items-center gap-3">
+                <Image src={currentSkill.imageUrl} alt="Skill logo preview" width={48} height={48} className="object-contain" />
+                <button
+                  type="button"
+                  onClick={() => setCurrentSkill({ ...currentSkill, imageUrl: "" })}
+                  className="text-sm text-red-600 hover:underline dark:text-red-400"
+                >
+                  Remove
+                </button>
               </div>
             )}
-            <ImageUpload 
-              buttonText="Upload Logo" 
-              onUploadAction={(url) => setCurrentSkill({ ...currentSkill, imageUrl: url })} 
+            <ImageUpload
+              buttonText="Upload Logo"
+              onUploadAction={(url) => setCurrentSkill((s) => ({ ...s, imageUrl: url }))}
             />
           </div>
           <div className="flex gap-2">
-            <button type="submit" disabled={saving} className="rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
+            <button type="submit" disabled={saving} className={primaryButtonClass}>
               {saving ? "Saving..." : "Save"}
             </button>
             {isEditing && (
-              <button type="button" onClick={resetForm} className="rounded bg-gray-200 px-4 py-2 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">
+              <button type="button" onClick={resetForm} disabled={saving} className={secondaryButtonClass}>
                 Cancel
               </button>
             )}
@@ -95,16 +117,16 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
         </form>
       </div>
 
-      <div className="md:col-span-2 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
+      <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-2">
         <h3 className="mb-4 text-lg font-semibold">Existing Skills</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
             <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
               <tr>
-                <th className="px-4 py-3">Logo</th>
-                <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">Category</th>
-                <th className="px-4 py-3">Actions</th>
+                <th scope="col" className="px-4 py-3">Logo</th>
+                <th scope="col" className="px-4 py-3">Name</th>
+                <th scope="col" className="px-4 py-3">Category</th>
+                <th scope="col" className="px-4 py-3">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -115,9 +137,26 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
                   </td>
                   <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{skill.name}</td>
                   <td className="px-4 py-3">{skill.category}</td>
-                  <td className="px-4 py-3 flex gap-2">
-                    <button onClick={() => { setIsEditing(true); setCurrentSkill({ id: skill.id, name: skill.name, category: skill.category, imageUrl: skill.imageUrl ?? "" }); }} className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"><Pencil size={18} /></button>
-                    <button onClick={() => handleDelete(skill.id)} className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"><Trash2 size={18} /></button>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        aria-label={`Edit ${skill.name}`}
+                        onClick={() => setCurrentSkill({ id: skill.id, name: skill.name, category: skill.category, imageUrl: skill.imageUrl ?? "" })}
+                        className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                      >
+                        <Pencil size={18} />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={`Delete ${skill.name}`}
+                        disabled={deletingId === skill.id}
+                        onClick={() => handleDelete(skill)}
+                        className="text-red-600 hover:text-red-900 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

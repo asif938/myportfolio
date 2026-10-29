@@ -6,6 +6,8 @@ import { updateProfile } from "@/app/actions/profileActions";
 import Image from "next/image";
 import type { Profile } from "@prisma/client";
 import type { ProfileInput } from "@/lib/validations";
+import { runAdminAction } from "@/lib/adminFeedback";
+import { primaryButtonClass } from "../formStyles";
 
 type ProfileFormState = Required<{ [K in keyof ProfileInput]: NonNullable<ProfileInput[K]> }>;
 
@@ -31,7 +33,6 @@ export default function ProfileAdmin({ initialProfile }: { initialProfile: Profi
   const [formData, setFormData] = useState<ProfileFormState>(() => toFormState(initialProfile));
 
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -40,17 +41,7 @@ export default function ProfileAdmin({ initialProfile }: { initialProfile: Profi
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setMessage(null);
-    try {
-      const result = await updateProfile(formData);
-      setMessage(
-        result.ok
-          ? { type: "success", text: "Profile saved successfully!" }
-          : { type: "error", text: result.error },
-      );
-    } catch {
-      setMessage({ type: "error", text: "Error saving profile. Your session may have expired." });
-    }
+    await runAdminAction(() => updateProfile(formData), "Profile saved");
     setSaving(false);
   };
 
@@ -58,18 +49,6 @@ export default function ProfileAdmin({ initialProfile }: { initialProfile: Profi
     <div className="max-w-4xl rounded-lg bg-white p-8 shadow-sm dark:bg-gray-800">
       <h2 className="mb-6 text-2xl font-semibold text-gray-800 dark:text-white">Profile & Hero Section</h2>
       
-      {message && (
-        <div
-          role="status"
-          className={
-            message.type === "success"
-              ? "mb-4 rounded bg-green-100 p-3 text-sm text-green-700 dark:bg-green-900/30 dark:text-green-400"
-              : "mb-4 rounded bg-red-100 p-3 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-400"
-          }
-        >
-          {message.text}
-        </div>
-      )}
       
       <form onSubmit={handleSave} className="space-y-6">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -83,7 +62,7 @@ export default function ProfileAdmin({ initialProfile }: { initialProfile: Profi
             )}
             <ImageUpload 
               buttonText="Upload Hero Photo" 
-              onUploadAction={(url) => setFormData({ ...formData, heroPhotoUrl: url })} 
+              onUploadAction={(url) => setFormData((f) => ({ ...f, heroPhotoUrl: url }))} 
             />
           </div>
 
@@ -96,7 +75,7 @@ export default function ProfileAdmin({ initialProfile }: { initialProfile: Profi
             )}
             <ImageUpload 
               buttonText="Upload About Photo" 
-              onUploadAction={(url) => setFormData({ ...formData, aboutPhotoUrl: url })} 
+              onUploadAction={(url) => setFormData((f) => ({ ...f, aboutPhotoUrl: url }))} 
             />
           </div>
 
@@ -156,7 +135,7 @@ export default function ProfileAdmin({ initialProfile }: { initialProfile: Profi
           </div>
         </div>
 
-        <button type="submit" disabled={saving} className="mt-4 rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 disabled:opacity-50">
+        <button type="submit" disabled={saving} className={`mt-4 ${primaryButtonClass}`}>
           {saving ? "Saving..." : "Save Profile"}
         </button>
       </form>

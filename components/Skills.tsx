@@ -1,6 +1,7 @@
+import type { Skill } from "@prisma/client";
 import Image from "next/image";
 
-export default function Skills({ skills }: { skills: any[] }) {
+export default function Skills({ skills }: { skills: Skill[] }) {
   if (!skills || skills.length === 0) return null;
 
   const categories = Array.from(new Set(skills.map(s => s.category)));
@@ -17,7 +18,7 @@ export default function Skills({ skills }: { skills: any[] }) {
 
         <div className="space-y-16">
           {categories.map(category => (
-            <div key={category as string}>
+            <div key={category}>
               <h3 className="text-2xl font-semibold mb-8 text-center text-gray-800 dark:text-gray-200">
                 {category}
               </h3>
@@ -29,7 +30,7 @@ export default function Skills({ skills }: { skills: any[] }) {
                   >
                     {skill.imageUrl ? (
                       <div className="relative w-12 h-12 mb-3 group-hover:scale-110 transition-transform">
-                        <Image src={skill.imageUrl} alt={skill.name} fill className="object-contain" />
+                        <Image src={skill.imageUrl} alt={skill.name} fill sizes="48px" className="object-contain" />
                       </div>
                     ) : (
                       <div className="w-12 h-12 mb-3 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center text-xs font-bold text-gray-400">

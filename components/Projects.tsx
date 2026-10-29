@@ -1,8 +1,9 @@
+import type { Project } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Code2 } from "lucide-react";
 
-export default function Projects({ projects }: { projects: any[] }) {
+export default function Projects({ projects }: { projects: Project[] }) {
   if (!projects || projects.length === 0) return null;
 
   return (
@@ -24,6 +25,7 @@ export default function Projects({ projects }: { projects: any[] }) {
                     src={project.imageUrl} 
                     alt={project.name} 
                     fill 
+                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 ) : (
@@ -41,7 +43,7 @@ export default function Projects({ projects }: { projects: any[] }) {
                 </p>
                 
                 <div className="flex flex-wrap gap-2 mb-6">
-                  {project.mainTechStack.slice(0, 3).map((tech: string, i: number) => (
+                  {project.mainTechStack.slice(0, 3).map((tech, i) => (
                     <span key={i} className="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-xs font-medium rounded-md">
                       {tech}
                     </span>

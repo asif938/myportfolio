@@ -1,6 +1,7 @@
+import type { Profile } from "@prisma/client";
 import Image from "next/image";
 
-export default function About({ profile }: { profile: any }) {
+export default function About({ profile }: { profile: Profile | null }) {
   if (!profile) return null;
 
   return (
@@ -21,6 +22,7 @@ export default function About({ profile }: { profile: any }) {
                   src={profile.aboutPhotoUrl}
                   alt={`About ${profile.name}`}
                   fill
+                  sizes="(min-width: 1024px) 448px, 100vw"
                   className="object-cover"
                 />
               ) : (
@@ -35,7 +37,7 @@ export default function About({ profile }: { profile: any }) {
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
               My Journey as a {profile.designation}
             </h3>
-            <div className="prose prose-lg dark:prose-invert text-gray-600 dark:text-gray-300">
+            <div className="prose prose-lg max-w-none dark:prose-invert text-gray-600 dark:text-gray-300">
               <p className="whitespace-pre-line">{profile.aboutMe}</p>
             </div>
             

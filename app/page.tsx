@@ -11,10 +11,12 @@ import Footer from "@/components/Footer";
 export const revalidate = 60; // Revalidate every minute or use webhook
 
 export default async function Home() {
-  const profile = await prisma.profile.findFirst();
-  const skills = await prisma.skill.findMany({ orderBy: { category: "asc" } });
-  const education = await prisma.education.findMany({ orderBy: { startYear: "desc" } });
-  const projects = await prisma.project.findMany();
+  const [profile, skills, education, projects] = await Promise.all([
+    prisma.profile.findFirst(),
+    prisma.skill.findMany({ orderBy: { category: "asc" } }),
+    prisma.education.findMany({ orderBy: { startYear: "desc" } }),
+    prisma.project.findMany(),
+  ]);
 
   return (
     <div className="bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 selection:bg-indigo-500 selection:text-white">

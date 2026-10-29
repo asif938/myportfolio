@@ -1,4 +1,6 @@
-export default function Education({ education }: { education: any[] }) {
+import type { Education as EducationEntry } from "@prisma/client";
+
+export default function Education({ education }: { education: EducationEntry[] }) {
   if (!education || education.length === 0) return null;
 
   return (
@@ -12,7 +14,7 @@ export default function Education({ education }: { education: any[] }) {
         </div>
 
         <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-300 dark:before:via-gray-700 before:to-transparent">
-          {education.map((edu, index) => (
+          {education.map((edu) => (
             <div key={edu.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
               <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-gray-900 bg-indigo-500 text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
                 <div className="w-2 h-2 bg-white rounded-full"></div>
