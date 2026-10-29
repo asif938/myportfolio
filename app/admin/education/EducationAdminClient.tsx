@@ -4,7 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Pencil, Trash2 } from "lucide-react";
 import type { Education } from "@prisma/client";
-import { addEducation, updateEducation, deleteEducation } from "@/app/actions/educationActions";
+import {
+  addEducation,
+  updateEducation,
+  deleteEducation,
+  reorderEducation,
+} from "@/app/actions/educationActions";
+import ReorderButtons, { moveId } from "../ReorderButtons";
 import { confirmDelete, runAdminAction } from "@/lib/adminFeedback";
 import { inputClass, labelClass, primaryButtonClass, secondaryButtonClass } from "../formStyles";
 
@@ -32,6 +38,18 @@ export default function EducationAdminClient({
   const [currentEdu, setCurrentEdu] = useState<EducationForm>(emptyEducation);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [reordering, setReordering] = useState(false);
+
+  const handleMove = async (index: number, delta: -1 | 1) => {
+    setReordering(true);
+    const ids = moveId(
+      educations.map((e) => e.id),
+      index,
+      delta,
+    );
+    if (await runAdminAction(() => reorderEducation(ids), "Order saved")) router.refresh();
+    setReordering(false);
+  };
   const isEditing = currentEdu.id !== "";
 
   const resetForm = () => setCurrentEdu(emptyEducation);
@@ -169,7 +187,7 @@ export default function EducationAdminClient({
       <div className="rounded-lg bg-white p-6 shadow-sm lg:col-span-2 dark:bg-gray-800">
         <h3 className="mb-4 text-lg font-semibold">Educational Qualifications</h3>
         <div className="space-y-4">
-          {educations.map((edu) => (
+          {educations.map((edu, index) => (
             <div
               key={edu.id}
               className="flex items-start justify-between rounded-lg border p-4 dark:border-gray-700"
@@ -184,7 +202,14 @@ export default function EducationAdminClient({
                 </p>
                 <p className="text-sm text-gray-700 dark:text-gray-300">{edu.description}</p>
               </div>
-              <div className="ml-4 flex shrink-0 gap-2">
+              <div className="ml-4 flex shrink-0 items-center gap-2">
+                <ReorderButtons
+                  label={edu.degree}
+                  index={index}
+                  count={educations.length}
+                  disabled={reordering}
+                  onMove={(delta) => handleMove(index, delta)}
+                />
                 <button
                   type="button"
                   aria-label={`Edit ${edu.degree}`}

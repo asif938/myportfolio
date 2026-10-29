@@ -16,6 +16,9 @@ function toFormState(profile: Profile | null): ProfileFormState {
     name: profile?.name ?? "",
     designation: profile?.designation ?? "",
     aboutMe: profile?.aboutMe ?? "",
+    tagline: profile?.tagline ?? "",
+    location: profile?.location ?? "",
+    availability: profile?.availability ?? "",
     email: profile?.email ?? "",
     phone: profile?.phone ?? "",
     showPhone: profile?.showPhone ?? false,
@@ -109,6 +112,51 @@ export default function ProfileAdmin({ initialProfile }: { initialProfile: Profi
               type="text"
               name="designation"
               value={formData.designation || ""}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border p-2 dark:border-gray-600 dark:bg-gray-700"
+            />
+          </div>
+          <div className="md:col-span-2">
+            <label htmlFor="profile-tagline" className="block text-sm font-medium">
+              Hero Tagline
+            </label>
+            <textarea
+              id="profile-tagline"
+              name="tagline"
+              rows={3}
+              maxLength={400}
+              value={formData.tagline}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border p-2 dark:border-gray-600 dark:bg-gray-700"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Short intro shown under your name in the hero.
+            </p>
+          </div>
+          <div>
+            <label htmlFor="profile-location" className="block text-sm font-medium">
+              Location
+            </label>
+            <input
+              id="profile-location"
+              type="text"
+              name="location"
+              placeholder="e.g. Dhaka, Bangladesh"
+              value={formData.location}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border p-2 dark:border-gray-600 dark:bg-gray-700"
+            />
+          </div>
+          <div>
+            <label htmlFor="profile-availability" className="block text-sm font-medium">
+              Availability
+            </label>
+            <input
+              id="profile-availability"
+              type="text"
+              name="availability"
+              placeholder="e.g. Open to remote full-time roles"
+              value={formData.availability}
               onChange={handleChange}
               className="mt-1 block w-full rounded-md border p-2 dark:border-gray-600 dark:bg-gray-700"
             />

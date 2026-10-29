@@ -25,12 +25,17 @@ export default function Hero({ profile }: { profile: Profile | null }) {
               <p className="text-2xl font-semibold text-gray-600 dark:text-gray-300">
                 {profile.designation}
               </p>
-              <p className="max-w-xl text-lg leading-relaxed text-gray-500 dark:text-gray-400">
-                {/* {profile.aboutMe.substring(0, 150)}... */}I build modern web applications with
-                clean code and scalable architecture using the MERN stack. Passionate about graphics
-                design, backend systems, and continuously expanding into cybersecurity. Always
-                learning. Always building.
-              </p>
+              {profile.tagline && (
+                <p className="max-w-xl whitespace-pre-line text-lg leading-relaxed text-gray-500 dark:text-gray-400">
+                  {profile.tagline}
+                </p>
+              )}
+              {profile.availability && (
+                <p className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-300">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
+                  {profile.availability}
+                </p>
+              )}
             </div>
 
             <div className="flex flex-wrap gap-4">

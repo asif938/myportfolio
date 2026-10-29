@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 
-export default function Navbar() {
+export default function Navbar({ showExperience = false }: { showExperience?: boolean }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -27,12 +27,13 @@ export default function Navbar() {
   }, [isMobileMenuOpen]);
 
   const navLinks = [
-    { name: "Home", href: "#home" },
-    { name: "About", href: "#about" },
-    { name: "Skills", href: "#skills" },
-    { name: "Education", href: "#education" },
-    { name: "Projects", href: "#projects" },
-    { name: "Contact", href: "#contact" },
+    { name: "Home", href: "/#home" },
+    { name: "About", href: "/#about" },
+    { name: "Skills", href: "/#skills" },
+    ...(showExperience ? [{ name: "Experience", href: "/#experience" }] : []),
+    { name: "Education", href: "/#education" },
+    { name: "Projects", href: "/#projects" },
+    { name: "Contact", href: "/#contact" },
   ];
 
   return (
@@ -52,7 +53,7 @@ export default function Navbar() {
             </Link>
           </div>
           <nav className="hidden md:block">
-            <ul className="flex space-x-8">
+            <ul className="flex space-x-5 lg:space-x-8">
               {navLinks.map((link) => (
                 <li key={link.name}>
                   <Link

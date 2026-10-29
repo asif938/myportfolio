@@ -6,7 +6,8 @@ import Image from "next/image";
 import { Pencil, Trash2 } from "lucide-react";
 import type { Skill } from "@prisma/client";
 import ImageUpload from "@/components/ImageUpload";
-import { addSkill, updateSkill, deleteSkill } from "@/app/actions/skillActions";
+import { addSkill, updateSkill, deleteSkill, reorderSkills } from "@/app/actions/skillActions";
+import ReorderButtons, { moveId } from "../ReorderButtons";
 import { confirmDelete, runAdminAction } from "@/lib/adminFeedback";
 import { inputClass, labelClass, primaryButtonClass, secondaryButtonClass } from "../formStyles";
 
@@ -21,6 +22,18 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
   const [currentSkill, setCurrentSkill] = useState<SkillForm>(emptySkill);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [reordering, setReordering] = useState(false);
+
+  const handleMove = async (index: number, delta: -1 | 1) => {
+    setReordering(true);
+    const ids = moveId(
+      skills.map((s) => s.id),
+      index,
+      delta,
+    );
+    if (await runAdminAction(() => reorderSkills(ids), "Order saved")) router.refresh();
+    setReordering(false);
+  };
   const isEditing = currentSkill.id !== "";
 
   const categories = CATEGORIES.includes(currentSkill.category)
@@ -141,6 +154,9 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
             <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th scope="col" className="px-4 py-3">
+                  Order
+                </th>
+                <th scope="col" className="px-4 py-3">
                   Logo
                 </th>
                 <th scope="col" className="px-4 py-3">
@@ -155,8 +171,17 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
               </tr>
             </thead>
             <tbody>
-              {skills.map((skill) => (
+              {skills.map((skill, index) => (
                 <tr key={skill.id} className="border-b dark:border-gray-700">
+                  <td className="px-4 py-3">
+                    <ReorderButtons
+                      label={skill.name}
+                      index={index}
+                      count={skills.length}
+                      disabled={reordering}
+                      onMove={(delta) => handleMove(index, delta)}
+                    />
+                  </td>
                   <td className="px-4 py-3">
                     {skill.imageUrl ? (
                       <Image
@@ -206,7 +231,7 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
               ))}
               {skills.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-4 py-4 text-center">
+                  <td colSpan={5} className="px-4 py-4 text-center">
                     No skills added yet.
                   </td>
                 </tr>

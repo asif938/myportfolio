@@ -7,11 +7,14 @@ import { ALLOWED_IMAGE_FORMATS, CLOUDINARY_UPLOAD_FOLDER } from "@/lib/cloudinar
 interface ImageUploadProps {
   onUploadAction: (url: string) => void;
   buttonText?: string;
+  /** Allow selecting several files; onUploadAction is called once per uploaded file. */
+  multiple?: boolean;
 }
 
 export default function ImageUpload({
   onUploadAction,
   buttonText = "Upload Image",
+  multiple = false,
 }: ImageUploadProps) {
   return (
     <CldUploadWidget
@@ -21,7 +24,8 @@ export default function ImageUpload({
         resourceType: "image",
         clientAllowedFormats: ALLOWED_IMAGE_FORMATS,
         maxFileSize: 10_000_000,
-        multiple: false,
+        multiple,
+        maxFiles: multiple ? 20 : 1,
       }}
       onSuccess={(result) => {
         const info = result?.info;

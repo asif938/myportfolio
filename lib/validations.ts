@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { SLUG_MAX_LENGTH, SLUG_PATTERN } from "@/lib/slug";
+import { EMPLOYMENT_TYPES } from "@/lib/format";
 
 /** Result returned by every admin Server Action. */
 export type ActionResult = { ok: true } | { ok: false; error: string };
@@ -66,12 +68,39 @@ const optionalPhone = (label: string) =>
     .transform((v) => (v === "" ? null : v))
     .default(null);
 
+/** List of short strings (tech stack, achievements). Blank entries are dropped. */
+const stringList = (label: string, maxItems: number, maxLength: number) =>
+  z
+    .array(
+      z.string().trim().max(maxLength, `Each ${label} must be at most ${maxLength} characters`),
+    )
+    .transform((items) => items.filter(Boolean))
+    .pipe(z.array(z.string()).max(maxItems, `At most ${maxItems} ${label} entries`));
+
+/** "YYYY-MM" (from <input type="month">) or "YYYY-MM-DD", stored as UTC midnight. */
+const monthDate = (label: string) =>
+  z
+    .string({ error: `${label} is required` })
+    .trim()
+    .regex(/^\d{4}-\d{2}(-\d{2})?$/, `${label} must be a valid date`)
+    .transform((v) => new Date(v.length === 7 ? `${v}-01T00:00:00Z` : `${v}T00:00:00Z`))
+    .refine((d) => !Number.isNaN(d.getTime()), `${label} must be a valid date`);
+
 export const idSchema = z.string().trim().min(1, "Missing id").max(64, "Invalid id");
+
+/** Ordered list of ids, used by the up/down reorder buttons. */
+export const reorderSchema = z
+  .array(idSchema)
+  .max(500, "Too many items")
+  .refine((ids) => new Set(ids).size === ids.length, "Duplicate ids");
 
 export const profileSchema = z.object({
   name: text("Name", 100),
   designation: text("Designation", 100),
   aboutMe: text("About me", 5000),
+  tagline: optionalText("Tagline", 400),
+  location: optionalText("Location", 100),
+  availability: optionalText("Availability", 150),
   email: trimmedOrEmpty
     .pipe(z.union([z.literal(""), z.email("Email must be valid").max(254)]))
     .transform((v) => (v === "" ? null : v))
@@ -109,19 +138,64 @@ export type EducationData = z.output<typeof educationSchema>;
 
 export const projectSchema = z.object({
   name: text("Project name", 120),
-  imageUrl: optionalImageUrl("Project image"),
-  mainTechStack: z
-    .array(z.string().trim().min(1).max(40, "Each technology must be at most 40 characters"))
-    .min(1, "Add at least one technology")
-    .max(30, "At most 30 technologies"),
+  slug: trimmedOrEmpty
+    .pipe(
+      z.union([
+        z.literal(""),
+        z
+          .string()
+          .max(SLUG_MAX_LENGTH, `Slug must be at most ${SLUG_MAX_LENGTH} characters`)
+          .regex(
+            SLUG_PATTERN,
+            "Slug may only contain lowercase letters, numbers and single dashes",
+          ),
+      ]),
+    )
+    .transform((v) => (v === "" ? null : v))
+    .default(null),
+  imageUrl: optionalImageUrl("Cover image"),
+  images: z
+    .array(optionalImageUrl("Gallery image"))
+    .max(20, "At most 20 gallery images")
+    .transform((urls) => urls.filter((u): u is string => u !== null))
+    .default([]),
+  mainTechStack: stringList("technology", 30, 40).refine(
+    (items) => items.length > 0,
+    "Add at least one technology",
+  ),
   description: text("Description", 5000),
   liveLink: optionalUrl("Live link"),
   githubLink: optionalUrl("GitHub link"),
   challenges: text("Challenges", 5000),
   futurePlans: text("Future plans", 5000),
+  role: optionalText("My role", 5000),
+  architecture: optionalText("Architecture", 5000),
+  impact: optionalText("Impact", 5000),
+  featured: z.boolean().default(false),
 });
 export type ProjectInput = z.input<typeof projectSchema>;
 export type ProjectData = z.output<typeof projectSchema>;
+
+export const experienceSchema = z
+  .object({
+    company: text("Company", 120),
+    role: text("Role", 120),
+    employmentType: z.enum(EMPLOYMENT_TYPES, { error: "Choose an employment type" }),
+    location: optionalText("Location", 100),
+    startDate: monthDate("Start date"),
+    endDate: z
+      .union([z.literal(""), z.null(), z.undefined(), monthDate("End date")])
+      .transform((v) => (v instanceof Date ? v : null)),
+    achievements: stringList("achievement", 20, 500).default([]),
+    techStack: stringList("technology", 30, 40).default([]),
+    companyUrl: optionalUrl("Company URL"),
+  })
+  .refine((e) => !e.endDate || e.endDate >= e.startDate, {
+    message: "End date must be after the start date",
+    path: ["endDate"],
+  });
+export type ExperienceInput = z.input<typeof experienceSchema>;
+export type ExperienceData = z.output<typeof experienceSchema>;
 
 /** Readable message from the first validation issue. */
 export function firstIssue(error: z.ZodError): string {

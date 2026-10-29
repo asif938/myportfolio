@@ -58,6 +58,14 @@ export default function About({ profile }: { profile: Profile | null }) {
                   <p className="text-gray-600 dark:text-gray-400">{profile.phone}</p>
                 </div>
               )}
+              {profile.location && (
+                <div>
+                  <h4 className="mb-1 text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-white">
+                    Location
+                  </h4>
+                  <p className="text-gray-600 dark:text-gray-400">{profile.location}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

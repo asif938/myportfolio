@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { href: "/admin/profile", label: "Profile & Hero" },
   { href: "/admin/skills", label: "Skills" },
   { href: "/admin/projects", label: "Projects" },
+  { href: "/admin/experience", label: "Experience" },
   { href: "/admin/education", label: "Education" },
 ];
 

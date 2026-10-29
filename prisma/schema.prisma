@@ -28,6 +28,9 @@ model Profile {
   linkedinUrl  String?
   facebookUrl  String?
   heroPhotoUrl String?
+  tagline      String?
+  location     String?
+  availability String?
 }
 
 model Skill {
@@ -35,6 +38,7 @@ model Skill {
   name     String
   category String
   imageUrl String?
+  order    Int     @default(0)
 }
 
 model Education {
@@ -44,16 +48,50 @@ model Education {
   startYear   String
   endYear     String
   description String
+  order       Int    @default(0)
 }
 
 model Project {
-  id              String   @id @default(uuid())
-  name            String
-  imageUrl        String?
-  mainTechStack   String[]
-  description     String
-  liveLink        String?
-  githubLink      String?
-  challenges      String
-  futurePlans     String
+  id            String   @id @default(uuid())
+  slug          String   @unique
+  name          String
+  imageUrl      String?
+  images        String[] @default([])
+  mainTechStack String[]
+  description   String
+  liveLink      String?
+  githubLink    String?
+  challenges    String
+  futurePlans   String
+  role          String?
+  architecture  String?
+  impact        String?
+  featured      Boolean  @default(false)
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  INTERNSHIP
+  FREELANCE
+  CONTRACT
+}
+
+model Experience {
+  id             String         @id @default(uuid())
+  company        String
+  role           String
+  employmentType EmploymentType @default(FULL_TIME)
+  location       String?
+  startDate      DateTime
+  endDate        DateTime?
+  achievements   String[]       @default([])
+  techStack      String[]       @default([])
+  companyUrl     String?
+  order          Int            @default(0)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @default(now()) @updatedAt
 }

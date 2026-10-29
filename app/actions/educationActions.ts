@@ -1,9 +1,9 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
-import { runSafely, runValidated } from "@/lib/actionHelpers";
+import { nextOrder, runReorder, runSafely, runValidated } from "@/lib/actionHelpers";
 import { idSchema, educationSchema, type ActionResult } from "@/lib/validations";
 
 function revalidateEducation() {
@@ -14,9 +14,10 @@ function revalidateEducation() {
 export async function addEducation(input: unknown): Promise<ActionResult> {
   await requireAdmin();
 
-  const result = await runValidated(educationSchema, input, (data) =>
-    prisma.education.create({ data }),
-  );
+  const result = await runValidated(educationSchema, input, async (data) => {
+    const { _max } = await prisma.education.aggregate({ _max: { order: true } });
+    await prisma.education.create({ data: { ...data, order: nextOrder(_max.order) } });
+  });
   if (result.ok) revalidateEducation();
   return result;
 }
@@ -41,6 +42,18 @@ export async function deleteEducation(id: unknown): Promise<ActionResult> {
   if (!parsedId.success) return { ok: false, error: "Invalid id" };
 
   const result = await runSafely(() => prisma.education.delete({ where: { id: parsedId.data } }));
+  if (result.ok) revalidateEducation();
+  return result;
+}
+
+export async function reorderEducation(ids: unknown): Promise<ActionResult> {
+  await requireAdmin();
+
+  const result = await runReorder(
+    ids,
+    (id, order) => prisma.education.update({ where: { id }, data: { order } }),
+    (ops) => prisma.$transaction(ops),
+  );
   if (result.ok) revalidateEducation();
   return result;
 }
