@@ -152,7 +152,8 @@ export default function ChatPanel({
       onKeyDown={(e) => {
         if (e.key === "Escape") onClose();
       }}
-      className="fixed inset-0 z-[70] flex flex-col bg-white text-gray-900 shadow-2xl dark:bg-gray-900 dark:text-gray-100 sm:inset-auto sm:bottom-24 sm:right-6 sm:h-[min(600px,calc(100vh-8rem))] sm:w-[400px] sm:rounded-2xl sm:border sm:border-gray-200 sm:dark:border-gray-700"
+      // Tailwind's `flex` would override the `hidden` attribute, so toggle the display class too.
+      className={`${open ? "flex" : "hidden"} fixed inset-0 z-[70] flex-col bg-white text-gray-900 shadow-2xl dark:bg-gray-900 dark:text-gray-100 sm:inset-auto sm:bottom-24 sm:right-6 sm:h-[min(600px,calc(100vh-8rem))] sm:w-[400px] sm:rounded-2xl sm:border sm:border-gray-200 sm:dark:border-gray-700`}
     >
       <header className="flex items-center justify-between gap-2 border-b border-gray-200 px-4 py-3 dark:border-gray-700">
         <div className="flex items-center gap-2">
