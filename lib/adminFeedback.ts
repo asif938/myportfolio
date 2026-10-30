@@ -34,16 +34,17 @@ export async function confirmDelete(itemLabel: string): Promise<boolean> {
 
 /**
  * Run an admin Server Action and show a toast with the outcome.
- * Returns true when the action succeeded.
+ * Returns true when the action succeeded. With `quiet`, only errors are shown.
  */
 export async function runAdminAction(
   action: () => Promise<ActionResult>,
   successMessage: string,
+  options: { quiet?: boolean } = {},
 ): Promise<boolean> {
   try {
     const result = await action();
     if (result.ok) {
-      showSuccess(successMessage);
+      if (!options.quiet) showSuccess(successMessage);
       return true;
     }
     showError(result.error);

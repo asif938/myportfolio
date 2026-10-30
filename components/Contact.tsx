@@ -4,17 +4,13 @@ import React, { useState } from "react";
 import type { Profile } from "@prisma/client";
 import { Mail, Phone, Send } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import { sendContactMessage } from "@/app/actions/contactActions";
 
-const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
-
-/** SweetAlert2 is only needed after a submit, so it is loaded on demand. */
-async function showAlert(options: { title: string; text: string; icon: "success" | "error" }) {
-  const { default: Swal } = await import("sweetalert2");
-  await Swal.fire({ ...options, confirmButtonColor: "#4f46e5" });
-}
+type Status = { type: "success" | "error"; text: string } | null;
 
 export default function Contact({ profile }: { profile: Profile | null }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState<Status>(null);
 
   if (!profile) return null;
   const publicPhone = profile.showPhone ? profile.phone : null;
@@ -22,54 +18,34 @@ export default function Contact({ profile }: { profile: Profile | null }) {
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitting(true);
+    setStatus(null);
 
     const form = event.currentTarget;
     const formData = new FormData(form);
-
-    // Honeypot: real visitors never see or tick this box.
-    if (formData.get("botcheck")) {
-      setIsSubmitting(false);
-      form.reset();
-      return;
-    }
-
-    if (!WEB3FORMS_KEY) {
-      console.error("NEXT_PUBLIC_WEB3FORMS_KEY is not set");
-      void showAlert({
-        title: "Error!",
-        text: "The contact form is not available right now. Please email me instead.",
-        icon: "error",
-      });
-      setIsSubmitting(false);
-      return;
-    }
-    formData.append("access_key", WEB3FORMS_KEY);
-
-    const object = Object.fromEntries(formData);
-    const json = JSON.stringify(object);
+    const field = (name: string) => String(formData.get(name) ?? "");
 
     try {
-      const res = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: json,
-      }).then((res) => res.json());
-
-      if (res.success) {
-        void showAlert({ title: "Success!", text: "Message Sent Successfully!", icon: "success" });
+      const result = await sendContactMessage({
+        name: field("name"),
+        email: field("email"),
+        subject: field("subject"),
+        message: field("message"),
+        botcheck: formData.get("botcheck") ? "on" : undefined,
+      });
+      if (result.ok) {
+        setStatus({
+          type: "success",
+          text: "Thanks! Your message has been sent. I'll get back to you soon.",
+        });
         form.reset();
       } else {
-        void showAlert({
-          title: "Error!",
-          text: "Something went wrong, please try again later.",
-          icon: "error",
-        });
+        setStatus({ type: "error", text: result.error });
       }
     } catch {
-      void showAlert({ title: "Error!", text: "Failed to send message.", icon: "error" });
+      setStatus({
+        type: "error",
+        text: "Couldn't send your message. Please check your connection and try again.",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -167,6 +143,7 @@ export default function Contact({ profile }: { profile: Profile | null }) {
                 <input
                   type="text"
                   name="name"
+                  maxLength={100}
                   id="name"
                   required
                   placeholder="John Doe"
@@ -199,6 +176,7 @@ export default function Contact({ profile }: { profile: Profile | null }) {
                 <input
                   type="text"
                   name="subject"
+                  maxLength={150}
                   id="subject"
                   required
                   placeholder="Job Opportunity"
@@ -214,6 +192,8 @@ export default function Contact({ profile }: { profile: Profile | null }) {
                 </label>
                 <textarea
                   name="message"
+                  minLength={10}
+                  maxLength={5000}
                   id="message"
                   rows={4}
                   required
@@ -229,6 +209,20 @@ export default function Contact({ profile }: { profile: Profile | null }) {
                 {isSubmitting ? "Sending..." : "Send Message"}
                 <Send size={18} />
               </button>
+              <div aria-live="polite">
+                {status && (
+                  <p
+                    role={status.type === "error" ? "alert" : "status"}
+                    className={
+                      status.type === "success"
+                        ? "rounded-lg bg-green-50 p-3 text-sm text-green-800 dark:bg-green-900/30 dark:text-green-300"
+                        : "rounded-lg bg-red-50 p-3 text-sm text-red-800 dark:bg-red-900/30 dark:text-red-300"
+                    }
+                  >
+                    {status.text}
+                  </p>
+                )}
+              </div>
             </form>
           </div>
         </Reveal>

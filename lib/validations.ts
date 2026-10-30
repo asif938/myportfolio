@@ -251,6 +251,24 @@ export const chatRequestSchema = z.object({
 });
 export type ChatRequest = z.infer<typeof chatRequestSchema>;
 
+/** Single-line text (no line breaks): used where the value ends up in an email header. */
+const singleLine = (label: string, max: number) =>
+  text(label, max).regex(/^[^\r\n]*$/, `${label} must be a single line`);
+
+/** Public contact form. `botcheck` is the hidden honeypot field. */
+export const contactSchema = z.object({
+  name: singleLine("Name", 100),
+  email: z.email("Please enter a valid email address").trim().max(254),
+  subject: singleLine("Subject", 150),
+  message: z
+    .string({ error: "Message is required" })
+    .trim()
+    .min(10, "Message must be at least 10 characters")
+    .max(5000, "Message must be at most 5000 characters"),
+  botcheck: z.union([z.string(), z.boolean(), z.null(), z.undefined()]).optional(),
+});
+export type ContactInput = z.input<typeof contactSchema>;
+
 /** Readable message from the first validation issue. */
 export function firstIssue(error: z.ZodError): string {
   return error.issues[0]?.message ?? "Invalid input";

@@ -123,3 +123,17 @@ model AiUsage {
   outputTokens      Int      @default(0)
   cachedInputTokens Int      @default(0)
 }
+
+/// Messages sent through the public contact form.
+model Message {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  subject   String
+  body      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([read, createdAt])
+  @@index([createdAt])
+}

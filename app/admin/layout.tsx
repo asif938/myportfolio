@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import type { Metadata } from "next";
+import { prisma } from "@/lib/prisma";
 import AdminShell from "./AdminShell";
 
 export const metadata: Metadata = {
@@ -16,5 +17,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect("/login");
   }
 
-  return <AdminShell>{children}</AdminShell>;
+  const unreadMessages = await prisma.message.count({ where: { read: false } });
+
+  return <AdminShell unreadMessages={unreadMessages}>{children}</AdminShell>;
 }

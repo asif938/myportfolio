@@ -101,6 +101,22 @@ const sampleEducation: Prisma.EducationCreateManyInput[] = [
   },
 ];
 
+const sampleMessages: Prisma.MessageCreateManyInput[] = [
+  {
+    name: "Alex Recruiter",
+    email: "alex@example.com",
+    subject: "Frontend role at Example Corp",
+    body: "Hi! We have a remote frontend position that looks like a great fit. Are you open to a short call next week?",
+  },
+  {
+    name: "Sam Client",
+    email: "sam@example.com",
+    subject: "Website for my bakery",
+    body: "Hello, I'd like a simple website with an online menu. Could you share your availability and rates?",
+    read: true,
+  },
+];
+
 const sampleProjects: Prisma.ProjectCreateManyInput[] = [
   {
     slug: "task-flow",
@@ -188,8 +204,9 @@ async function main() {
     prisma.experience.createMany({ data: sampleExperience }),
     prisma.education.createMany({ data: sampleEducation }),
     prisma.project.createMany({ data: sampleProjects }),
+    prisma.message.createMany({ data: sampleMessages }),
   ]);
-  console.log("Sample profile, skills, experience, education and projects created.");
+  console.log("Sample profile, skills, experience, education, projects and messages created.");
 }
 
 main()

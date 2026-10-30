@@ -10,7 +10,7 @@ const contentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://res.cloudinary.com",
   "font-src 'self' data:",
-  "connect-src 'self' https://api.web3forms.com https://api.cloudinary.com https://va.vercel-scripts.com",
+  "connect-src 'self' https://api.cloudinary.com https://va.vercel-scripts.com",
   "frame-src https://upload-widget.cloudinary.com https://widget.cloudinary.com",
   "object-src 'none'",
   "base-uri 'self'",

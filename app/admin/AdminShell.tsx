@@ -10,6 +10,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 
 const NAV_LINKS = [
   { href: "/admin", label: "Dashboard" },
+  { href: "/admin/messages", label: "Messages" },
   { href: "/admin/profile", label: "Profile & Hero" },
   { href: "/admin/skills", label: "Skills" },
   { href: "/admin/projects", label: "Projects" },
@@ -18,7 +19,13 @@ const NAV_LINKS = [
   { href: "/admin/ai", label: "AI Chatbot" },
 ];
 
-export default function AdminShell({ children }: { children: React.ReactNode }) {
+export default function AdminShell({
+  children,
+  unreadMessages = 0,
+}: {
+  children: React.ReactNode;
+  unreadMessages?: number;
+}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -92,13 +99,19 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
               key={link.href}
               href={link.href}
               aria-current={isActive(link.href) ? "page" : undefined}
-              className={`block rounded-md px-3 py-2 text-sm font-medium ${
+              className={`flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium ${
                 isActive(link.href)
                   ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300"
                   : "text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700"
               }`}
             >
               {link.label}
+              {link.href === "/admin/messages" && unreadMessages > 0 && (
+                <span className="rounded-full bg-indigo-600 px-2 py-0.5 text-xs font-semibold text-white">
+                  {unreadMessages}
+                  <span className="sr-only"> unread</span>
+                </span>
+              )}
             </Link>
           ))}
           <Link
