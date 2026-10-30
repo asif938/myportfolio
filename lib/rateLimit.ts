@@ -83,6 +83,26 @@ export function createRateLimiter(options: {
   };
 }
 
+const limiterCache = new Map<string, RateLimiter>();
+
+/**
+ * Like createRateLimiter, but reuses one limiter per (prefix, limit, window).
+ * Use this when the limit comes from settings that can change at runtime.
+ */
+export function getRateLimiter(options: {
+  prefix: string;
+  limit: number;
+  window: Duration;
+}): RateLimiter {
+  const key = `${options.prefix}:${options.limit}:${options.window}`;
+  let limiter = limiterCache.get(key);
+  if (!limiter) {
+    limiter = createRateLimiter({ ...options, prefix: key });
+    limiterCache.set(key, limiter);
+  }
+  return limiter;
+}
+
 type HeaderSource = Headers | Record<string, string | string[] | undefined> | undefined;
 
 /** Best-effort client IP from proxy headers (Vercel sets x-forwarded-for). */

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import BackToTop from "@/components/BackToTop";
+import FloatingActions from "@/components/chat/FloatingActions";
 import ProjectsExplorer from "@/components/ProjectsExplorer";
 import { getExperience, getProfile, getProjects } from "@/lib/data";
 
@@ -53,7 +53,7 @@ export default async function ProjectsPage() {
         </div>
       </main>
       <Footer profile={profile} />
-      <BackToTop />
+      <FloatingActions />
     </div>
   );
 }

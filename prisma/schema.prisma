@@ -95,3 +95,31 @@ model Experience {
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @default(now()) @updatedAt
 }
+
+/// Chatbot configuration, edited at /admin/ai. Single row with id "default".
+model AiSettings {
+  id                String   @id @default("default")
+  enabled           Boolean  @default(false)
+  provider          String
+  model             String
+  /// AES-256-GCM ciphertext (see lib/crypto.ts). Never sent to the browser.
+  apiKeyEncrypted   String?
+  apiKeyLast4       String?
+  temperature       Float    @default(0.3)
+  maxOutputTokens   Int      @default(500)
+  perMinuteLimit    Int      @default(10)
+  dailyLimit        Int      @default(50)
+  extraInstructions String?
+  updatedAt         DateTime @updatedAt
+}
+
+/// Chatbot usage counters, one row per UTC day.
+model AiUsage {
+  day               DateTime @id @db.Date
+  requests          Int      @default(0)
+  rateLimited       Int      @default(0)
+  errors            Int      @default(0)
+  inputTokens       Int      @default(0)
+  outputTokens      Int      @default(0)
+  cachedInputTokens Int      @default(0)
+}

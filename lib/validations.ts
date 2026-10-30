@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { SLUG_MAX_LENGTH, SLUG_PATTERN } from "@/lib/slug";
 import { EMPLOYMENT_TYPES } from "@/lib/format";
+import { PROVIDER_IDS } from "@/lib/ai/providerMeta";
 
 /** Result returned by every admin Server Action. */
 export type ActionResult = { ok: true } | { ok: false; error: string };
@@ -196,6 +197,59 @@ export const experienceSchema = z
   });
 export type ExperienceInput = z.input<typeof experienceSchema>;
 export type ExperienceData = z.output<typeof experienceSchema>;
+
+/** Provider + model (+ optional new key): shared by "save" and "test connection". */
+const aiConnectionFields = {
+  provider: z.enum(PROVIDER_IDS, { error: "Choose a supported provider" }),
+  model: z
+    .string()
+    .trim()
+    .min(1, "Model is required")
+    .max(100, "Model id is too long")
+    .regex(/^[A-Za-z0-9._:/-]+$/, "Model id may only contain letters, numbers and . _ : / -"),
+  /** Empty string = keep the stored key. */
+  apiKey: z
+    .string()
+    .trim()
+    .max(500, "API key is too long")
+    .regex(/^\S*$/, "API key must not contain spaces")
+    .default(""),
+};
+
+export const aiConnectionSchema = z.object(aiConnectionFields);
+export type AiConnectionInput = z.input<typeof aiConnectionSchema>;
+
+export const aiSettingsSchema = z.object({
+  ...aiConnectionFields,
+  enabled: z.boolean().default(false),
+  /** Remove the stored key (fall back to the env var, if any). */
+  clearApiKey: z.boolean().default(false),
+  temperature: z.number().min(0, "Temperature must be 0–1").max(1, "Temperature must be 0–1"),
+  maxOutputTokens: z.int("Max tokens must be a whole number").min(50).max(2000),
+  perMinuteLimit: z.int("Per-minute limit must be a whole number").min(1).max(60),
+  dailyLimit: z.int("Daily limit must be a whole number").min(1).max(10000),
+  extraInstructions: optionalText("Extra instructions", 2000),
+});
+export type AiSettingsInput = z.input<typeof aiSettingsSchema>;
+
+/** Body of POST /api/chat. */
+export const CHAT_MAX_MESSAGES = 10;
+export const CHAT_MAX_MESSAGE_LENGTH = 1000;
+export const chatRequestSchema = z.object({
+  messages: z
+    .array(
+      z.object({
+        role: z.enum(["user", "assistant"]),
+        content: z.string().trim().min(1).max(CHAT_MAX_MESSAGE_LENGTH),
+      }),
+    )
+    .min(1)
+    .max(CHAT_MAX_MESSAGES)
+    .refine((messages) => messages[messages.length - 1]?.role === "user", {
+      message: "The last message must be from the user",
+    }),
+});
+export type ChatRequest = z.infer<typeof chatRequestSchema>;
 
 /** Readable message from the first validation issue. */
 export function firstIssue(error: z.ZodError): string {

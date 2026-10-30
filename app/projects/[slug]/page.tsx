@@ -4,7 +4,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { ArrowLeft, Code2, ExternalLink, Github } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import BackToTop from "@/components/BackToTop";
+import FloatingActions from "@/components/chat/FloatingActions";
 import ProjectGallery from "@/components/ProjectGallery";
 import type { Metadata } from "next";
 import {
@@ -205,7 +205,7 @@ export default async function ProjectDetails({ params }: Params) {
       </main>
 
       <Footer profile={profile} />
-      <BackToTop />
+      <FloatingActions />
     </div>
   );
 }

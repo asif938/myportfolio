@@ -2,6 +2,7 @@
 
 import { revalidatePath, revalidateTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/data";
+import { KNOWLEDGE_TAG } from "@/lib/ai/buildKnowledge";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
 import { nextOrder, runReorder, runSafely, runValidated } from "@/lib/actionHelpers";
@@ -10,6 +11,7 @@ import { idSchema, educationSchema, type ActionResult } from "@/lib/validations"
 function revalidateEducation() {
   revalidatePath("/admin/education");
   revalidateTag(CACHE_TAGS.education);
+  revalidateTag(KNOWLEDGE_TAG);
 }
 
 export async function addEducation(input: unknown): Promise<ActionResult> {

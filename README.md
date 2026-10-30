@@ -1,0 +1,50 @@
+# Portfolio
+
+Personal portfolio built with Next.js 14 (App Router), TypeScript, Tailwind CSS, Prisma
+(PostgreSQL) and NextAuth, with an admin panel and an AI "Ask about me" chatbot.
+
+> A full README (setup, architecture, deployment) is added in a later phase.
+
+## AI chatbot admin (`/admin/ai`)
+
+The chatbot is configured from the admin panel; environment variables are only a fallback.
+
+| Setting                        | What it does                                                                                                                                                                    |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Enable                         | Shows or hides the chat widget on the public site.                                                                                                                              |
+| Provider                       | Anthropic, OpenAI, Google (Gemini) or OpenRouter. Only these are allowed.                                                                                                       |
+| Model                          | Any model id for that provider; suggestions are listed in the form.                                                                                                             |
+| API key                        | Stored encrypted (AES-256-GCM). After saving, only the last 4 characters are shown. Leave the field empty to keep the stored key. Changing the provider removes the stored key. |
+| Temperature / max reply tokens | Generation settings (0–1, 50–2000).                                                                                                                                             |
+| Messages per minute / per day  | Per-visitor (IP) rate limits.                                                                                                                                                   |
+| Extra instructions             | Added to the assistant's instructions; it still only answers from portfolio content.                                                                                            |
+
+- **Test connection** sends a tiny prompt with the entered (or stored) key and shows a
+  sanitized result. API keys are never shown, logged or returned to the browser.
+- **Usage** shows today's messages, rate-limited requests, errors and token counts.
+
+### Setup
+
+1. Generate an encryption key and add it to the environment (locally and on Vercel):
+
+   ```bash
+   openssl rand -base64 32   # -> SETTINGS_ENCRYPTION_KEY
+   ```
+
+2. Open `/admin/ai`, choose a provider and model, paste the API key, click
+   **Test connection**, then enable the chatbot and save.
+3. Set a monthly spending limit in the provider's dashboard.
+
+If `SETTINGS_ENCRYPTION_KEY` changes, the stored key can no longer be decrypted; enter it
+again in `/admin/ai`.
+
+**Env fallback:** when nothing is saved in `/admin/ai`, the chatbot uses `AI_PROVIDER`,
+`AI_MODEL` and the provider's key variable (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`,
+`GOOGLE_GENERATIVE_AI_API_KEY` or `OPENROUTER_API_KEY`). See `.env.example`.
+
+### Why context stuffing instead of RAG
+
+The knowledge base (one profile plus a handful of skills, jobs, degrees and projects) is
+only a few thousand tokens, so it is sent in full in the system prompt. That is simpler and
+more accurate than retrieval (no embeddings, no vector database, nothing to get out of sync),
+and the static prompt prefix is cached by the providers that support prompt caching.

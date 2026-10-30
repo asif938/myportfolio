@@ -15,6 +15,7 @@ const NAV_LINKS = [
   { href: "/admin/projects", label: "Projects" },
   { href: "/admin/experience", label: "Experience" },
   { href: "/admin/education", label: "Education" },
+  { href: "/admin/ai", label: "AI Chatbot" },
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
