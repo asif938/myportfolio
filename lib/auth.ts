@@ -2,7 +2,7 @@ import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { createRateLimiter, getClientIp } from "@/lib/rateLimit";
+import { createRateLimiter, getClientKey } from "@/lib/rateLimit";
 
 export const LOGIN_RATE_LIMIT_ERROR = "Too many login attempts. Please try again in 15 minutes.";
 
@@ -20,8 +20,8 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        const ip = getClientIp(req?.headers);
-        const { success } = await loginLimiter.limit(ip);
+        const clientKey = getClientKey(req?.headers);
+        const { success } = await loginLimiter.limit(clientKey);
         if (!success) {
           throw new Error(LOGIN_RATE_LIMIT_ERROR);
         }

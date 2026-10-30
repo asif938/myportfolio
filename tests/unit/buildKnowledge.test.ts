@@ -81,6 +81,17 @@ describe("buildKnowledgeMarkdown", () => {
     expect(buildKnowledgeMarkdown({ ...base, profile: null, skills: [], projects: [] })).toBe("");
   });
 
+  it("includes FAQs answered by the owner", () => {
+    const md = buildKnowledgeMarkdown({
+      ...base,
+      faqs: [{ question: "Does he do freelance work?", answer: "Yes, small projects." }],
+    });
+    expect(md).toContain("## Frequently asked questions");
+    expect(md).toContain("**Q:** Does he do freelance work?");
+    expect(md).toContain("**A:** Yes, small projects.");
+    expect(buildKnowledgeMarkdown(base)).not.toContain("Frequently asked questions");
+  });
+
   it("estimates tokens", () => {
     expect(estimateTokens("abcd".repeat(10))).toBe(10);
   });

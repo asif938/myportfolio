@@ -11,6 +11,8 @@ import ThemeToggle from "@/components/ThemeToggle";
 const NAV_LINKS = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/messages", label: "Messages" },
+  { href: "/admin/conversations", label: "Conversations" },
+  { href: "/admin/faq", label: "FAQ" },
   { href: "/admin/profile", label: "Profile & Hero" },
   { href: "/admin/skills", label: "Skills" },
   { href: "/admin/projects", label: "Projects" },
@@ -22,10 +24,16 @@ const NAV_LINKS = [
 export default function AdminShell({
   children,
   unreadMessages = 0,
+  unreadConversations = 0,
 }: {
   children: React.ReactNode;
   unreadMessages?: number;
+  unreadConversations?: number;
 }) {
+  const badges: Record<string, number> = {
+    "/admin/messages": unreadMessages,
+    "/admin/conversations": unreadConversations,
+  };
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -106,9 +114,9 @@ export default function AdminShell({
               }`}
             >
               {link.label}
-              {link.href === "/admin/messages" && unreadMessages > 0 && (
+              {(badges[link.href] ?? 0) > 0 && (
                 <span className="rounded-full bg-indigo-600 px-2 py-0.5 text-xs font-semibold text-white">
-                  {unreadMessages}
+                  {badges[link.href]}
                   <span className="sr-only"> unread</span>
                 </span>
               )}

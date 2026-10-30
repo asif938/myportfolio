@@ -17,7 +17,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect("/login");
   }
 
-  const unreadMessages = await prisma.message.count({ where: { read: false } });
+  const [unreadMessages, unreadConversations] = await Promise.all([
+    prisma.message.count({ where: { read: false } }),
+    prisma.conversation.count({
+      where: { OR: [{ unreadByAdmin: true }, { status: "needs_human" }] },
+    }),
+  ]);
 
-  return <AdminShell unreadMessages={unreadMessages}>{children}</AdminShell>;
+  return (
+    <AdminShell unreadMessages={unreadMessages} unreadConversations={unreadConversations}>
+      {children}
+    </AdminShell>
+  );
 }

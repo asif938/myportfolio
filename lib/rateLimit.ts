@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { Ratelimit, type Duration } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
@@ -115,4 +116,17 @@ export function getClientIp(headers: HeaderSource): string {
   };
   const forwarded = read("x-forwarded-for")?.split(",")[0]?.trim();
   return forwarded || read("x-real-ip")?.trim() || "unknown";
+}
+
+/**
+ * Rate-limit key for a request: a salted SHA-256 hash of the client IP, so raw IP
+ * addresses are never stored (not in Redis, not in memory).
+ * Salt: RATE_LIMIT_SALT, falling back to NEXTAUTH_SECRET.
+ */
+export function getClientKey(headers: HeaderSource): string {
+  const salt = process.env.RATE_LIMIT_SALT ?? process.env.NEXTAUTH_SECRET ?? "";
+  return createHash("sha256")
+    .update(`${salt}:${getClientIp(headers)}`)
+    .digest("hex")
+    .slice(0, 32);
 }

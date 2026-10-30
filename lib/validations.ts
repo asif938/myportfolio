@@ -232,24 +232,42 @@ export const aiSettingsSchema = z.object({
 });
 export type AiSettingsInput = z.input<typeof aiSettingsSchema>;
 
-/** Body of POST /api/chat. */
-export const CHAT_MAX_MESSAGES = 10;
+/**
+ * Body of POST /api/chat: only the new visitor message. History comes from the database and
+ * every role is set by the server, so the client cannot inject "bot" or "admin" turns.
+ * Unknown keys (e.g. a spoofed `role`) are stripped.
+ */
 export const CHAT_MAX_MESSAGE_LENGTH = 1000;
 export const chatRequestSchema = z.object({
-  messages: z
-    .array(
-      z.object({
-        role: z.enum(["user", "assistant"]),
-        content: z.string().trim().min(1).max(CHAT_MAX_MESSAGE_LENGTH),
-      }),
-    )
-    .min(1)
-    .max(CHAT_MAX_MESSAGES)
-    .refine((messages) => messages[messages.length - 1]?.role === "user", {
-      message: "The last message must be from the user",
-    }),
+  conversationId: z.uuid("Invalid conversation").optional(),
+  message: z.string().trim().min(1, "Message is empty").max(CHAT_MAX_MESSAGE_LENGTH),
 });
 export type ChatRequest = z.infer<typeof chatRequestSchema>;
+
+/** Body of POST /api/chat/handoff ("Talk to …" / leave an email). */
+export const chatHandoffSchema = z.object({
+  conversationId: z.uuid("Invalid conversation").optional(),
+  name: optionalText("Name", 100).pipe(
+    z.union([z.null(), z.string().regex(/^[^\r\n]*$/, "Name must be a single line")]),
+  ),
+  email: trimmedOrEmpty
+    .pipe(z.union([z.literal(""), z.email("Please enter a valid email address").max(254)]))
+    .transform((v) => (v === "" ? null : v))
+    .default(null),
+});
+export type ChatHandoffInput = z.input<typeof chatHandoffSchema>;
+
+/** Query of GET /api/chat/[id]/messages. */
+export const chatPollSchema = z.object({
+  id: z.uuid(),
+  after: z.iso.datetime({ offset: true }).optional(),
+});
+
+export const faqSchema = z.object({
+  question: text("Question", 300),
+  answer: text("Answer", 4000),
+});
+export type FaqInput = z.input<typeof faqSchema>;
 
 /** Single-line text (no line breaks): used where the value ends up in an email header. */
 const singleLine = (label: string, max: number) =>

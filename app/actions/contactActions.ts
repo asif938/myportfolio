@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getProfile } from "@/lib/data";
 import { notifyNewMessage } from "@/lib/notify";
-import { getClientIp, getRateLimiter } from "@/lib/rateLimit";
+import { getClientKey, getRateLimiter } from "@/lib/rateLimit";
 import { contactSchema, type ActionResult } from "@/lib/validations";
 
 /**
@@ -22,10 +22,10 @@ export async function sendContactMessage(input: unknown): Promise<ActionResult> 
   // Honeypot filled in: pretend it worked so bots don't learn anything.
   if (botcheck) return { ok: true };
 
-  const ip = getClientIp(new Headers(headers()));
+  const clientKey = getClientKey(new Headers(headers()));
   const [burst, daily] = await Promise.all([
-    getRateLimiter({ prefix: "contact-hour", limit: 5, window: "1 h" }).limit(ip),
-    getRateLimiter({ prefix: "contact-day", limit: 10, window: "1 d" }).limit(ip),
+    getRateLimiter({ prefix: "contact-hour", limit: 5, window: "1 h" }).limit(clientKey),
+    getRateLimiter({ prefix: "contact-day", limit: 10, window: "1 d" }).limit(clientKey),
   ]);
   if (!burst.success || !daily.success) {
     return {

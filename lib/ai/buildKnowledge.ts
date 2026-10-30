@@ -1,7 +1,8 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
-import type { Education, Experience, Profile, Project, Skill } from "@prisma/client";
+import type { Education, Experience, Faq, Profile, Project, Skill } from "@prisma/client";
 import { CACHE_TAGS, db } from "@/lib/data";
+import { prisma } from "@/lib/prisma";
 import { EMPLOYMENT_TYPE_LABELS, formatDateRange } from "@/lib/format";
 import { SITE_URL } from "@/lib/site";
 
@@ -13,6 +14,8 @@ export type KnowledgeSources = {
   experience: Experience[];
   education: Education[];
   projects: Project[];
+  /** Questions answered by the owner (from /admin/faq). */
+  faqs?: Pick<Faq, "question" | "answer">[];
   siteUrl: string;
 };
 
@@ -31,7 +34,7 @@ const join = (parts: Array<string | null>) =>
  * only when the owner chose to show it publicly.
  */
 export function buildKnowledgeMarkdown(src: KnowledgeSources): string {
-  const { profile, skills, experience, education, projects, siteUrl } = src;
+  const { profile, skills, experience, education, projects, siteUrl, faqs = [] } = src;
   const sections: string[] = [];
 
   if (profile) {
@@ -121,6 +124,15 @@ export function buildKnowledgeMarkdown(src: KnowledgeSources): string {
     );
   }
 
+  if (faqs.length > 0) {
+    sections.push(
+      join([
+        "## Frequently asked questions (answered by the owner)",
+        ...faqs.flatMap((f) => ["", `**Q:** ${f.question}`, `**A:** ${f.answer}`]),
+      ]),
+    );
+  }
+
   return sections.join("\n\n").trim();
 }
 
@@ -135,12 +147,16 @@ export function estimateTokens(text: string): number {
  */
 export const getKnowledge = unstable_cache(
   async () => {
-    const [profile, skills, experience, education, projects] = await Promise.all([
+    const [profile, skills, experience, education, projects, faqs] = await Promise.all([
       db.profile(),
       db.skills(),
       db.experience(),
       db.education(),
       db.projects(),
+      prisma.faq.findMany({
+        orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+        select: { question: true, answer: true },
+      }),
     ]);
     const markdown = buildKnowledgeMarkdown({
       profile,
@@ -148,6 +164,7 @@ export const getKnowledge = unstable_cache(
       experience,
       education,
       projects,
+      faqs,
       siteUrl: SITE_URL,
     });
     if (process.env.NODE_ENV === "development") {

@@ -137,3 +137,57 @@ model Message {
   @@index([read, createdAt])
   @@index([createdAt])
 }
+
+enum ConversationStatus {
+  bot
+  needs_human
+  human
+  closed
+}
+
+enum ChatRole {
+  visitor
+  bot
+  admin
+}
+
+/// A visitor's chat thread. The visitor proves ownership with a random token;
+/// only its SHA-256 hash is stored.
+model Conversation {
+  id               String             @id @default(uuid())
+  visitorTokenHash String             @unique
+  status           ConversationStatus @default(bot)
+  visitorName      String?
+  visitorEmail     String?
+  unreadByAdmin    Boolean            @default(false)
+  lastMessageAt    DateTime           @default(now())
+  createdAt        DateTime           @default(now())
+  messages         ChatMessage[]
+
+  @@index([lastMessageAt])
+  @@index([status])
+}
+
+model ChatMessage {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  /// Always set by the server, never taken from the client.
+  role           ChatRole
+  content        String
+  /// The bot could not answer this visitor message (handoff or error).
+  unanswered     Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+/// Questions and answers the chatbot can use (part of its knowledge base).
+model Faq {
+  id        String   @id @default(uuid())
+  question  String
+  answer    String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
