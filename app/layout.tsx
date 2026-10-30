@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import Providers from "@/components/Providers";
 import { getProfile, getSkills } from "@/lib/data";
 import { SITE_URL, truncate } from "@/lib/site";
 import "./globals.css";
@@ -63,9 +64,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    // next-themes sets the theme class on <html> before hydration.
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        {children}
+        <noscript>
+          {/* Without JavaScript the scroll-reveal never runs; show the content anyway. */}
+          <style>{"[data-reveal]{opacity:1!important;transform:none!important}"}</style>
+        </noscript>
+        <Providers>{children}</Providers>
         {isVercel && (
           <>
             <Analytics />

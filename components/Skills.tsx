@@ -1,5 +1,6 @@
 import type { Skill } from "@prisma/client";
 import Image from "next/image";
+import Reveal from "@/components/Reveal";
 
 export default function Skills({ skills }: { skills: Skill[] }) {
   if (!skills || skills.length === 0) return null;
@@ -7,18 +8,22 @@ export default function Skills({ skills }: { skills: Skill[] }) {
   const categories = Array.from(new Set(skills.map((s) => s.category)));
 
   return (
-    <section id="skills" className="bg-gray-50 py-24 dark:bg-gray-950">
+    <section
+      id="skills"
+      tabIndex={-1}
+      className="scroll-mt-16 bg-gray-50 py-24 outline-none dark:bg-gray-950"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-16 text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl dark:text-white">
+        <Reveal className="mb-16 text-center">
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
             My Skills
           </h2>
           <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-indigo-600" />
-        </div>
+        </Reveal>
 
         <div className="space-y-16">
           {categories.map((category) => (
-            <div key={category}>
+            <Reveal key={category}>
               <h3 className="mb-8 text-center text-2xl font-semibold text-gray-800 dark:text-gray-200">
                 {category}
               </h3>
@@ -51,7 +56,7 @@ export default function Skills({ skills }: { skills: Skill[] }) {
                     </div>
                   ))}
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>

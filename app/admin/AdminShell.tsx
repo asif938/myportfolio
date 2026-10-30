@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ExternalLink, Menu, X } from "lucide-react";
 import LogoutButton from "./LogoutButton";
+import SkipLink from "@/components/SkipLink";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const NAV_LINKS = [
   { href: "/admin", label: "Dashboard" },
@@ -38,19 +40,23 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+      <SkipLink />
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4 lg:hidden dark:border-gray-700 dark:bg-gray-800">
+      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4 dark:border-gray-700 dark:bg-gray-800 lg:hidden">
         <span className="text-lg font-bold">Admin Panel</span>
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          aria-label="Open admin menu"
-          aria-expanded={open}
-          aria-controls="admin-sidebar"
-          className="rounded-md p-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
-        >
-          <Menu size={22} />
-        </button>
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            aria-label="Open admin menu"
+            aria-expanded={open}
+            aria-controls="admin-sidebar"
+            className="rounded-md p-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+          >
+            <Menu size={22} />
+          </button>
+        </div>
       </header>
 
       {/* Backdrop (mobile) */}
@@ -64,17 +70,17 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
       <aside
         id="admin-sidebar"
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white shadow-md transition-transform duration-200 lg:translate-x-0 dark:bg-gray-800 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white shadow-md transition-transform duration-200 dark:bg-gray-800 lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex h-16 shrink-0 items-center justify-between border-b border-gray-200 px-4 lg:justify-center dark:border-gray-700">
+        <div className="flex h-16 shrink-0 items-center justify-between border-b border-gray-200 px-4 dark:border-gray-700 lg:justify-center">
           <span className="text-xl font-bold text-gray-800 dark:text-white">Admin Panel</span>
           <button
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Close admin menu"
-            className="rounded-md p-2 text-gray-700 hover:bg-gray-100 lg:hidden dark:text-gray-200 dark:hover:bg-gray-700"
+            className="rounded-md p-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 lg:hidden"
           >
             <X size={20} />
           </button>
@@ -103,11 +109,22 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           </Link>
         </nav>
         <div className="shrink-0 border-t border-gray-200 p-4 dark:border-gray-700">
-          <LogoutButton />
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+              <LogoutButton />
+            </div>
+            <ThemeToggle />
+          </div>
         </div>
       </aside>
 
-      <main className="min-w-0 p-4 sm:p-6 lg:ml-64 lg:p-8">{children}</main>
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="min-w-0 p-4 outline-none sm:p-6 lg:ml-64 lg:p-8"
+      >
+        {children}
+      </main>
     </div>
   );
 }

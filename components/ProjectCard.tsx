@@ -20,7 +20,7 @@ export default function ProjectCard({
 }) {
   const Heading = headingLevel;
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900">
       <div className="relative h-48 w-full overflow-hidden bg-gray-200 dark:bg-gray-800">
         {project.imageUrl ? (
           <Image

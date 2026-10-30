@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import BackToTop from "@/components/BackToTop";
 import ProjectsExplorer from "@/components/ProjectsExplorer";
 import { getExperience, getProfile, getProjects } from "@/lib/data";
 
@@ -32,7 +33,7 @@ export default async function ProjectsPage() {
   return (
     <div className="flex min-h-screen flex-col bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
       <Navbar showExperience={experience.length > 0} />
-      <main className="flex-1 pb-24 pt-28">
+      <main id="main-content" tabIndex={-1} className="flex-1 pb-24 pt-28 outline-none">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Link
             href="/"
@@ -52,6 +53,7 @@ export default async function ProjectsPage() {
         </div>
       </main>
       <Footer profile={profile} />
+      <BackToTop />
     </div>
   );
 }

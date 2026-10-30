@@ -4,6 +4,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { ArrowLeft, Code2, ExternalLink, Github } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import BackToTop from "@/components/BackToTop";
 import ProjectGallery from "@/components/ProjectGallery";
 import type { Metadata } from "next";
 import {
@@ -115,7 +116,7 @@ export default async function ProjectDetails({ params }: Params) {
       />
       <Navbar showExperience={experience.length > 0} />
 
-      <main className="flex-1 pb-16 pt-24">
+      <main id="main-content" tabIndex={-1} className="flex-1 pb-16 pt-24 outline-none">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <Link
             href="/projects"
@@ -139,7 +140,7 @@ export default async function ProjectDetails({ params }: Params) {
             ))}
           </ul>
 
-          <div className="relative mb-12 h-[300px] w-full overflow-hidden rounded-2xl bg-gray-200 shadow-2xl sm:h-[450px] dark:bg-gray-800">
+          <div className="relative mb-12 h-[300px] w-full overflow-hidden rounded-2xl bg-gray-200 shadow-2xl dark:bg-gray-800 sm:h-[450px]">
             {project.imageUrl ? (
               <Image
                 src={project.imageUrl}
@@ -204,6 +205,7 @@ export default async function ProjectDetails({ params }: Params) {
       </main>
 
       <Footer profile={profile} />
+      <BackToTop />
     </div>
   );
 }

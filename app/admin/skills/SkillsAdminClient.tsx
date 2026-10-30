@@ -71,7 +71,7 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-      <div className="h-fit rounded-lg bg-white p-6 shadow-sm lg:col-span-1 dark:bg-gray-800">
+      <div className="h-fit rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-1">
         <h3 className="mb-4 text-lg font-semibold">{isEditing ? "Edit Skill" : "Add New Skill"}</h3>
         <form onSubmit={handleSave} className="space-y-4">
           <div>
@@ -147,7 +147,7 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
         </form>
       </div>
 
-      <div className="rounded-lg bg-white p-6 shadow-sm lg:col-span-2 dark:bg-gray-800">
+      <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-2">
         <h3 className="mb-4 text-lg font-semibold">Existing Skills</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">

@@ -87,7 +87,7 @@ export default function EducationAdminClient({
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-      <div className="h-fit rounded-lg bg-white p-6 shadow-sm lg:col-span-1 dark:bg-gray-800">
+      <div className="h-fit rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-1">
         <h3 className="mb-4 text-lg font-semibold">
           {isEditing ? "Edit Education" : "Add Education"}
         </h3>
@@ -184,7 +184,7 @@ export default function EducationAdminClient({
         </form>
       </div>
 
-      <div className="rounded-lg bg-white p-6 shadow-sm lg:col-span-2 dark:bg-gray-800">
+      <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-2">
         <h3 className="mb-4 text-lg font-semibold">Educational Qualifications</h3>
         <div className="space-y-4">
           {educations.map((edu, index) => (

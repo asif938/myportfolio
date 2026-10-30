@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import type { Profile } from "@prisma/client";
 import { Mail, Phone, Send } from "lucide-react";
+import Reveal from "@/components/Reveal";
 
 const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
 
@@ -75,10 +76,14 @@ export default function Contact({ profile }: { profile: Profile | null }) {
   };
 
   return (
-    <section id="contact" className="bg-white py-24 dark:bg-gray-900">
+    <section
+      id="contact"
+      tabIndex={-1}
+      className="scroll-mt-16 bg-white py-24 outline-none dark:bg-gray-900"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-16 text-center">
-          <h2 className="mb-6 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl dark:text-white">
+        <Reveal className="mb-16 text-center">
+          <h2 className="mb-6 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
             Get In Touch
           </h2>
           <div className="mx-auto mb-12 mt-4 h-1 w-20 rounded-full bg-indigo-600" />
@@ -86,9 +91,9 @@ export default function Contact({ profile }: { profile: Profile | null }) {
             I&apos;m currently open for new opportunities. Whether you have a question or just want
             to say hi, I&apos;ll try my best to get back to you!
           </p>
-        </div>
+        </Reveal>
 
-        <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
+        <Reveal className="grid grid-cols-1 gap-16 lg:grid-cols-2">
           <div className="flex flex-col justify-center space-y-8 lg:pr-8">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Let&apos;s Talk</h3>
             <p className="text-gray-600 dark:text-gray-400">
@@ -106,7 +111,7 @@ export default function Contact({ profile }: { profile: Profile | null }) {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 dark:text-white">Email</h4>
-                    <p className="text-gray-600 dark:text-gray-400">{profile.email}</p>
+                    <p className="break-all text-gray-600 dark:text-gray-400">{profile.email}</p>
                   </div>
                 </a>
               )}
@@ -139,7 +144,7 @@ export default function Contact({ profile }: { profile: Profile | null }) {
           </div>
 
           {/* Contact Form */}
-          <div className="rounded-2xl border border-gray-100 bg-gray-50 p-8 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+          <div className="rounded-2xl border border-gray-100 bg-gray-50 p-5 shadow-sm dark:border-gray-800 dark:bg-gray-950 sm:p-8">
             <h3 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white">
               Send Me a Message
             </h3>
@@ -226,7 +231,7 @@ export default function Contact({ profile }: { profile: Profile | null }) {
               </button>
             </form>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

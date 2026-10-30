@@ -1,23 +1,28 @@
 import type { Experience as ExperienceEntry } from "@prisma/client";
 import { Briefcase, ExternalLink, MapPin } from "lucide-react";
 import { EMPLOYMENT_TYPE_LABELS, formatDateRange } from "@/lib/format";
+import Reveal from "@/components/Reveal";
 
 export default function Experience({ experience }: { experience: ExperienceEntry[] }) {
   if (experience.length === 0) return null;
 
   return (
-    <section id="experience" className="bg-gray-50 py-24 dark:bg-gray-950">
+    <section
+      id="experience"
+      tabIndex={-1}
+      className="scroll-mt-16 bg-gray-50 py-24 outline-none dark:bg-gray-950"
+    >
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-16 text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl dark:text-white">
+        <Reveal className="mb-16 text-center">
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
             Experience
           </h2>
           <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-indigo-600" />
-        </div>
+        </Reveal>
 
         <ol className="relative space-y-10 border-l-2 border-gray-200 pl-8 dark:border-gray-800">
           {experience.map((exp) => (
-            <li key={exp.id} className="relative">
+            <Reveal as="li" key={exp.id} className="relative">
               <span
                 aria-hidden="true"
                 className="absolute -left-[2.6rem] top-1 flex h-8 w-8 items-center justify-center rounded-full border-4 border-gray-50 bg-indigo-600 text-white dark:border-gray-950"
@@ -81,7 +86,7 @@ export default function Experience({ experience }: { experience: ExperienceEntry
                   </ul>
                 )}
               </article>
-            </li>
+            </Reveal>
           ))}
         </ol>
       </div>

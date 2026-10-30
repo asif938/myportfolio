@@ -7,6 +7,7 @@ import Education from "@/components/Education";
 import Projects from "@/components/Projects";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import BackToTop from "@/components/BackToTop";
 import {
   HOME_PROJECTS_FALLBACK_COUNT,
   getEducation,
@@ -57,7 +58,11 @@ export default async function Home() {
       )}
       <Navbar showExperience={experience.length > 0} />
       {/* Sections alternate background colours no matter which ones are hidden. */}
-      <main className="[&>section:nth-of-type(even)]:bg-white dark:[&>section:nth-of-type(even)]:bg-gray-900 [&>section:nth-of-type(odd)]:bg-gray-50 dark:[&>section:nth-of-type(odd)]:bg-gray-950">
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="outline-none [&>section:nth-of-type(even)]:bg-white dark:[&>section:nth-of-type(even)]:bg-gray-900 [&>section:nth-of-type(odd)]:bg-gray-50 dark:[&>section:nth-of-type(odd)]:bg-gray-950"
+      >
         <Hero profile={profile} />
         <About profile={profile} />
         <Skills skills={skills} />
@@ -67,6 +72,7 @@ export default async function Home() {
         <Contact profile={profile} />
       </main>
       <Footer profile={profile} />
+      <BackToTop />
     </div>
   );
 }

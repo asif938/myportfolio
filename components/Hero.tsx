@@ -7,7 +7,11 @@ export default function Hero({ profile }: { profile: Profile | null }) {
   if (!profile) return null;
 
   return (
-    <section id="home" className="relative flex min-h-screen items-center overflow-hidden pt-16">
+    <section
+      id="home"
+      tabIndex={-1}
+      className="relative flex min-h-screen scroll-mt-16 items-center overflow-hidden pt-16 outline-none"
+    >
       {/* Background Decor */}
       <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl dark:bg-indigo-500/20" />
       <div className="absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-purple-500/10 blur-3xl dark:bg-purple-500/20" />
@@ -19,7 +23,7 @@ export default function Hero({ profile }: { profile: Profile | null }) {
               <p className="text-xl font-medium uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
                 Hello, I am
               </p>
-              <h1 className="text-5xl font-extrabold tracking-tight text-gray-900 sm:text-6xl dark:text-white">
+              <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white min-[400px]:text-5xl sm:text-6xl">
                 {profile.name}
               </h1>
               <p className="text-2xl font-semibold text-gray-600 dark:text-gray-300">
@@ -104,7 +108,7 @@ export default function Hero({ profile }: { profile: Profile | null }) {
           </div>
 
           <div className="order-1 flex justify-center lg:order-2 lg:justify-end">
-            <div className="relative h-[350px] w-[350px] sm:h-[450px] sm:w-[450px]">
+            <div className="relative h-64 w-64 min-[400px]:h-[350px] min-[400px]:w-[350px] sm:h-[450px] sm:w-[450px]">
               <div className="absolute inset-0 animate-[spin_20s_linear_infinite] rounded-full border-2 border-dashed border-indigo-200 dark:border-indigo-800" />
               <div className="absolute inset-4 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 opacity-20 blur-2xl" />
               {profile.heroPhotoUrl ? (
@@ -112,7 +116,7 @@ export default function Hero({ profile }: { profile: Profile | null }) {
                   src={profile.heroPhotoUrl}
                   alt={profile.name}
                   fill
-                  sizes="(min-width: 640px) 450px, 350px"
+                  sizes="(min-width: 640px) 450px, (min-width: 400px) 350px, 256px"
                   className="rounded-full object-cover p-4 shadow-2xl"
                   priority
                 />

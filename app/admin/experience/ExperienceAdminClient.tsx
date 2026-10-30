@@ -132,7 +132,7 @@ export default function ExperienceAdminClient({
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
-      <div className="h-fit rounded-lg bg-white p-6 shadow-sm lg:col-span-2 dark:bg-gray-800">
+      <div className="h-fit rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-2">
         <h3 className="mb-4 text-lg font-semibold">
           {isEditing ? "Edit Experience" : "Add Experience"}
         </h3>
@@ -291,7 +291,7 @@ export default function ExperienceAdminClient({
         </form>
       </div>
 
-      <div className="rounded-lg bg-white p-6 shadow-sm lg:col-span-3 dark:bg-gray-800">
+      <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-3">
         <h3 className="mb-4 text-lg font-semibold">Work Experience</h3>
         <div className="space-y-4">
           {experiences.map((exp, index) => (
