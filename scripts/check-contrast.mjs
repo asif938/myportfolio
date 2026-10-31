@@ -15,13 +15,22 @@ const dir = join(dirname(fileURLToPath(import.meta.url)), "..", "app", "palettes
 /* ---------- parsing ---------- */
 function parseBlocks(css) {
   const out = {};
-  const re = /(\.dark)?\[data-palette="([\w-]+)"\]\s*\{([\s\S]*?)\n\}/g;
+  // matches root blocks and ".band" sub-blocks: [data-palette="x"] { } / .dark[data-palette="x"] .band { }
+  const re = /(\.dark)?\[data-palette="([\w-]+)"\](\s+\.band)?\s*\{([\s\S]*?)\n\}/g;
   let m;
   while ((m = re.exec(css))) {
-    const key = `${m[2]}:${m[1] ? "dark" : "light"}`;
+    const key = `${m[2]}:${m[1] ? "dark" : "light"}${m[3] ? ":band" : ""}`;
     const vars = {};
-    for (const line of m[3].matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) vars[line[1]] = line[2].trim();
+    for (const line of m[4].matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) vars[line[1]] = line[2].trim();
     out[key] = vars;
+  }
+  // a band inherits its mode's root tokens, then the shared band block, then its mode override
+  for (const key of Object.keys(out)) {
+    if (!key.endsWith(":band")) continue;
+    const [palette, mode] = key.split(":");
+    const base = out[`${palette}:${mode}`] ?? {};
+    const shared = mode === "dark" ? out[`${palette}:light:band`] ?? {} : {};
+    out[key] = { ...base, ...shared, ...out[key] };
   }
   return out;
 }
@@ -85,7 +94,8 @@ for (const f of readdirSync(dir).filter((f) => f.endsWith(".css"))) {
 }
 
 for (const [key, vars] of Object.entries(blocks)) {
-  const [palette, mode] = key.split(":");
+  const [palette, modeRaw, band] = key.split(":");
+  const mode = band ? `${modeRaw} band` : modeRaw;
   const get = (name) => {
     const v = resolve(vars, name);
     if (v === undefined) throw new Error(`${key}: missing token ${name}`);

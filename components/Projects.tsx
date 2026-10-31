@@ -1,8 +1,27 @@
 import type { Project } from "@prisma/client";
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import ProjectCard from "@/components/ProjectCard";
 import Reveal from "@/components/Reveal";
+import Button from "@/components/ui/Button";
+import Section from "@/components/ui/Section";
+import SectionHeading from "@/components/ui/SectionHeading";
+
+/** The contrast band: a dark panel inside the light page (tokens re-declared by `.band`). */
+function BandBackdrop() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div
+        className="absolute -left-40 -top-40 h-[34rem] w-[34rem] rounded-full"
+        style={{ background: "radial-gradient(closest-side, var(--band-glow-1), transparent)" }}
+      />
+      <div
+        className="absolute -bottom-48 -right-32 h-[34rem] w-[34rem] rounded-full"
+        style={{ background: "radial-gradient(closest-side, var(--band-glow-2), transparent)" }}
+      />
+      <div className="dot-matrix absolute inset-0 opacity-50" />
+    </div>
+  );
+}
 
 export default function Projects({
   projects,
@@ -14,38 +33,28 @@ export default function Projects({
   if (projects.length === 0) return null;
 
   return (
-    <section
-      id="projects"
-      tabIndex={-1}
-      className="scroll-mt-16 bg-gray-50 py-24 outline-none dark:bg-gray-950"
-    >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <Reveal className="mb-16 text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-            Featured Projects
-          </h2>
-          <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-indigo-600" />
-        </Reveal>
+    <Section id="projects" className="band" backdrop={<BandBackdrop />}>
+      <Reveal>
+        <SectionHeading eyebrow="Projects" title="Featured Projects" highlight="Projects" />
+      </Reveal>
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project, index) => (
-            <Reveal key={project.id} delay={(index % 3) * 0.08} className="h-full">
-              <ProjectCard project={project} />
-            </Reveal>
-          ))}
-        </div>
+      <ul className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+        {projects.map((project, index) => (
+          <Reveal as="li" key={project.id} delay={(index % 3) * 0.08} className="flex">
+            <ProjectCard project={project} tint={index} />
+          </Reveal>
+        ))}
+      </ul>
 
-        {totalCount > projects.length && (
-          <div className="mt-12 text-center">
-            <Link
-              href="/projects"
-              className="inline-flex items-center gap-2 rounded-full border-2 border-gray-200 px-8 py-3.5 text-sm font-semibold text-gray-900 transition-all hover:-translate-y-1 hover:border-gray-300 dark:border-gray-800 dark:text-white dark:hover:border-gray-700"
-            >
+      {totalCount > projects.length && (
+        <div className="mt-12 text-center">
+          <Button href="/projects" variant="secondary">
+            <span className="inline-flex items-center gap-2">
               View all {totalCount} projects <ArrowRight size={18} aria-hidden="true" />
-            </Link>
-          </div>
-        )}
-      </div>
-    </section>
+            </span>
+          </Button>
+        </div>
+      )}
+    </Section>
   );
 }

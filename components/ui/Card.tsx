@@ -10,14 +10,17 @@ export function tintClass(index: number) {
 type Props = React.HTMLAttributes<HTMLDivElement> & {
   /** 0-based index; cycles through the palette tints. Omit for a neutral card. */
   tint?: number;
+  /** Gradient hairline on hover/focus. */
+  gradientBorder?: boolean;
 };
 
-export default function Card({ tint, className, children, ...rest }: Props) {
+export default function Card({ tint, gradientBorder, className, children, ...rest }: Props) {
   return (
     <div
       className={cn(
-        "rounded-3xl border p-6 shadow-card transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-1",
+        "relative rounded-3xl border p-6 shadow-card transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-1",
         tint === undefined ? "border-line bg-surface" : cn(tintClass(tint), "border-t-border bg-t-bg text-t-fg"),
+        gradientBorder && "gborder",
         className,
       )}
       {...rest}

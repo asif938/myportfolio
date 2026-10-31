@@ -160,3 +160,58 @@
   --atm-planet-rim: #e879f9;
   --atm-star: #ffffff;
 }
+
+/* ───────── Prism · contrast band ─────────
+ * One deliberate dark panel inside the light page (and a lifted, glowing one in
+ * dark mode). Apply class "band" to a section: every token below is re-declared
+ * for its subtree, so components inside keep using plain semantic tokens. */
+[data-palette="prism"] .band {
+  color-scheme: dark;
+  --bg: #140b33;
+  --bg-2: #1b1042;
+  --surface: rgba(255, 255, 255, 0.06);
+  --surface-2: #241757;
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.22);
+  --fg: #f1eeff;
+  --muted: #b3add3;
+  --focus: #c4b0ff;
+  --accent-text: #c4b0ff;
+  --highlight-bg: var(--highlight);
+  --cta-bg: #d4ff3a;
+  --cta-fg: #0b0b12;
+  --cta-chip-bg: #7c3aed;
+  --cta-chip-fg: #ffffff;
+  --tint-1-bg: rgba(20, 184, 166, 0.14);
+  --tint-1-fg: #5eead4;
+  --tint-1-border: rgba(45, 212, 191, 0.35);
+  --tint-2-bg: rgba(139, 92, 246, 0.18);
+  --tint-2-fg: #c4b5fd;
+  --tint-2-border: rgba(167, 139, 250, 0.38);
+  --tint-3-bg: rgba(244, 63, 94, 0.14);
+  --tint-3-fg: #fda4af;
+  --tint-3-border: rgba(251, 113, 133, 0.35);
+  --tint-4-bg: rgba(99, 102, 241, 0.18);
+  --tint-4-fg: #a5b4fc;
+  --tint-4-border: rgba(129, 140, 248, 0.38);
+  --tint-5-bg: rgba(56, 189, 248, 0.14);
+  --tint-5-fg: #7dd3fc;
+  --tint-5-border: rgba(56, 189, 248, 0.35);
+  --tint-6-bg: rgba(245, 158, 11, 0.14);
+  --tint-6-fg: #fcd34d;
+  --tint-6-border: rgba(251, 191, 36, 0.35);
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 24px 50px -28px rgba(0, 0, 0, 0.8);
+  --shadow-glow: 0 0 36px -4px rgba(212, 255, 58, 0.4);
+  --band-glow-1: rgba(124, 58, 237, 0.5);
+  --band-glow-2: rgba(217, 70, 239, 0.32);
+  --nav-bg: rgba(19, 14, 46, 0.62);
+  background-color: var(--bg);
+  color: var(--fg);
+}
+.dark[data-palette="prism"] .band {
+  --bg: #130e2e;
+  --bg-2: #1b1442;
+  --surface-2: #231a57;
+  --band-glow-1: rgba(124, 58, 237, 0.6);
+  --band-glow-2: rgba(217, 70, 239, 0.4);
+}

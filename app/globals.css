@@ -74,6 +74,26 @@
   .tint-5 { --t-bg: var(--tint-5-bg); --t-fg: var(--tint-5-fg); --t-border: var(--tint-5-border); }
   .tint-6 { --t-bg: var(--tint-6-bg); --t-fg: var(--tint-6-fg); --t-border: var(--tint-6-border); }
 
+  /* Gradient hairline that fades in on hover (add to a rounded, relative element) */
+  .gborder::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--brand-gradient);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    opacity: 0;
+    transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  .gborder:hover::before,
+  .gborder:focus-within::before {
+    opacity: 1;
+  }
+
   /* Faint dot-matrix texture, fades toward the edges */
   .dot-matrix {
     background-image: radial-gradient(var(--dot) 1.2px, transparent 1.4px);

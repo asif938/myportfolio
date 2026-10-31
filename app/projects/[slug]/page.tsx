@@ -2,10 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { ArrowLeft, Code2, ExternalLink, Github } from "lucide-react";
+import Atmosphere from "@/components/Atmosphere";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingActions from "@/components/chat/FloatingActions";
 import ProjectGallery from "@/components/ProjectGallery";
+import Button from "@/components/ui/Button";
+import Chip from "@/components/ui/Chip";
+import { tintClass } from "@/components/ui/Card";
 import type { Metadata } from "next";
 import {
   getExperience,
@@ -41,10 +45,18 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   };
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Block({ index, title, children }: { index: number; title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="mb-4 border-b pb-2 text-2xl font-bold dark:border-gray-800">{title}</h2>
+      <h2 className="mb-5 flex items-center gap-4 border-b border-line pb-4 text-2xl font-bold">
+        <span
+          aria-hidden="true"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-gradient-deep text-xs font-bold text-white"
+        >
+          {String(index + 1).padStart(2, "0")}
+        </span>
+        {title}
+      </h2>
       {children}
     </section>
   );
@@ -52,9 +64,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function Prose({ text }: { text: string }) {
   return (
-    <div className="prose prose-lg max-w-none whitespace-pre-line text-gray-700 dark:prose-invert dark:text-gray-300">
-      {text}
-    </div>
+    <div className="max-w-[65ch] whitespace-pre-line text-base leading-[1.75] text-muted sm:text-lg">{text}</div>
   );
 }
 
@@ -85,6 +95,15 @@ export default async function ProjectDetails({ params }: Params) {
   const hasText = (s: { text: string | null }): s is { title: string; text: string } =>
     Boolean(s.text?.trim());
 
+  // Numbered blocks in display order: text sections, optional gallery, closing sections.
+  const blocks: { title: string; node: React.ReactNode }[] = [
+    ...textSections.filter(hasText).map((s) => ({ title: s.title, node: <Prose text={s.text} /> })),
+    ...(project.images.length > 0
+      ? [{ title: "Gallery", node: <ProjectGallery images={project.images} title={project.name} /> }]
+      : []),
+    ...closingSections.filter(hasText).map((s) => ({ title: s.title, node: <Prose text={s.text} /> })),
+  ];
+
   const url = absoluteUrl(`/projects/${project.slug}`);
   const author = profile ? { "@type": "Person", name: profile.name, url: SITE_URL } : undefined;
   const structuredData = {
@@ -109,96 +128,84 @@ export default async function ProjectDetails({ params }: Params) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
+    <div className="flex min-h-screen flex-col text-fg">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd(structuredData) }}
       />
-      <Navbar showExperience={experience.length > 0} />
+      <Navbar name={profile?.name} showExperience={experience.length > 0} />
 
-      <main id="main-content" tabIndex={-1} className="flex-1 pb-16 pt-24 outline-none">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="relative flex-1 overflow-hidden pb-20 pt-28 outline-none sm:pt-32"
+      >
+        <Atmosphere variant="soft" side="right" />
+
+        <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <Link
             href="/projects"
-            className="mb-8 inline-flex items-center text-sm font-medium text-gray-500 transition-colors hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400"
+            className="mb-8 inline-flex items-center rounded-full border border-line-strong bg-surface px-4 py-2 text-sm font-medium text-fg backdrop-blur-md transition-[transform,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-brand"
           >
             <ArrowLeft size={16} className="mr-2" aria-hidden="true" /> All Projects
           </Link>
 
-          <h1 className="mb-6 text-4xl font-extrabold tracking-tight sm:text-5xl">
+          <p className="cursor mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-accent">Project</p>
+          <h1 className="mb-6 text-[clamp(2.2rem,6vw,3.75rem)] font-bold leading-[1.05] tracking-[-0.02em]">
             {project.name}
           </h1>
 
-          <ul className="mb-8 flex flex-wrap gap-2" aria-label="Technologies">
+          <ul className="mb-10 flex flex-wrap gap-2" aria-label="Technologies">
             {project.mainTechStack.map((tech, i) => (
-              <li
-                key={`${tech}-${i}`}
-                className="rounded-lg bg-indigo-100 px-3 py-1.5 text-sm font-semibold text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-300"
-              >
-                {tech}
+              <li key={`${tech}-${i}`}>
+                <Chip tinted className={tintClass(i)}>
+                  {tech}
+                </Chip>
               </li>
             ))}
           </ul>
 
-          <div className="relative mb-12 h-[300px] w-full overflow-hidden rounded-2xl bg-gray-200 shadow-2xl dark:bg-gray-800 sm:h-[450px]">
-            {project.imageUrl ? (
-              <Image
-                src={project.imageUrl}
-                alt={project.name}
-                fill
-                sizes="(min-width: 896px) 896px, 100vw"
-                className="object-cover"
-                priority
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center">
-                <Code2 size={64} className="text-gray-400 opacity-20" aria-hidden="true" />
-              </div>
-            )}
+          <div className="relative mb-10 rounded-[2rem] bg-brand-gradient p-1 shadow-glow">
+            <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[1.75rem] bg-surface-2 sm:aspect-[16/9]">
+              {project.imageUrl ? (
+                <Image
+                  src={project.imageUrl}
+                  alt={project.name}
+                  fill
+                  sizes="(min-width: 896px) 896px, 100vw"
+                  className="object-cover"
+                  priority
+                />
+              ) : (
+                <div className="grid h-full w-full place-items-center text-muted">
+                  <Code2 size={64} className="opacity-40" aria-hidden="true" />
+                </div>
+              )}
+            </div>
           </div>
 
           {(project.liveLink || project.githubLink) && (
-            <div className="mb-12 flex flex-wrap gap-4">
+            <div className="mb-14 flex flex-wrap gap-3 sm:gap-4">
               {project.liveLink && (
-                <a
-                  href={project.liveLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow transition-all hover:-translate-y-0.5 hover:bg-indigo-500"
-                >
-                  <ExternalLink size={18} aria-hidden="true" /> View Live Project
-                </a>
+                <Button href={project.liveLink} external chipIcon={ExternalLink}>
+                  View Live Project
+                </Button>
               )}
               {project.githubLink && (
-                <a
-                  href={project.githubLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-full border-2 border-gray-200 px-6 py-3 text-sm font-semibold transition-all hover:-translate-y-0.5 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600"
-                >
-                  <Github size={18} aria-hidden="true" /> GitHub Repository
-                </a>
+                <Button href={project.githubLink} external variant="secondary">
+                  <span className="inline-flex items-center gap-2">
+                    <Github size={18} aria-hidden="true" /> GitHub Repository
+                  </span>
+                </Button>
               )}
             </div>
           )}
 
           <div className="space-y-12">
-            {textSections.filter(hasText).map((s) => (
-              <Section key={s.title} title={s.title}>
-                <Prose text={s.text} />
-              </Section>
-            ))}
-
-            {project.images.length > 0 && (
-              <Section title="Gallery">
-                <ProjectGallery images={project.images} title={project.name} />
-              </Section>
-            )}
-
-            {closingSections.filter(hasText).map((s) => (
-              <Section key={s.title} title={s.title}>
-                <Prose text={s.text} />
-              </Section>
+            {blocks.map((b, i) => (
+              <Block key={b.title} index={i} title={b.title}>
+                {b.node}
+              </Block>
             ))}
           </div>
         </div>
