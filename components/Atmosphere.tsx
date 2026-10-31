@@ -210,20 +210,65 @@ function PrismDay() {
   );
 }
 
-const VARIANTS: Record<PaletteId, () => React.JSX.Element> = {
-  prism: () => (
+/* Quieter backdrop for non-hero sections. `side` mirrors the composition. */
+function PrismSoft({ side }: { side: "left" | "right" }) {
+  const pos = side === "left" ? "-left-40" : "-right-40";
+  const pos2 = side === "left" ? "-right-32" : "-left-32";
+  return (
     <>
-      <PrismDay />
-      <PrismNight />
+      <div className="absolute inset-0 dark:hidden">
+        <div
+          className={`absolute ${pos} top-0 h-[30rem] w-[30rem] rounded-full opacity-30`}
+          style={{ background: "radial-gradient(closest-side, var(--atm-blob-1), transparent)" }}
+        />
+        <div
+          className={`absolute ${pos2} bottom-0 h-[28rem] w-[28rem] rounded-full opacity-25`}
+          style={{ background: "radial-gradient(closest-side, var(--atm-blob-2), transparent)" }}
+        />
+        <div className="dot-matrix absolute inset-0 opacity-70" />
+      </div>
+      <div className="absolute inset-0 hidden dark:block">
+        <div
+          className={`absolute ${pos} top-10 h-[30rem] w-[30rem] rounded-full opacity-60`}
+          style={{ background: "radial-gradient(closest-side, var(--glow-1), transparent)" }}
+        />
+        <div
+          className={`absolute ${pos2} bottom-0 h-[26rem] w-[26rem] rounded-full opacity-40`}
+          style={{ background: "radial-gradient(closest-side, var(--glow-2), transparent)" }}
+        />
+      </div>
     </>
-  ),
+  );
+}
+
+type Variant = "hero" | "soft";
+type Side = "left" | "right";
+
+const VARIANTS: Record<PaletteId, (p: { variant: Variant; side: Side }) => React.JSX.Element> = {
+  prism: ({ variant, side }) =>
+    variant === "soft" ? (
+      <PrismSoft side={side} />
+    ) : (
+      <>
+        <PrismDay />
+        <PrismNight />
+      </>
+    ),
 };
 
-export default function Atmosphere({ palette = "prism" }: { palette?: PaletteId }) {
-  const Variant = VARIANTS[palette];
+export default function Atmosphere({
+  palette = "prism",
+  variant = "hero",
+  side = "left",
+}: {
+  palette?: PaletteId;
+  variant?: Variant;
+  side?: Side;
+}) {
+  const Pick = VARIANTS[palette];
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-      <Variant />
+      <Pick variant={variant} side={side} />
     </div>
   );
 }

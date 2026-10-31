@@ -1,48 +1,42 @@
 import type { Education as EducationEntry } from "@prisma/client";
 import Reveal from "@/components/Reveal";
+import Card from "@/components/ui/Card";
+import Section from "@/components/ui/Section";
+import SectionHeading from "@/components/ui/SectionHeading";
 
 export default function Education({ education }: { education: EducationEntry[] }) {
   if (!education || education.length === 0) return null;
 
   return (
-    <section
-      id="education"
-      tabIndex={-1}
-      className="scroll-mt-16 bg-white py-24 outline-none dark:bg-gray-900"
-    >
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        <Reveal className="mb-16 text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-            Education
-          </h2>
-          <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-indigo-600" />
-        </Reveal>
+    <Section id="education">
+      <Reveal>
+        <SectionHeading eyebrow="Education" title="Education" highlight="Education" />
+      </Reveal>
 
-        <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:h-full before:w-0.5 before:-translate-x-px before:bg-gradient-to-b before:from-transparent before:via-gray-300 before:to-transparent dark:before:via-gray-700 md:before:mx-auto md:before:translate-x-0">
-          {education.map((edu) => (
-            <Reveal
-              key={edu.id}
-              className="is-active group relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse"
+      <ol className="relative mx-auto max-w-3xl space-y-6">
+        {/* single vertical gradient line */}
+        <span aria-hidden className="absolute bottom-2 left-[19px] top-2 w-0.5 rounded-full bg-brand-gradient opacity-60" />
+        {education.map((edu, index) => (
+          <li key={edu.id} className="relative pl-14">
+            <span
+              aria-hidden
+              className="absolute left-0 top-6 grid h-10 w-10 place-items-center rounded-full bg-brand-gradient-deep text-xs font-bold text-white ring-4 ring-[var(--bg)]"
             >
-              <div className="z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-4 border-white bg-indigo-500 text-white shadow dark:border-gray-900 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
-                <div className="h-2 w-2 rounded-full bg-white"></div>
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <Card className="p-5 sm:p-7">
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <h3 className="text-lg font-bold text-fg sm:text-xl">{edu.degree}</h3>
+                <time className="rounded-full border border-line-strong bg-surface-2 px-3 py-1 text-xs font-semibold text-accent">
+                  {edu.startYear} – {edu.endYear}
+                </time>
               </div>
-              <div className="w-[calc(100%-4rem)] rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-800 md:w-[calc(50%-2.5rem)]">
-                <div className="mb-2 flex flex-col justify-between sm:flex-row sm:items-center">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">{edu.degree}</h3>
-                  <time className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
-                    {edu.startYear} - {edu.endYear}
-                  </time>
-                </div>
-                <div className="text-md mb-2 font-medium text-gray-700 dark:text-gray-300">
-                  {edu.institution}
-                </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{edu.description}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
+              <p className="mb-2 font-medium text-fg">{edu.institution}</p>
+              <p className="text-sm leading-relaxed text-muted sm:text-base">{edu.description}</p>
+            </Card>
+          </li>
+        ))}
+      </ol>
+    </Section>
   );
 }

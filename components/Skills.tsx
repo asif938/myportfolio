@@ -1,6 +1,11 @@
 import type { Skill } from "@prisma/client";
 import Image from "next/image";
+import Atmosphere from "@/components/Atmosphere";
 import Reveal from "@/components/Reveal";
+import Card from "@/components/ui/Card";
+import Chip from "@/components/ui/Chip";
+import Section from "@/components/ui/Section";
+import SectionHeading from "@/components/ui/SectionHeading";
 
 export default function Skills({ skills }: { skills: Skill[] }) {
   if (!skills || skills.length === 0) return null;
@@ -8,58 +13,48 @@ export default function Skills({ skills }: { skills: Skill[] }) {
   const categories = Array.from(new Set(skills.map((s) => s.category)));
 
   return (
-    <section
-      id="skills"
-      tabIndex={-1}
-      className="scroll-mt-16 bg-gray-50 py-24 outline-none dark:bg-gray-950"
-    >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <Reveal className="mb-16 text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-            My Skills
-          </h2>
-          <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-indigo-600" />
-        </Reveal>
+    <Section id="skills" backdrop={<Atmosphere variant="soft" side="left" />}>
+      <Reveal>
+        <SectionHeading eyebrow="Skills" title="My Skills" highlight="Skills" />
+      </Reveal>
 
-        <div className="space-y-16">
-          {categories.map((category) => (
-            <Reveal key={category}>
-              <h3 className="mb-8 text-center text-2xl font-semibold text-gray-800 dark:text-gray-200">
-                {category}
-              </h3>
-              <div className="flex flex-wrap justify-center gap-6">
+      <ul className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:gap-6">
+        {categories.map((category, i) => (
+          <Reveal as="li" key={category} delay={(i % 2) * 0.08} className="flex">
+            <Card tint={i} className="w-full p-6 sm:p-8">
+              <div className="mb-5 flex items-center gap-3">
+                <span className="font-display text-sm font-bold tabular-nums" aria-hidden>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="text-xl font-bold sm:text-2xl">{category}</h3>
+              </div>
+              <ul className="flex flex-wrap gap-2.5">
                 {skills
                   .filter((s) => s.category === category)
                   .map((skill) => (
-                    <div
-                      key={skill.id}
-                      className="group flex h-32 w-32 flex-col items-center justify-center rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
-                    >
-                      {skill.imageUrl ? (
-                        <div className="relative mb-3 h-12 w-12 transition-transform group-hover:scale-110">
-                          <Image
-                            src={skill.imageUrl}
-                            alt={skill.name}
-                            fill
-                            sizes="48px"
-                            className="object-contain"
-                          />
-                        </div>
-                      ) : (
-                        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-xs font-bold text-gray-600 dark:bg-gray-800 dark:text-gray-300">
-                          <span aria-hidden="true">{skill.name.charAt(0)}</span>
-                        </div>
-                      )}
-                      <span className="text-center text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <li key={skill.id}>
+                      <Chip className="transition-transform duration-200 ease-out hover:-translate-y-0.5 hover:border-brand">
+                        {skill.imageUrl ? (
+                          <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-white p-0.5">
+                            <Image src={skill.imageUrl} alt="" width={20} height={20} className="h-5 w-5 object-contain" />
+                          </span>
+                        ) : (
+                          <span
+                            aria-hidden
+                            className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-brand-gradient-deep text-xs font-bold text-white"
+                          >
+                            {skill.name.charAt(0)}
+                          </span>
+                        )}
                         {skill.name}
-                      </span>
-                    </div>
+                      </Chip>
+                    </li>
                   ))}
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
+              </ul>
+            </Card>
+          </Reveal>
+        ))}
+      </ul>
+    </Section>
   );
 }

@@ -1,80 +1,106 @@
 import type { Profile } from "@prisma/client";
 import Image from "next/image";
+import { Mail, MapPin, Phone, type LucideIcon } from "lucide-react";
+import Atmosphere from "@/components/Atmosphere";
 import Reveal from "@/components/Reveal";
+import Section from "@/components/ui/Section";
+import SectionHeading from "@/components/ui/SectionHeading";
+
+type Contact = { label: string; value: string; href?: string; Icon: LucideIcon };
 
 export default function About({ profile }: { profile: Profile | null }) {
   if (!profile) return null;
 
-  return (
-    <section
-      id="about"
-      tabIndex={-1}
-      className="scroll-mt-16 bg-white py-24 outline-none dark:bg-gray-900"
-    >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <Reveal className="mb-16 text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-            About Me
-          </h2>
-          <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-indigo-600" />
-        </Reveal>
+  const contacts: Contact[] = [];
+  if (profile.email) {
+    contacts.push({ label: "Email", value: profile.email, href: `mailto:${profile.email}`, Icon: Mail });
+  }
+  if (profile.showPhone && profile.phone) {
+    contacts.push({
+      label: "Phone",
+      value: profile.phone,
+      href: `tel:${profile.phone.replace(/\s+/g, "")}`,
+      Icon: Phone,
+    });
+  }
+  if (profile.location) {
+    contacts.push({ label: "Location", value: profile.location, Icon: MapPin });
+  }
 
-        <Reveal className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-          <div className="flex justify-center">
-            <div className="relative h-72 w-full max-w-md overflow-hidden rounded-2xl shadow-2xl sm:h-96">
+  return (
+    <Section id="about" backdrop={<Atmosphere variant="soft" side="right" />}>
+      <Reveal>
+        <SectionHeading eyebrow="About" title="About Me" highlight="Me" />
+      </Reveal>
+
+      <Reveal className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+        <div className="flex justify-center">
+          <div className="relative w-full max-w-md pb-4 pr-4">
+            {/* gradient accent offset behind the frame */}
+            <div
+              aria-hidden
+              className="absolute inset-0 left-4 top-4 rounded-[2.5rem] bg-brand-gradient opacity-90"
+            />
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] border border-line-strong bg-surface-2 shadow-card">
               {profile.aboutPhotoUrl ? (
                 <Image
                   src={profile.aboutPhotoUrl}
                   alt={`About ${profile.name}`}
                   fill
-                  sizes="(min-width: 1024px) 448px, 100vw"
+                  sizes="(min-width: 1024px) 448px, 90vw"
                   className="object-cover"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500 dark:bg-gray-800">
-                  No Image Available
-                </div>
+                <div className="grid h-full w-full place-items-center text-muted">No Image Available</div>
               )}
             </div>
           </div>
+        </div>
 
-          <div className="space-y-6">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-              My Journey as a {profile.designation}
-            </h3>
-            <div className="prose prose-lg max-w-none text-gray-600 dark:prose-invert dark:text-gray-300">
-              <p className="whitespace-pre-line">{profile.aboutMe}</p>
-            </div>
+        <div className="space-y-6">
+          <h3 className="text-2xl font-bold text-fg sm:text-3xl">My Journey as a {profile.designation}</h3>
+          <p className="max-w-[65ch] whitespace-pre-line text-base leading-[1.7] text-muted sm:text-lg">
+            {profile.aboutMe}
+          </p>
 
-            <div className="mt-6 grid grid-cols-1 gap-6 border-t border-gray-200 pt-6 dark:border-gray-800 sm:grid-cols-2">
-              {profile.email && (
-                <div>
-                  <h4 className="mb-1 text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-white">
-                    Email
-                  </h4>
-                  <p className="break-all text-gray-600 dark:text-gray-400">{profile.email}</p>
-                </div>
-              )}
-              {profile.showPhone && profile.phone && (
-                <div>
-                  <h4 className="mb-1 text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-white">
-                    Phone
-                  </h4>
-                  <p className="text-gray-600 dark:text-gray-400">{profile.phone}</p>
-                </div>
-              )}
-              {profile.location && (
-                <div>
-                  <h4 className="mb-1 text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-white">
-                    Location
-                  </h4>
-                  <p className="text-gray-600 dark:text-gray-400">{profile.location}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </Reveal>
-      </div>
-    </section>
+          {contacts.length > 0 && (
+            <ul className="flex flex-wrap gap-3 pt-2">
+              {contacts.map(({ label, value, href, Icon }) => {
+                const inner = (
+                  <>
+                    <span
+                      className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-gradient-deep text-white"
+                      aria-hidden
+                    >
+                      <Icon size={18} />
+                    </span>
+                    <span className="min-w-0 leading-tight">
+                      <span className="block text-xs font-semibold uppercase tracking-wider text-muted">{label}</span>
+                      <span className="block break-all text-sm font-medium text-fg">{value}</span>
+                    </span>
+                  </>
+                );
+                const cls =
+                  "flex max-w-full items-center gap-3 rounded-full border border-line bg-surface py-2 pl-2 pr-5 shadow-card backdrop-blur-md";
+                return (
+                  <li key={label} className="max-w-full">
+                    {href ? (
+                      <a
+                        href={href}
+                        className={`${cls} transition-[transform,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-brand`}
+                      >
+                        {inner}
+                      </a>
+                    ) : (
+                      <div className={cls}>{inner}</div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      </Reveal>
+    </Section>
   );
 }
