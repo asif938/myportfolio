@@ -87,7 +87,7 @@ export default function EducationAdminClient({
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-      <div className="h-fit rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-1">
+      <div className="h-fit rounded-lg bg-surface p-6 shadow-sm lg:col-span-1">
         <h3 className="mb-4 text-lg font-semibold">
           {isEditing ? "Edit Education" : "Add Education"}
         </h3>
@@ -184,23 +184,23 @@ export default function EducationAdminClient({
         </form>
       </div>
 
-      <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-2">
+      <div className="rounded-lg bg-surface p-6 shadow-sm lg:col-span-2">
         <h3 className="mb-4 text-lg font-semibold">Educational Qualifications</h3>
         <div className="space-y-4">
           {educations.map((edu, index) => (
             <div
               key={edu.id}
-              className="flex items-start justify-between rounded-lg border p-4 dark:border-gray-700"
+              className="flex items-start justify-between rounded-lg border p-4"
             >
               <div className="min-w-0">
                 <h4 className="text-lg font-bold">{edu.degree}</h4>
-                <p className="font-medium text-indigo-600 dark:text-indigo-400">
+                <p className="font-medium text-accent">
                   {edu.institution}
                 </p>
-                <p className="mb-2 text-sm text-gray-500">
+                <p className="mb-2 text-sm text-muted">
                   {edu.startYear} - {edu.endYear}
                 </p>
-                <p className="text-sm text-gray-700 dark:text-gray-300">{edu.description}</p>
+                <p className="text-sm text-fg">{edu.description}</p>
               </div>
               <div className="ml-4 flex shrink-0 items-center gap-2">
                 <ReorderButtons
@@ -214,7 +214,7 @@ export default function EducationAdminClient({
                   type="button"
                   aria-label={`Edit ${edu.degree}`}
                   onClick={() => setCurrentEdu(edu)}
-                  className="text-blue-600 hover:text-blue-900 dark:text-blue-400"
+                  className="text-accent hover:opacity-80"
                 >
                   <Pencil size={18} />
                 </button>
@@ -223,7 +223,7 @@ export default function EducationAdminClient({
                   aria-label={`Delete ${edu.degree}`}
                   disabled={deletingId === edu.id}
                   onClick={() => handleDelete(edu)}
-                  className="text-red-600 hover:text-red-900 disabled:opacity-50 dark:text-red-400"
+                  className="text-danger hover:opacity-80 disabled:opacity-50"
                 >
                   <Trash2 size={18} />
                 </button>
@@ -231,7 +231,7 @@ export default function EducationAdminClient({
             </div>
           ))}
           {educations.length === 0 && (
-            <p className="text-gray-500">No education entries added yet.</p>
+            <p className="text-muted">No education entries added yet.</p>
           )}
         </div>
       </div>

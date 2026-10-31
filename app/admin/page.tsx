@@ -68,7 +68,7 @@ export default async function AdminDashboard() {
 
   return (
     <div className="max-w-6xl space-y-8">
-      <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">Dashboard</h2>
+      <h2 className="text-2xl font-semibold text-fg">Dashboard</h2>
 
       <section aria-label="Content overview">
         <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -78,26 +78,26 @@ export default async function AdminDashboard() {
                 href={stat.href}
                 className={`block h-full rounded-lg p-5 shadow-sm transition-shadow hover:shadow-md ${
                   stat.highlight
-                    ? "bg-indigo-600 text-white"
-                    : "bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100"
+                    ? "bg-brand-gradient-deep text-white"
+                    : "bg-surface text-fg  "
                 }`}
               >
                 <stat.icon
                   size={20}
                   aria-hidden="true"
                   className={
-                    stat.highlight ? "text-indigo-100" : "text-indigo-600 dark:text-indigo-400"
+                    stat.highlight ? "text-white/90" : "text-accent "
                   }
                 />
                 <p className="mt-3 text-3xl font-bold">{stat.value}</p>
                 <p
-                  className={`text-sm ${stat.highlight ? "text-indigo-100" : "text-gray-600 dark:text-gray-300"}`}
+                  className={`text-sm ${stat.highlight ? "text-white/90" : "text-muted "}`}
                 >
                   {stat.label}
                 </p>
                 {stat.detail && (
                   <p
-                    className={`mt-1 text-xs ${stat.highlight ? "text-indigo-200" : "text-gray-500 dark:text-gray-400"}`}
+                    className={`mt-1 text-xs ${stat.highlight ? "text-white/80" : "text-muted "}`}
                   >
                     {stat.detail}
                   </p>
@@ -111,7 +111,7 @@ export default async function AdminDashboard() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <section
           aria-labelledby="latest-messages"
-          className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-2"
+          className="rounded-lg bg-surface p-6 shadow-sm lg:col-span-2"
         >
           <div className="mb-4 flex items-center justify-between">
             <h3 id="latest-messages" className="text-lg font-semibold">
@@ -119,26 +119,26 @@ export default async function AdminDashboard() {
             </h3>
             <Link
               href="/admin/messages"
-              className="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+              className="text-sm font-medium text-accent hover:underline"
             >
               View all
             </Link>
           </div>
           {latest.length === 0 ? (
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-muted">
               No messages yet. Messages from the contact form will show up here.
             </p>
           ) : (
-            <ul className="divide-y dark:divide-gray-700">
+            <ul className="divide-y">
               {latest.map((m) => (
                 <li key={m.id}>
                   <Link
                     href={`/admin/messages#message-${m.id}`}
-                    className="flex items-start gap-3 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/40"
+                    className="flex items-start gap-3 py-3 hover:bg-surface-2"
                   >
                     <span
                       aria-hidden="true"
-                      className={`mt-2 h-2 w-2 shrink-0 rounded-full ${m.read ? "bg-transparent" : "bg-indigo-600"}`}
+                      className={`mt-2 h-2 w-2 shrink-0 rounded-full ${m.read ? "bg-transparent" : "bg-brand-gradient-deep"}`}
                     />
                     <span className="min-w-0 flex-1">
                       <span className="flex justify-between gap-3">
@@ -148,12 +148,12 @@ export default async function AdminDashboard() {
                         </span>
                         <time
                           dateTime={m.createdAt.toISOString()}
-                          className="shrink-0 text-xs text-gray-500 dark:text-gray-400"
+                          className="shrink-0 text-xs text-muted"
                         >
                           {dateFormatter.format(m.createdAt)}
                         </time>
                       </span>
-                      <span className="block truncate text-sm text-gray-600 dark:text-gray-300">
+                      <span className="block truncate text-sm text-muted">
                         {m.subject}
                       </span>
                     </span>
@@ -167,7 +167,7 @@ export default async function AdminDashboard() {
         <div className="space-y-6">
           <section
             aria-labelledby="quick-links"
-            className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800"
+            className="rounded-lg bg-surface p-6 shadow-sm"
           >
             <h3 id="quick-links" className="mb-3 text-lg font-semibold">
               Quick links
@@ -177,12 +177,12 @@ export default async function AdminDashboard() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700"
+                    className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-fg hover:bg-surface-2"
                   >
                     <link.icon
                       size={16}
                       aria-hidden="true"
-                      className="text-indigo-600 dark:text-indigo-400"
+                      className="text-accent"
                     />
                     {link.label}
                   </Link>
@@ -193,12 +193,12 @@ export default async function AdminDashboard() {
                   href="/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700"
+                  className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-fg hover:bg-surface-2"
                 >
                   <ExternalLink
                     size={16}
                     aria-hidden="true"
-                    className="text-indigo-600 dark:text-indigo-400"
+                    className="text-accent"
                   />
                   View the website
                 </a>
@@ -208,21 +208,21 @@ export default async function AdminDashboard() {
 
           <section
             aria-labelledby="chatbot-status"
-            className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800"
+            className="rounded-lg bg-surface p-6 shadow-sm"
           >
             <h3 id="chatbot-status" className="mb-2 flex items-center gap-2 text-lg font-semibold">
               <Sparkles
                 size={18}
                 aria-hidden="true"
-                className="text-indigo-600 dark:text-indigo-400"
+                className="text-accent"
               />
               AI chatbot
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
+            <p className="text-sm text-muted">
               {chatbotLive ? "Live on the website." : "Hidden (not enabled or not configured)."}{" "}
               <Link
                 href="/admin/ai"
-                className="text-indigo-600 hover:underline dark:text-indigo-400"
+                className="text-accent hover:underline"
               >
                 Settings
               </Link>

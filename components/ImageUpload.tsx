@@ -42,7 +42,7 @@ export default function ImageUpload({
               e.preventDefault();
               open();
             }}
-            className="flex items-center gap-2 rounded-md bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50"
+            className="flex items-center gap-2 rounded-md bg-surface-2 px-4 py-2 text-sm font-medium text-accent hover:bg-line"
           >
             <UploadCloud size={16} />
             {buttonText}

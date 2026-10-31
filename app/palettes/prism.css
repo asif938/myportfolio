@@ -70,6 +70,10 @@
   /* atmosphere */
   --dot: rgba(109, 40, 217, 0.22);
   --nav-bg: rgba(255, 255, 255, 0.72);
+  --danger: #b91c1c;
+  --danger-bg: #fee2e2;
+  --success: #047857;
+  --success-bg: #d1fae5;
   --selection-bg: #d4ff3a;
   --selection-fg: #0b0b12;
 
@@ -144,6 +148,10 @@
 
   --dot: rgba(183, 155, 255, 0.2);
   --nav-bg: rgba(19, 14, 46, 0.62);
+  --danger: #fca5a5;
+  --danger-bg: rgba(239, 68, 68, 0.16);
+  --success: #6ee7b7;
+  --success-bg: rgba(16, 185, 129, 0.16);
   --selection-bg: #d4ff3a;
   --selection-fg: #0b0b12;
 
@@ -205,6 +213,10 @@
   --band-glow-1: rgba(124, 58, 237, 0.5);
   --band-glow-2: rgba(217, 70, 239, 0.32);
   --nav-bg: rgba(19, 14, 46, 0.62);
+  --danger: #fca5a5;
+  --danger-bg: rgba(239, 68, 68, 0.16);
+  --success: #6ee7b7;
+  --success-bg: rgba(16, 185, 129, 0.16);
   background-color: var(--bg);
   color: var(--fg);
 }

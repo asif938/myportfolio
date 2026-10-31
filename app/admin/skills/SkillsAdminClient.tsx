@@ -71,7 +71,7 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-      <div className="h-fit rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-1">
+      <div className="h-fit rounded-lg bg-surface p-6 shadow-sm lg:col-span-1">
         <h3 className="mb-4 text-lg font-semibold">{isEditing ? "Edit Skill" : "Add New Skill"}</h3>
         <form onSubmit={handleSave} className="space-y-4">
           <div>
@@ -118,7 +118,7 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
                 <button
                   type="button"
                   onClick={() => setCurrentSkill({ ...currentSkill, imageUrl: "" })}
-                  className="text-sm text-red-600 hover:underline dark:text-red-400"
+                  className="text-sm text-danger hover:underline"
                 >
                   Remove
                 </button>
@@ -147,11 +147,11 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
         </form>
       </div>
 
-      <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-2">
+      <div className="rounded-lg bg-surface p-6 shadow-sm lg:col-span-2">
         <h3 className="mb-4 text-lg font-semibold">Existing Skills</h3>
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-            <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+          <table className="w-full text-left text-sm text-muted">
+            <thead className="bg-bg-2 text-xs uppercase text-fg">
               <tr>
                 <th scope="col" className="px-4 py-3">
                   Order
@@ -172,7 +172,7 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
             </thead>
             <tbody>
               {skills.map((skill, index) => (
-                <tr key={skill.id} className="border-b dark:border-gray-700">
+                <tr key={skill.id} className="border-b">
                   <td className="px-4 py-3">
                     <ReorderButtons
                       label={skill.name}
@@ -195,7 +195,7 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
                       "-"
                     )}
                   </td>
-                  <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                  <td className="px-4 py-3 font-medium text-fg">
                     {skill.name}
                   </td>
                   <td className="px-4 py-3">{skill.category}</td>
@@ -212,7 +212,7 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
                             imageUrl: skill.imageUrl ?? "",
                           })
                         }
-                        className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                        className="text-accent hover:opacity-80"
                       >
                         <Pencil size={18} />
                       </button>
@@ -221,7 +221,7 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
                         aria-label={`Delete ${skill.name}`}
                         disabled={deletingId === skill.id}
                         onClick={() => handleDelete(skill)}
-                        className="text-red-600 hover:text-red-900 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
+                        className="text-danger hover:opacity-80 disabled:opacity-50"
                       >
                         <Trash2 size={18} />
                       </button>

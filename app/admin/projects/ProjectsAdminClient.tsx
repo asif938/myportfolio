@@ -164,13 +164,13 @@ export default function ProjectsAdminClient({ initialProjects }: { initialProjec
         onChange={handleChange}
         className={inputClass}
       />
-      {hint && <p className="mt-1 text-xs text-gray-500">{hint}</p>}
+      {hint && <p className="mt-1 text-xs text-muted">{hint}</p>}
     </div>
   );
 
   return (
     <div className="space-y-8">
-      <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
+      <div className="rounded-lg bg-surface p-6 shadow-sm">
         <h3 className="mb-4 text-lg font-semibold">
           {isEditing ? "Edit Project" : "Add New Project"}
         </h3>
@@ -204,7 +204,7 @@ export default function ProjectsAdminClient({ initialProjects }: { initialProjec
                 onChange={handleChange}
                 className={inputClass}
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-muted">
                 {isEditing
                   ? "Changing it changes the page URL. Leave empty to keep the current one."
                   : "Leave empty to generate it from the name."}
@@ -299,7 +299,7 @@ export default function ProjectsAdminClient({ initialProjects }: { initialProjec
                     type="button"
                     aria-label="Remove cover image"
                     onClick={() => setCurrentProject({ ...currentProject, imageUrl: "" })}
-                    className="rounded p-1 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
+                    className="rounded p-1 text-danger hover:bg-danger-bg"
                   >
                     <X size={16} />
                   </button>
@@ -316,7 +316,7 @@ export default function ProjectsAdminClient({ initialProjects }: { initialProjec
               {currentProject.images.length > 0 && (
                 <ul className="mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
                   {currentProject.images.map((url, index) => (
-                    <li key={url} className="relative rounded border p-1 dark:border-gray-700">
+                    <li key={url} className="relative rounded border p-1">
                       <Image
                         src={url}
                         alt={`Gallery image ${index + 1}`}
@@ -354,7 +354,7 @@ export default function ProjectsAdminClient({ initialProjects }: { initialProjec
                               images: p.images.filter((_, i) => i !== index),
                             }))
                           }
-                          className="rounded p-1 text-red-600 dark:text-red-400"
+                          className="rounded p-1 text-danger"
                         >
                           <X size={14} />
                         </button>
@@ -395,9 +395,9 @@ export default function ProjectsAdminClient({ initialProjects }: { initialProjec
         </form>
       </div>
 
-      <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
+      <div className="rounded-lg bg-surface p-6 shadow-sm">
         <h3 className="mb-1 text-lg font-semibold">Existing Projects</h3>
-        <p className="mb-4 text-sm text-gray-500">
+        <p className="mb-4 text-sm text-muted">
           Shown in this order on the site. Featured projects appear on the home page; if none are
           featured, the first six are shown.
         </p>
@@ -405,7 +405,7 @@ export default function ProjectsAdminClient({ initialProjects }: { initialProjec
           {projects.map((project, index) => (
             <div
               key={project.id}
-              className="flex flex-col justify-between rounded-lg border p-4 dark:border-gray-700"
+              className="flex flex-col justify-between rounded-lg border p-4"
             >
               <div>
                 {project.imageUrl && (
@@ -420,25 +420,25 @@ export default function ProjectsAdminClient({ initialProjects }: { initialProjec
                 <div className="mb-1 flex items-center gap-2">
                   <h4 className="text-lg font-bold">{project.name}</h4>
                   {project.featured && (
-                    <span className="inline-flex items-center gap-1 rounded bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                    <span className="inline-flex items-center gap-1 tint-5 rounded border border-t-border bg-t-bg px-1.5 py-0.5 text-xs font-medium text-t-fg">
                       <Star size={12} /> Featured
                     </span>
                   )}
                 </div>
-                <p className="mb-2 font-mono text-xs text-gray-500">/projects/{project.slug}</p>
-                <p className="mb-2 truncate text-sm text-gray-500">{project.description}</p>
+                <p className="mb-2 font-mono text-xs text-muted">/projects/{project.slug}</p>
+                <p className="mb-2 truncate text-sm text-muted">{project.description}</p>
                 <div className="mb-4 flex flex-wrap gap-1">
                   {project.mainTechStack.map((tech, i) => (
                     <span
                       key={`${tech}-${i}`}
-                      className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                      className="rounded bg-bg-2 px-2 py-1 text-xs text-muted"
                     >
                       {tech}
                     </span>
                   ))}
                 </div>
               </div>
-              <div className="flex flex-wrap items-center gap-4 border-t pt-3 dark:border-gray-700">
+              <div className="flex flex-wrap items-center gap-4 border-t pt-3">
                 <ReorderButtons
                   label={project.name}
                   index={index}
@@ -449,7 +449,7 @@ export default function ProjectsAdminClient({ initialProjects }: { initialProjec
                 <button
                   type="button"
                   onClick={() => handleEditClick(project)}
-                  className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-900 dark:text-blue-400"
+                  className="flex items-center gap-1 text-sm text-accent hover:opacity-80"
                 >
                   <Pencil size={14} /> Edit
                 </button>
@@ -457,21 +457,21 @@ export default function ProjectsAdminClient({ initialProjects }: { initialProjec
                   type="button"
                   disabled={deletingId === project.id}
                   onClick={() => handleDelete(project)}
-                  className="flex items-center gap-1 text-sm text-red-600 hover:text-red-900 disabled:opacity-50 dark:text-red-400"
+                  className="flex items-center gap-1 text-sm text-danger hover:opacity-80 disabled:opacity-50"
                 >
                   <Trash2 size={14} /> {deletingId === project.id ? "Deleting..." : "Delete"}
                 </button>
                 <Link
                   href={`/projects/${project.slug}`}
                   target="_blank"
-                  className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                  className="flex items-center gap-1 text-sm text-muted hover:text-fg"
                 >
                   <ExternalLink size={14} /> View
                 </Link>
               </div>
             </div>
           ))}
-          {projects.length === 0 && <p className="text-gray-500">No projects added yet.</p>}
+          {projects.length === 0 && <p className="text-muted">No projects added yet.</p>}
         </div>
       </div>
     </div>
