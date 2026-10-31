@@ -111,11 +111,16 @@
 }
 
 @layer utilities {
+  .icon-pop { animation: icon-pop 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
   .float-a { animation: float-a 9s ease-in-out infinite; }
   .float-b { animation: float-b 11s ease-in-out infinite; }
   .float-c { animation: float-c 13s ease-in-out infinite; }
 }
 
+@keyframes icon-pop {
+  from { opacity: 0; transform: rotate(-80deg) scale(0.5); }
+  to { opacity: 1; transform: none; }
+}
 @keyframes blink {
   0%, 49% { opacity: 1; }
   50%, 100% { opacity: 0; }

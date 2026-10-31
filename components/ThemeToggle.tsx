@@ -46,7 +46,8 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
       title={`${LABELS[current]} (click for ${LABELS[next].toLowerCase()})`}
       className={baseClass}
     >
-      <Icon size={18} aria-hidden="true" />
+      {/* key restarts the icon-pop swap animation whenever the mode changes */}
+      <Icon key={current} size={18} aria-hidden="true" className="icon-pop" />
     </button>
   );
 }

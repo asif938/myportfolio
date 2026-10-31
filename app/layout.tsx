@@ -3,6 +3,8 @@ import { Inter, Space_Grotesk, Hind_Siliguri } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Providers from "@/components/Providers";
+import ScrollProgress from "@/components/ScrollProgress";
+import ThemeColor from "@/components/ThemeColor";
 import { getProfile, getSkills } from "@/lib/data";
 import { SITE_URL, truncate } from "@/lib/site";
 import "./palettes/prism.css";
@@ -96,7 +98,11 @@ export default function RootLayout({
           {/* Without JavaScript the scroll-reveal never runs; show the content anyway. */}
           <style>{"[data-reveal]{opacity:1!important;transform:none!important}"}</style>
         </noscript>
-        <Providers>{children}</Providers>
+        <Providers>
+          <ScrollProgress />
+          <ThemeColor />
+          {children}
+        </Providers>
         {isVercel && (
           <>
             <Analytics />

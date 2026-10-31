@@ -70,6 +70,7 @@
   /* atmosphere */
   --dot: rgba(109, 40, 217, 0.22);
   --nav-bg: rgba(255, 255, 255, 0.72);
+  --progress-bg: linear-gradient(90deg, #7c3aed 0%, #d946ef 60%, #d4ff3a 100%);
   --danger: #b91c1c;
   --danger-bg: #fee2e2;
   --success: #047857;
@@ -152,6 +153,7 @@
   --danger-bg: rgba(239, 68, 68, 0.16);
   --success: #6ee7b7;
   --success-bg: rgba(16, 185, 129, 0.16);
+  --progress-bg: linear-gradient(90deg, #7c3aed 0%, #d946ef 55%, #d4ff3a 100%);
   --selection-bg: #d4ff3a;
   --selection-fg: #0b0b12;
 
