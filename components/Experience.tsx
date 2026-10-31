@@ -1,95 +1,117 @@
 import type { Experience as ExperienceEntry } from "@prisma/client";
-import { Briefcase, ExternalLink, MapPin } from "lucide-react";
+import { ExternalLink, MapPin } from "lucide-react";
 import { EMPLOYMENT_TYPE_LABELS, formatDateRange } from "@/lib/format";
+import Atmosphere from "@/components/Atmosphere";
 import Reveal from "@/components/Reveal";
+import Card from "@/components/ui/Card";
+import Chip from "@/components/ui/Chip";
+import Section from "@/components/ui/Section";
+import SectionHeading from "@/components/ui/SectionHeading";
 
+/**
+ * Timeline, same pattern as Education: centered line with alternating cards on md+,
+ * line on the left and one column below md. Line, dots and connectors are decorative.
+ */
 export default function Experience({ experience }: { experience: ExperienceEntry[] }) {
   if (experience.length === 0) return null;
 
   return (
-    <section
-      id="experience"
-      tabIndex={-1}
-      className="scroll-mt-16 bg-gray-50 py-24 outline-none dark:bg-gray-950"
-    >
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        <Reveal className="mb-16 text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-            Experience
-          </h2>
-          <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-indigo-600" />
-        </Reveal>
+    <Section id="experience" backdrop={<Atmosphere variant="soft" side="right" />}>
+      <Reveal>
+        <SectionHeading eyebrow="Experience" title="Experience" highlight="Experience" />
+      </Reveal>
 
-        <ol className="relative space-y-10 border-l-2 border-gray-200 pl-8 dark:border-gray-800">
-          {experience.map((exp) => (
-            <Reveal as="li" key={exp.id} className="relative">
+      <ol className="relative mx-auto max-w-5xl space-y-6 md:space-y-10">
+        <span
+          aria-hidden
+          className="absolute bottom-2 left-[19px] top-2 w-0.5 rounded-full bg-brand-gradient opacity-60 md:left-1/2 md:-translate-x-1/2"
+        />
+        {experience.map((exp, index) => {
+          const left = index % 2 === 1; // 1st right, 2nd left, ...
+          return (
+            <li
+              key={exp.id}
+              data-side={left ? "left" : "right"}
+              className={`edu-reveal relative pl-14 md:w-1/2 md:pl-0 ${
+                left ? "md:mr-auto md:pr-14" : "md:ml-auto md:pl-14"
+              }`}
+            >
               <span
-                aria-hidden="true"
-                className="absolute -left-[2.6rem] top-1 flex h-8 w-8 items-center justify-center rounded-full border-4 border-gray-50 bg-indigo-600 text-white dark:border-gray-950"
+                aria-hidden
+                className={`absolute left-0 top-6 z-10 grid h-10 w-10 place-items-center rounded-full bg-brand-gradient-deep text-xs font-bold text-white ring-4 ring-[var(--bg)] ${
+                  left ? "md:left-auto md:right-0 md:translate-x-1/2" : "md:-translate-x-1/2"
+                }`}
               >
-                <Briefcase size={14} />
+                {String(index + 1).padStart(2, "0")}
               </span>
-              <article className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
-                <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">{exp.role}</h3>
-                    <p className="font-medium text-gray-700 dark:text-gray-300">
-                      {exp.companyUrl ? (
-                        <a
-                          href={exp.companyUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 hover:text-indigo-600 dark:hover:text-indigo-400"
-                        >
-                          {exp.company} <ExternalLink size={14} aria-hidden="true" />
-                          <span className="sr-only">(opens in a new tab)</span>
-                        </a>
-                      ) : (
-                        exp.company
-                      )}
-                      <span className="text-gray-400"> · </span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400">
-                        {EMPLOYMENT_TYPE_LABELS[exp.employmentType]}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="shrink-0 text-sm sm:text-right">
-                    <p className="font-medium text-indigo-600 dark:text-indigo-400">
-                      {formatDateRange(exp.startDate, exp.endDate)}
-                    </p>
-                    {exp.location && (
-                      <p className="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400">
-                        <MapPin size={12} aria-hidden="true" /> {exp.location}
+              <span
+                aria-hidden
+                className={`absolute left-10 top-11 h-0.5 w-4 -translate-y-1/2 bg-line-strong ${
+                  left ? "md:left-auto md:right-5 md:w-9" : "md:left-5 md:w-9"
+                }`}
+              />
+              <Card className="min-w-0 p-5 sm:p-7">
+                <article>
+                  <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <h3 className="break-words text-lg font-bold text-fg sm:text-xl">
+                        {exp.role}
+                      </h3>
+                      <p className="mt-1 font-medium text-fg">
+                        {exp.companyUrl ? (
+                          <a
+                            href={exp.companyUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-accent hover:underline"
+                          >
+                            {exp.company} <ExternalLink size={14} aria-hidden="true" />
+                            <span className="sr-only">(opens in a new tab)</span>
+                          </a>
+                        ) : (
+                          exp.company
+                        )}
+                        <span className="text-muted"> · </span>
+                        <span className="text-sm text-muted">
+                          {EMPLOYMENT_TYPE_LABELS[exp.employmentType]}
+                        </span>
                       </p>
-                    )}
+                    </div>
+                    <div className="flex shrink-0 flex-col items-start gap-1.5 sm:items-end">
+                      <time className="rounded-full border border-line-strong bg-surface-2 px-3 py-1 text-xs font-semibold text-accent">
+                        {formatDateRange(exp.startDate, exp.endDate)}
+                      </time>
+                      {exp.location && (
+                        <p className="inline-flex items-center gap-1 text-xs text-muted">
+                          <MapPin size={12} aria-hidden="true" /> {exp.location}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                {exp.achievements.length > 0 && (
-                  <ul className="mt-4 list-disc space-y-1.5 pl-5 text-sm text-gray-600 marker:text-indigo-500 dark:text-gray-300">
-                    {exp.achievements.map((item, i) => (
-                      <li key={i}>{item}</li>
-                    ))}
-                  </ul>
-                )}
+                  {exp.achievements.length > 0 && (
+                    <ul className="list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-muted marker:text-brand sm:text-base">
+                      {exp.achievements.map((item, i) => (
+                        <li key={i}>{item}</li>
+                      ))}
+                    </ul>
+                  )}
 
-                {exp.techStack.length > 0 && (
-                  <ul className="mt-4 flex flex-wrap gap-2" aria-label="Technologies used">
-                    {exp.techStack.map((tech, i) => (
-                      <li
-                        key={`${tech}-${i}`}
-                        className="rounded-md bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300"
-                      >
-                        {tech}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </article>
-            </Reveal>
-          ))}
-        </ol>
-      </div>
-    </section>
+                  {exp.techStack.length > 0 && (
+                    <ul className="mt-5 flex flex-wrap gap-2" aria-label="Technologies used">
+                      {exp.techStack.map((tech, i) => (
+                        <li key={`${tech}-${i}`}>
+                          <Chip className="px-3 py-1 text-xs">{tech}</Chip>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </article>
+              </Card>
+            </li>
+          );
+        })}
+      </ol>
+    </Section>
   );
 }

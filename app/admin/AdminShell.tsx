@@ -55,10 +55,10 @@ export default function AdminShell({
     href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
 
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+    <div className="min-h-screen bg-bg-2 text-fg">
       <SkipLink />
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4 dark:border-gray-700 dark:bg-gray-800 lg:hidden">
+      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-surface-2 px-4 lg:hidden">
         <span className="text-lg font-bold">Admin Panel</span>
         <div className="flex items-center gap-1">
           <ThemeToggle />
@@ -68,7 +68,7 @@ export default function AdminShell({
             aria-label="Open admin menu"
             aria-expanded={open}
             aria-controls="admin-sidebar"
-            className="rounded-md p-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+            className="rounded-md p-2 text-fg hover:bg-surface-2"
           >
             <Menu size={22} />
           </button>
@@ -86,17 +86,17 @@ export default function AdminShell({
 
       <aside
         id="admin-sidebar"
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white shadow-md transition-transform duration-200 dark:bg-gray-800 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-line bg-surface-2 shadow-card transition-transform duration-200 lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex h-16 shrink-0 items-center justify-between border-b border-gray-200 px-4 dark:border-gray-700 lg:justify-center">
-          <span className="text-xl font-bold text-gray-800 dark:text-white">Admin Panel</span>
+        <div className="flex h-16 shrink-0 items-center justify-between border-b border-line px-4 lg:justify-center">
+          <span className="text-xl font-bold text-fg">Admin Panel</span>
           <button
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Close admin menu"
-            className="rounded-md p-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 lg:hidden"
+            className="rounded-md p-2 text-fg hover:bg-surface-2 lg:hidden"
           >
             <X size={20} />
           </button>
@@ -108,14 +108,12 @@ export default function AdminShell({
               href={link.href}
               aria-current={isActive(link.href) ? "page" : undefined}
               className={`flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium ${
-                isActive(link.href)
-                  ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300"
-                  : "text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700"
+                isActive(link.href) ? "bg-surface-2 text-accent" : "text-fg hover:bg-surface-2"
               }`}
             >
               {link.label}
               {(badges[link.href] ?? 0) > 0 && (
-                <span className="rounded-full bg-indigo-600 px-2 py-0.5 text-xs font-semibold text-white">
+                <span className="rounded-full bg-brand-gradient-deep px-2 py-0.5 text-xs font-semibold text-white">
                   {badges[link.href]}
                   <span className="sr-only"> unread</span>
                 </span>
@@ -125,12 +123,12 @@ export default function AdminShell({
           <Link
             href="/"
             target="_blank"
-            className="mt-4 flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700"
+            className="mt-4 flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted hover:bg-surface-2"
           >
             View site <ExternalLink size={14} />
           </Link>
         </nav>
-        <div className="shrink-0 border-t border-gray-200 p-4 dark:border-gray-700">
+        <div className="shrink-0 border-t border-line p-4">
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <LogoutButton />

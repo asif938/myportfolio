@@ -31,6 +31,8 @@ const config: Config = {
         "danger-bg": "var(--danger-bg)",
         success: "var(--success)",
         "success-bg": "var(--success-bg)",
+        warning: "var(--warning)",
+        "warning-bg": "var(--warning-bg)",
         "t-bg": "var(--t-bg)",
         "t-fg": "var(--t-fg)",
         "t-border": "var(--t-border)",

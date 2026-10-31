@@ -28,10 +28,10 @@ export default function ProjectsExplorer({ projects }: { projects: ProjectCardDa
     : projects;
 
   const chipClass = (active: boolean) =>
-    `rounded-full border px-3 py-1.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
+    `rounded-full border px-4 py-2 text-sm font-medium transition-[transform,border-color] duration-200 ease-out hover:-translate-y-0.5 ${
       active
-        ? "border-indigo-600 bg-indigo-600 text-white"
-        : "border-gray-200 bg-white text-gray-700 hover:border-indigo-300 hover:text-indigo-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-indigo-700 dark:hover:text-indigo-300"
+        ? "border-transparent bg-highlight text-highlight-fg"
+        : "border-line-strong bg-surface text-fg backdrop-blur-md hover:border-brand"
     }`;
 
   return (
@@ -75,6 +75,7 @@ export default function ProjectsExplorer({ projects }: { projects: ProjectCardDa
             project={project}
             headingLevel="h2"
             priority={index === 0}
+            tint={index}
           />
         ))}
       </div>

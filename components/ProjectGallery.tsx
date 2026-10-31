@@ -72,7 +72,7 @@ export default function ProjectGallery({ images, title }: { images: string[]; ti
                 triggerRefs.current[index] = el;
               }}
               onClick={() => setOpenIndex(index)}
-              className="group relative block aspect-video w-full overflow-hidden rounded-xl bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:bg-gray-800 dark:focus-visible:ring-offset-gray-950"
+              className="group relative block aspect-video w-full overflow-hidden rounded-xl bg-surface-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
             >
               <Image
                 src={src}

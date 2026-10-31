@@ -25,7 +25,7 @@ export default function ReorderButtons({
   onMove: (delta: -1 | 1) => void;
 }) {
   const buttonClass =
-    "rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-30 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white";
+    "rounded p-1 text-muted hover:bg-surface-2 hover:text-fg disabled:cursor-not-allowed disabled:opacity-30   ";
   return (
     <div className="flex gap-1">
       <button

@@ -30,7 +30,7 @@ export default function BackToTop({ raised = false }: { raised?: boolean }) {
       aria-label="Back to top"
       tabIndex={visible ? 0 : -1}
       aria-hidden={!visible}
-      className={`fixed ${raised ? "bottom-24" : "bottom-6"} right-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:bg-indigo-500 ${
+      className={`fixed ${raised ? "bottom-24" : "bottom-6"} right-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full border border-line-strong bg-[var(--nav-bg)] text-fg shadow-card backdrop-blur-md transition-all duration-300 hover:border-brand ${
         visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"
       }`}
     >

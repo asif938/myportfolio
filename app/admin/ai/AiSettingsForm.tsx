@@ -104,9 +104,7 @@ export default function AiSettingsForm({ view }: { view: AiSettingsView }) {
       <div
         role="status"
         className={`flex items-start gap-3 rounded-lg p-4 text-sm ${
-          view.live
-            ? "bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300"
-            : "bg-amber-50 text-amber-900 dark:bg-amber-900/30 dark:text-amber-200"
+          view.live ? "bg-success-bg text-success" : "bg-warning-bg text-warning"
         }`}
       >
         {view.live ? (
@@ -133,14 +131,14 @@ export default function AiSettingsForm({ view }: { view: AiSettingsView }) {
       </div>
 
       {!view.encryptionReady && (
-        <p className="rounded-lg bg-red-50 p-4 text-sm text-red-800 dark:bg-red-900/30 dark:text-red-300">
+        <p className="rounded-lg bg-danger-bg p-4 text-sm text-danger">
           SETTINGS_ENCRYPTION_KEY is not set on the server, so API keys can&apos;t be saved here.
           Generate one with <code>openssl rand -base64 32</code>, add it to the environment and
           redeploy. Keys from env vars still work.
         </p>
       )}
 
-      <div className="space-y-5 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
+      <div className="space-y-5 rounded-lg bg-surface p-6 shadow-sm">
         <label className="flex items-center gap-3 font-medium">
           <input
             type="checkbox"
@@ -192,7 +190,7 @@ export default function AiSettingsForm({ view }: { view: AiSettingsView }) {
                 <option key={m} value={m} />
               ))}
             </datalist>
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p className="mt-1 text-xs text-muted">
               Suggestions: {meta.suggestedModels.join(", ")}. Any valid model id works.
             </p>
           </div>
@@ -218,19 +216,19 @@ export default function AiSettingsForm({ view }: { view: AiSettingsView }) {
             autoComplete="new-password"
             spellCheck={false}
           />
-          <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+          <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
             <span>Stored encrypted; never shown again after saving.</span>
             <a
               href={meta.keyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-indigo-600 hover:underline dark:text-indigo-400"
+              className="inline-flex items-center gap-1 text-accent hover:underline"
             >
               Get a {meta.label} key <ExternalLink size={12} aria-hidden="true" />
             </a>
           </div>
           {providerChangedWithStoredKey && (
-            <p className="mt-2 text-sm text-amber-700 dark:text-amber-300">
+            <p className="mt-2 text-sm text-warning">
               The stored key (••••{view.storedKeyLast4}) is for{" "}
               {view.storedKeyProvider
                 ? PROVIDERS[view.storedKeyProvider].label
@@ -262,19 +260,17 @@ export default function AiSettingsForm({ view }: { view: AiSettingsView }) {
           </button>
           <p aria-live="polite" className="text-sm">
             {testResult?.ok === true && (
-              <span className="text-green-700 dark:text-green-400">
+              <span className="text-success">
                 Connected in {testResult.latencyMs} ms (key: {testResult.keySource}). Reply: “
                 {testResult.reply}”
               </span>
             )}
-            {testResult?.ok === false && (
-              <span className="text-red-700 dark:text-red-400">{testResult.error}</span>
-            )}
+            {testResult?.ok === false && <span className="text-danger">{testResult.error}</span>}
           </p>
         </div>
       </div>
 
-      <div className="space-y-4 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
+      <div className="space-y-4 rounded-lg bg-surface p-6 shadow-sm">
         <h3 className="text-lg font-semibold">Behaviour and limits</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
@@ -355,7 +351,7 @@ export default function AiSettingsForm({ view }: { view: AiSettingsView }) {
             placeholder="e.g. Mention that I prefer remote roles in the EU time zone."
             className={inputClass}
           />
-          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          <p className="mt-1 text-xs text-muted">
             Added to the assistant&apos;s instructions. It still only answers from your portfolio
             content.
           </p>

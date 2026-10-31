@@ -132,7 +132,7 @@ export default function ExperienceAdminClient({
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
-      <div className="h-fit rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-2">
+      <div className="h-fit rounded-lg bg-surface p-6 shadow-sm lg:col-span-2">
         <h3 className="mb-4 text-lg font-semibold">
           {isEditing ? "Edit Experience" : "Add Experience"}
         </h3>
@@ -291,25 +291,25 @@ export default function ExperienceAdminClient({
         </form>
       </div>
 
-      <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 lg:col-span-3">
+      <div className="rounded-lg bg-surface p-6 shadow-sm lg:col-span-3">
         <h3 className="mb-4 text-lg font-semibold">Work Experience</h3>
         <div className="space-y-4">
           {experiences.map((exp, index) => (
             <div
               key={exp.id}
-              className="flex items-start justify-between gap-4 rounded-lg border p-4 dark:border-gray-700"
+              className="flex items-start justify-between gap-4 rounded-lg border p-4"
             >
               <div className="min-w-0">
                 <h4 className="text-lg font-bold">{exp.role}</h4>
-                <p className="font-medium text-indigo-600 dark:text-indigo-400">
+                <p className="font-medium text-accent">
                   {exp.company} · {EMPLOYMENT_TYPE_LABELS[exp.employmentType]}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted">
                   {formatDateRange(exp.startDate, exp.endDate)}
                   {exp.location ? ` · ${exp.location}` : ""}
                 </p>
                 {exp.achievements.length > 0 && (
-                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+                  <p className="mt-1 text-sm text-muted">
                     {exp.achievements.length} achievement
                     {exp.achievements.length === 1 ? "" : "s"}
                   </p>
@@ -330,7 +330,7 @@ export default function ExperienceAdminClient({
                     setCurrent(toForm(exp));
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
-                  className="text-blue-600 hover:text-blue-900 dark:text-blue-400"
+                  className="text-accent hover:opacity-80"
                 >
                   <Pencil size={18} />
                 </button>
@@ -339,7 +339,7 @@ export default function ExperienceAdminClient({
                   aria-label={`Delete ${exp.role} at ${exp.company}`}
                   disabled={deletingId === exp.id}
                   onClick={() => handleDelete(exp)}
-                  className="text-red-600 hover:text-red-900 disabled:opacity-50 dark:text-red-400"
+                  className="text-danger hover:opacity-80 disabled:opacity-50"
                 >
                   <Trash2 size={18} />
                 </button>
@@ -347,7 +347,7 @@ export default function ExperienceAdminClient({
             </div>
           ))}
           {experiences.length === 0 && (
-            <p className="text-gray-500">
+            <p className="text-muted">
               No experience added yet. The public Experience section stays hidden until you add one.
             </p>
           )}

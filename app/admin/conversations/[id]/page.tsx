@@ -26,7 +26,7 @@ export default async function ConversationPage({ params }: { params: { id: strin
     <div className="max-w-4xl space-y-4">
       <Link
         href="/admin/conversations"
-        className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-indigo-600 dark:text-gray-400"
+        className="inline-flex items-center gap-1 text-sm text-muted hover:opacity-80"
       >
         <ArrowLeft size={14} aria-hidden="true" /> All conversations
       </Link>

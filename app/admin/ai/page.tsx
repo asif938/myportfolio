@@ -38,12 +38,9 @@ export default async function AiSettingsPage() {
 
   return (
     <div className="max-w-4xl space-y-6">
-      <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">AI Chatbot</h2>
+      <h2 className="text-2xl font-semibold text-fg">AI Chatbot</h2>
       <AiSettingsForm view={view} />
-      <section
-        aria-labelledby="usage-heading"
-        className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800"
-      >
+      <section aria-labelledby="usage-heading" className="rounded-lg bg-surface p-6 shadow-sm">
         <h3 id="usage-heading" className="mb-4 text-lg font-semibold">
           Usage (UTC)
         </h3>
@@ -60,8 +57,8 @@ export default async function AiSettingsPage() {
               `${usage.lastDays.inputTokens} / ${usage.lastDays.outputTokens}`,
             ],
           ].map(([label, value]) => (
-            <div key={label} className="rounded-md border p-3 dark:border-gray-700">
-              <dt className="text-xs text-gray-500 dark:text-gray-400">{label}</dt>
+            <div key={label} className="rounded-md border p-3">
+              <dt className="text-xs text-muted">{label}</dt>
               <dd className="mt-1 text-lg font-semibold">{value}</dd>
             </div>
           ))}

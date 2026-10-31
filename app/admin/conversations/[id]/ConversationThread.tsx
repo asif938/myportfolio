@@ -92,17 +92,17 @@ export default function ConversationThread({
 
   return (
     <div className="space-y-4">
-      <header className="rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800">
+      <header className="rounded-lg bg-surface p-4 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="flex flex-wrap items-center gap-2 text-xl font-semibold">
               {conversation.visitorName ?? "Visitor"} <StatusBadge status={conversation.status} />
             </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-muted">
               {conversation.visitorEmail ? (
                 <a
                   href={`mailto:${conversation.visitorEmail}`}
-                  className="text-indigo-600 hover:underline dark:text-indigo-400"
+                  className="text-accent hover:underline"
                 >
                   {conversation.visitorEmail}
                 </a>
@@ -146,7 +146,7 @@ export default function ConversationThread({
               type="button"
               disabled={busy}
               onClick={() => void remove()}
-              className="inline-flex items-center gap-1.5 rounded px-3 py-2 text-sm text-red-700 hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-900/30"
+              className="inline-flex items-center gap-1.5 rounded px-3 py-2 text-sm text-danger hover:bg-danger-bg disabled:opacity-50"
             >
               <Trash2 size={16} aria-hidden="true" /> Delete
             </button>
@@ -163,15 +163,13 @@ export default function ConversationThread({
               <li key={m.id} className="flex flex-col items-start">
                 <div
                   className={`max-w-[85%] rounded-2xl rounded-bl-sm px-4 py-2.5 ${
-                    m.unanswered
-                      ? "border-2 border-amber-400 bg-amber-50 dark:bg-amber-950/30"
-                      : "bg-white shadow-sm dark:bg-gray-800"
+                    m.unanswered ? "border-2 border-warning bg-warning-bg" : "bg-surface shadow-sm"
                   }`}
                 >
-                  <p className="mb-1 text-xs font-semibold text-gray-500 dark:text-gray-400">
+                  <p className="mb-1 text-xs font-semibold text-muted">
                     Visitor · {time}
                     {m.unanswered && (
-                      <span className="ml-2 rounded bg-amber-200 px-1.5 py-0.5 text-amber-900">
+                      <span className="ml-2 rounded bg-warning-bg px-1.5 py-0.5 text-warning">
                         Unanswered
                       </span>
                     )}
@@ -183,7 +181,7 @@ export default function ConversationThread({
                     href={`/admin/faq?q=${encodeURIComponent(m.content.slice(0, 300))}${
                       answer ? `&a=${encodeURIComponent(answer.content.slice(0, 4000))}` : ""
                     }`}
-                    className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+                    className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-accent hover:underline"
                   >
                     <BookPlus size={12} aria-hidden="true" /> Add to FAQ
                   </Link>
@@ -196,14 +194,12 @@ export default function ConversationThread({
             <li key={m.id} className="flex justify-end">
               <div
                 className={`max-w-[85%] rounded-2xl rounded-br-sm px-4 py-2.5 ${
-                  isAdmin
-                    ? "bg-emerald-600 text-white"
-                    : "bg-indigo-50 text-gray-900 dark:bg-indigo-950/50 dark:text-gray-100"
+                  isAdmin ? "border border-success bg-success-bg text-fg" : "bg-surface-2 text-fg"
                 }`}
               >
                 <p
                   className={`mb-1 flex items-center gap-1 text-xs font-semibold ${
-                    isAdmin ? "text-emerald-100" : "text-indigo-700 dark:text-indigo-300"
+                    isAdmin ? "text-success" : "text-accent"
                   }`}
                 >
                   {isAdmin ? (
@@ -221,10 +217,7 @@ export default function ConversationThread({
         })}
       </ol>
 
-      <form
-        onSubmit={sendReply}
-        className="space-y-2 rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800"
-      >
+      <form onSubmit={sendReply} className="space-y-2 rounded-lg bg-surface p-4 shadow-sm">
         <label htmlFor="reply" className="block text-sm font-medium">
           Reply as {ownerName}
         </label>
@@ -234,11 +227,11 @@ export default function ConversationThread({
           maxLength={4000}
           value={reply}
           onChange={(e) => setReply(e.target.value)}
-          className="block w-full rounded-md border p-2 dark:border-gray-600 dark:bg-gray-700"
+          className="block w-full rounded-md border p-2"
           placeholder="The visitor sees this in the chat (and by email if they left one)."
         />
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-muted">
             Replying takes over from the bot until you hand the conversation back.
           </p>
           <button

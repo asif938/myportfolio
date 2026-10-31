@@ -24,7 +24,7 @@ const markdownComponents: Components = {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="font-medium text-indigo-600 underline underline-offset-2 hover:text-indigo-500 dark:text-indigo-400"
+      className="font-medium text-accent underline underline-offset-2 hover:opacity-80"
     >
       {children}
     </a>
@@ -298,7 +298,7 @@ export default function ChatPanel({
             maxLength={100}
             onChange={(e) => setHandoffName(e.target.value)}
             placeholder="Your name (optional)"
-            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800"
+            className="w-full rounded-lg border border-line-strong bg-surface px-3 py-1.5 text-sm"
           />
         </>
       )}
@@ -312,12 +312,12 @@ export default function ChatPanel({
         maxLength={254}
         onChange={(e) => setHandoffEmail(e.target.value)}
         placeholder="Your email (optional)"
-        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800"
+        className="w-full rounded-lg border border-line-strong bg-surface px-3 py-1.5 text-sm"
       />
       <button
         type="submit"
         disabled={handoffBusy}
-        className="w-full rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-50"
+        className="w-full rounded-full px-3 py-1.5 text-sm font-semibold text-cta-fg [background:var(--cta-bg)] hover:opacity-90 disabled:opacity-50"
       >
         {handoffBusy ? "Sending…" : askName ? `Notify ${ownerName}` : "Save email"}
       </button>
@@ -334,11 +334,11 @@ export default function ChatPanel({
         if (e.key === "Escape") onClose();
       }}
       // Tailwind's `flex` would override the `hidden` attribute, so toggle the display class too.
-      className={`${open ? "flex" : "hidden"} fixed inset-0 z-[70] flex-col bg-white text-gray-900 shadow-2xl dark:bg-gray-900 dark:text-gray-100 sm:inset-auto sm:bottom-24 sm:right-6 sm:h-[min(640px,calc(100vh-8rem))] sm:w-[400px] sm:rounded-2xl sm:border sm:border-gray-200 sm:dark:border-gray-700`}
+      className={`${open ? "flex" : "hidden"} fixed inset-0 z-[70] flex-col bg-bg-2 text-fg shadow-card sm:inset-auto sm:bottom-24 sm:right-6 sm:h-[min(640px,calc(100vh-8rem))] sm:w-[400px] sm:overflow-hidden sm:rounded-3xl sm:border sm:border-line-strong`}
     >
-      <header className="flex items-center justify-between gap-2 border-b border-gray-200 px-4 py-3 dark:border-gray-700">
+      <header className="flex items-center justify-between gap-2 border-b border-line px-4 py-3">
         <div className="flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-white">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-gradient-deep text-white">
             <Sparkles size={16} aria-hidden="true" />
           </span>
           <h2 id="chat-title" className="font-semibold">
@@ -352,7 +352,7 @@ export default function ChatPanel({
               onClick={resetConversation}
               aria-label="Start a new conversation"
               title="Start a new conversation"
-              className="rounded-md p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+              className="rounded-md p-2 text-muted hover:bg-surface-2 hover:text-fg"
             >
               <MessageSquarePlus size={18} aria-hidden="true" />
             </button>
@@ -361,7 +361,7 @@ export default function ChatPanel({
             type="button"
             onClick={onClose}
             aria-label="Close chat"
-            className="rounded-md p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+            className="rounded-md p-2 text-muted hover:bg-surface-2 hover:text-fg"
           >
             <X size={18} aria-hidden="true" />
           </button>
@@ -371,7 +371,7 @@ export default function ChatPanel({
       <div className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
         {messages.length === 0 && (
           <div className="space-y-3">
-            <p className="text-sm text-gray-600 dark:text-gray-300">
+            <p className="text-sm text-muted">
               Hi! I can answer questions about {ownerName}&apos;s skills, experience and projects.
               Try one of these:
             </p>
@@ -386,7 +386,7 @@ export default function ChatPanel({
                   <button
                     type="button"
                     onClick={() => void send(q)}
-                    className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-left text-sm text-indigo-800 hover:bg-indigo-100 dark:border-indigo-800 dark:bg-indigo-950/50 dark:text-indigo-200 dark:hover:bg-indigo-900/50"
+                    className="rounded-full border border-line-strong bg-surface px-3 py-1.5 text-left text-sm text-fg transition-colors hover:border-brand"
                   >
                     {q}
                   </button>
@@ -400,7 +400,7 @@ export default function ChatPanel({
           if (m.role === "visitor") {
             return (
               <div key={m.id} className="flex justify-end">
-                <p className="max-w-[85%] whitespace-pre-wrap break-words rounded-2xl rounded-br-sm bg-indigo-600 px-3.5 py-2 text-sm text-white">
+                <p className="max-w-[85%] whitespace-pre-wrap break-words rounded-2xl rounded-br-sm bg-brand-gradient-deep px-3.5 py-2 text-sm text-white">
                   <span className="sr-only">You: </span>
                   {m.content}
                 </p>
@@ -410,8 +410,8 @@ export default function ChatPanel({
           if (m.role === "admin") {
             return (
               <div key={m.id} className="flex justify-start">
-                <div className="max-w-[85%] rounded-2xl rounded-bl-sm border border-emerald-200 bg-emerald-50 px-3.5 py-2 text-sm text-emerald-950 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-100">
-                  <p className="mb-1 flex items-center gap-1 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+                <div className="max-w-[85%] rounded-2xl rounded-bl-sm border border-success bg-success-bg px-3.5 py-2 text-sm text-fg">
+                  <p className="mb-1 flex items-center gap-1 text-xs font-semibold text-success">
                     <UserRound size={12} aria-hidden="true" /> {ownerName}
                   </p>
                   <p className="whitespace-pre-wrap break-words">{m.content}</p>
@@ -422,7 +422,7 @@ export default function ChatPanel({
           if (!m.content && m.id !== streamingId) return null;
           return (
             <div key={m.id} className="flex justify-start">
-              <div className="prose prose-sm max-w-[85%] break-words rounded-2xl rounded-bl-sm bg-gray-100 px-3.5 py-2 text-gray-900 dark:prose-invert prose-p:my-1.5 prose-ul:my-1.5 prose-li:my-0.5 dark:bg-gray-800 dark:text-gray-100">
+              <div className="prose prose-sm max-w-[85%] break-words rounded-2xl rounded-bl-sm bg-surface-2 px-3.5 py-2 text-fg prose-p:my-1.5 prose-ul:my-1.5 prose-li:my-0.5">
                 <span className="sr-only">Assistant: </span>
                 {m.content ? (
                   <ReactMarkdown
@@ -437,7 +437,7 @@ export default function ChatPanel({
                     {[0, 150, 300].map((delay) => (
                       <span
                         key={delay}
-                        className="h-2 w-2 animate-bounce rounded-full bg-gray-400 motion-reduce:animate-none"
+                        className="h-2 w-2 animate-bounce rounded-full bg-line-strong motion-reduce:animate-none"
                         style={{ animationDelay: `${delay}ms` }}
                       />
                     ))}
@@ -449,23 +449,23 @@ export default function ChatPanel({
         })}
 
         {status === "human" && (
-          <p className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-100">
+          <p className="rounded-2xl bg-success-bg p-3 text-sm text-fg">
             {ownerName} has joined the chat and will answer personally.
           </p>
         )}
         {status === "needs_human" && (
-          <p className="rounded-lg bg-indigo-50 p-3 text-sm text-indigo-900 dark:bg-indigo-950/50 dark:text-indigo-100">
+          <p className="rounded-2xl bg-surface-2 p-3 text-sm text-fg">
             {ownerName} has been notified and will reply here.
           </p>
         )}
         {status === "closed" && (
-          <p className="rounded-lg bg-gray-100 p-3 text-sm text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+          <p className="rounded-2xl bg-surface-2 p-3 text-sm text-muted">
             This conversation was closed. Send a message to continue.
           </p>
         )}
 
         {showEmailPrompt && (
-          <div className="rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+          <div className="rounded-lg border border-line p-3">
             <p className="mb-2 text-sm">
               Leave your email to also get the reply by email (optional):
             </p>
@@ -476,7 +476,7 @@ export default function ChatPanel({
         {error && (
           <div
             role="alert"
-            className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/50 dark:text-red-200"
+            className="rounded-2xl border border-danger bg-danger-bg p-3 text-sm text-danger"
           >
             <p>{error.text}</p>
             {error.retry && (
@@ -497,17 +497,17 @@ export default function ChatPanel({
         {announcement}
       </p>
 
-      <div className="border-t border-gray-200 p-3 dark:border-gray-700">
+      <div className="border-t border-line p-3">
         {!ownerInvolved &&
           (handoffOpen ? (
-            <div className="mb-3 rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+            <div className="mb-3 rounded-lg border border-line p-3">
               <div className="mb-2 flex items-center justify-between">
                 <p className="text-sm font-medium">Talk to {ownerName}</p>
                 <button
                   type="button"
                   onClick={() => setHandoffOpen(false)}
                   aria-label="Cancel"
-                  className="rounded p-1 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="rounded p-1 text-muted hover:bg-surface-2"
                 >
                   <X size={14} aria-hidden="true" />
                 </button>
@@ -518,7 +518,7 @@ export default function ChatPanel({
             <button
               type="button"
               onClick={() => setHandoffOpen(true)}
-              className="mb-2 inline-flex items-center gap-1.5 text-xs font-medium text-indigo-700 hover:underline dark:text-indigo-300"
+              className="mb-2 inline-flex items-center gap-1.5 text-xs font-medium text-accent hover:underline"
             >
               <UserRound size={14} aria-hidden="true" /> Talk to {ownerName}
             </button>
@@ -548,14 +548,14 @@ export default function ChatPanel({
               }
             }}
             placeholder={status === "human" ? `Message ${ownerName}…` : "Ask a question…"}
-            className="max-h-32 min-h-[2.5rem] flex-1 resize-none rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-400"
+            className="max-h-32 min-h-[2.5rem] flex-1 resize-none rounded-2xl border border-line-strong bg-surface px-3 py-2 text-sm text-fg placeholder:text-muted focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
           />
           {sending ? (
             <button
               type="button"
               onClick={() => abortRef.current?.abort()}
               aria-label="Stop"
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600"
+              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-2 text-fg hover:bg-line-strong"
             >
               <Square size={16} aria-hidden="true" />
             </button>
@@ -564,13 +564,13 @@ export default function ChatPanel({
               type="submit"
               disabled={!input.trim()}
               aria-label="Send"
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-white hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-cta-fg transition-opacity [background:var(--cta-bg)] hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Send size={16} aria-hidden="true" />
             </button>
           )}
         </form>
-        <p className="mt-2 text-center text-xs text-gray-500 dark:text-gray-400">
+        <p className="mt-2 text-center text-xs text-muted">
           Answers are AI-generated and may be imperfect. Conversations are saved so {ownerName} can
           follow up.
           {input.length > MAX_CHARS - 100 && ` ${input.length}/${MAX_CHARS}`}

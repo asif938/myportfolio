@@ -62,13 +62,18 @@ export default function ChatLauncher({ ownerName }: { ownerName: string }) {
         }
         aria-expanded={open}
         aria-controls="chat-panel"
-        className="fixed bottom-6 right-6 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-500/30 transition-transform hover:scale-105 hover:bg-indigo-500"
+        className="fixed bottom-6 right-6 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full text-cta-fg shadow-glow transition-transform duration-200 ease-out [background:var(--cta-bg)] hover:-translate-y-0.5"
       >
+        {/* one subtle attention pulse after load (stops by itself; static under reduced motion) */}
+        <span
+          aria-hidden="true"
+          className="ring-pulse pointer-events-none absolute inset-0 rounded-full bg-brand opacity-0"
+        />
         {open ? <X size={24} aria-hidden="true" /> : <MessageCircle size={24} aria-hidden="true" />}
         {unread && !open && (
           <span
             aria-hidden="true"
-            className="absolute right-1 top-1 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-500 dark:border-gray-900"
+            className="absolute right-1 top-1 h-3.5 w-3.5 rounded-full border-2 border-bg bg-success"
           />
         )}
       </button>

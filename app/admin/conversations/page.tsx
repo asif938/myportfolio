@@ -54,8 +54,8 @@ export default async function ConversationsPage({
 
   return (
     <div className="max-w-5xl space-y-4">
-      <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">Chat conversations</h2>
-      <p className="text-sm text-gray-600 dark:text-gray-400">
+      <h2 className="text-2xl font-semibold text-fg">Chat conversations</h2>
+      <p className="text-sm text-muted">
         Conversations from the &quot;Ask about me&quot; chat. They are deleted automatically 90 days
         after the last message.
       </p>
@@ -67,9 +67,7 @@ export default async function ConversationsPage({
             href={key === "all" ? "/admin/conversations" : `/admin/conversations?filter=${key}`}
             aria-current={filter === key ? "page" : undefined}
             className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-              filter === key
-                ? "bg-indigo-600 text-white"
-                : "text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+              filter === key ? "bg-brand-gradient-deep text-white" : "text-fg hover:bg-surface-2"
             }`}
           >
             {FILTERS[key].label} ({countFor[key]})
@@ -78,7 +76,7 @@ export default async function ConversationsPage({
       </nav>
 
       {conversations.length === 0 ? (
-        <p className="rounded-lg bg-white p-8 text-center text-gray-500 shadow-sm dark:bg-gray-800">
+        <p className="rounded-lg bg-surface p-8 text-center text-muted shadow-sm">
           No conversations here.
         </p>
       ) : (
@@ -90,8 +88,8 @@ export default async function ConversationsPage({
               <li key={c.id}>
                 <Link
                   href={`/admin/conversations/${c.id}`}
-                  className={`block rounded-lg bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:bg-gray-800 ${
-                    needsAttention ? "border-l-4 border-indigo-600" : ""
+                  className={`block rounded-lg bg-surface p-4 shadow-sm transition-shadow hover:shadow-md ${
+                    needsAttention ? "border-l-4 border-line-strong" : ""
                   }`}
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2">
@@ -99,7 +97,7 @@ export default async function ConversationsPage({
                       <span className={needsAttention ? "font-bold" : "font-medium"}>
                         {c.visitorName ?? "Visitor"}
                         {c.visitorEmail ? (
-                          <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+                          <span className="ml-1 text-sm font-normal text-muted">
                             ({c.visitorEmail})
                           </span>
                         ) : null}
@@ -107,20 +105,17 @@ export default async function ConversationsPage({
                       </span>
                       <StatusBadge status={c.status} />
                       {c._count.messages > 0 && (
-                        <span className="rounded bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                        <span className="rounded bg-warning-bg px-1.5 py-0.5 text-xs font-medium text-warning">
                           {c._count.messages} unanswered
                         </span>
                       )}
                     </div>
-                    <time
-                      dateTime={c.lastMessageAt.toISOString()}
-                      className="text-xs text-gray-500 dark:text-gray-400"
-                    >
+                    <time dateTime={c.lastMessageAt.toISOString()} className="text-xs text-muted">
                       {dateFormatter.format(c.lastMessageAt)}
                     </time>
                   </div>
                   {last && (
-                    <p className="mt-1 truncate text-sm text-gray-600 dark:text-gray-300">
+                    <p className="mt-1 truncate text-sm text-muted">
                       <span className="font-medium">
                         {last.role === "visitor" ? "Visitor" : last.role === "bot" ? "Bot" : "You"}:
                       </span>{" "}

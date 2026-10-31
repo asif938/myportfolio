@@ -69,18 +69,16 @@ export default function MessagesAdminClient({
 
   const tabClass = (active: boolean) =>
     `rounded-md px-3 py-1.5 text-sm font-medium ${
-      active
-        ? "bg-indigo-600 text-white"
-        : "text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+      active ? "bg-brand-gradient-deep text-white" : "text-fg hover:bg-surface-2  "
     }`;
 
   return (
     <div className="max-w-4xl space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
+        <h2 className="text-2xl font-semibold text-fg">
           Messages{" "}
           {unreadCount > 0 && (
-            <span className="ml-1 rounded-full bg-indigo-600 px-2.5 py-0.5 align-middle text-sm text-white">
+            <span className="ml-1 rounded-full bg-brand-gradient-deep px-2.5 py-0.5 align-middle text-sm text-white">
               {unreadCount} unread
             </span>
           )}
@@ -113,13 +111,13 @@ export default function MessagesAdminClient({
       </div>
 
       {total > messages.length && (
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted">
           Showing the newest {messages.length} of {total} messages.
         </p>
       )}
 
       {visible.length === 0 ? (
-        <p className="rounded-lg bg-white p-8 text-center text-gray-500 shadow-sm dark:bg-gray-800">
+        <p className="rounded-lg bg-surface p-8 text-center text-muted shadow-sm">
           {filter === "unread" ? "No unread messages." : "No messages yet."}
         </p>
       ) : (
@@ -131,8 +129,8 @@ export default function MessagesAdminClient({
               <li
                 key={message.id}
                 id={`message-${message.id}`}
-                className={`rounded-lg bg-white shadow-sm dark:bg-gray-800 ${
-                  message.read ? "" : "border-l-4 border-indigo-600"
+                className={`rounded-lg bg-surface shadow-sm ${
+                  message.read ? "" : "border-l-4 border-line-strong"
                 }`}
               >
                 <button
@@ -143,17 +141,9 @@ export default function MessagesAdminClient({
                   className="flex w-full items-start gap-3 rounded-lg p-4 text-left"
                 >
                   {message.read ? (
-                    <MailOpen
-                      size={18}
-                      className="mt-0.5 shrink-0 text-gray-400"
-                      aria-hidden="true"
-                    />
+                    <MailOpen size={18} className="mt-0.5 shrink-0 text-muted" aria-hidden="true" />
                   ) : (
-                    <Mail
-                      size={18}
-                      className="mt-0.5 shrink-0 text-indigo-600"
-                      aria-hidden="true"
-                    />
+                    <Mail size={18} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" />
                   )}
                   <span className="min-w-0 flex-1">
                     <span className="flex flex-wrap items-baseline justify-between gap-x-3">
@@ -163,48 +153,36 @@ export default function MessagesAdminClient({
                       </span>
                       <time
                         dateTime={new Date(message.createdAt).toISOString()}
-                        className="text-xs text-gray-500 dark:text-gray-400"
+                        className="text-xs text-muted"
                       >
                         {dateFormatter.format(new Date(message.createdAt))}
                       </time>
                     </span>
-                    <span className="block truncate text-sm text-gray-700 dark:text-gray-300">
-                      {message.subject}
-                    </span>
+                    <span className="block truncate text-sm text-fg">{message.subject}</span>
                     {!open && (
-                      <span className="block truncate text-sm text-gray-500 dark:text-gray-400">
-                        {message.body}
-                      </span>
+                      <span className="block truncate text-sm text-muted">{message.body}</span>
                     )}
                   </span>
                   <ChevronDown
                     size={18}
                     aria-hidden="true"
-                    className={`mt-0.5 shrink-0 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`}
+                    className={`mt-0.5 shrink-0 text-muted transition-transform ${open ? "rotate-180" : ""}`}
                   />
                 </button>
 
                 {open && (
-                  <div
-                    id={`message-body-${message.id}`}
-                    className="border-t px-4 pb-4 pt-3 dark:border-gray-700"
-                  >
-                    <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
+                  <div id={`message-body-${message.id}`} className="border-t px-4 pb-4 pt-3">
+                    <p className="mb-3 text-sm text-muted">
                       From{" "}
-                      <a
-                        href={`mailto:${message.email}`}
-                        className="text-indigo-600 hover:underline dark:text-indigo-400"
-                      >
+                      <a href={`mailto:${message.email}`} className="text-accent hover:underline">
                         {message.email}
                       </a>
                     </p>
-                    <p className="whitespace-pre-wrap break-words text-gray-800 dark:text-gray-200">
-                      {message.body}
-                    </p>
+                    <p className="whitespace-pre-wrap break-words text-fg">{message.body}</p>
                     <div className="mt-4 flex flex-wrap gap-4 text-sm">
                       <a
                         href={`mailto:${message.email}?subject=${encodeURIComponent(`Re: ${message.subject}`)}`}
-                        className="inline-flex items-center gap-1 text-indigo-600 hover:underline dark:text-indigo-400"
+                        className="inline-flex items-center gap-1 text-accent hover:underline"
                       >
                         <Reply size={14} aria-hidden="true" /> Reply by email
                       </a>
@@ -212,7 +190,7 @@ export default function MessagesAdminClient({
                         type="button"
                         disabled={busy}
                         onClick={() => void setRead(message, !message.read)}
-                        className="inline-flex items-center gap-1 text-gray-700 hover:underline disabled:opacity-50 dark:text-gray-300"
+                        className="inline-flex items-center gap-1 text-fg hover:underline disabled:opacity-50"
                       >
                         {message.read ? (
                           <>
@@ -228,7 +206,7 @@ export default function MessagesAdminClient({
                         type="button"
                         disabled={busy}
                         onClick={() => void handleDelete(message)}
-                        className="inline-flex items-center gap-1 text-red-600 hover:underline disabled:opacity-50 dark:text-red-400"
+                        className="inline-flex items-center gap-1 text-danger hover:underline disabled:opacity-50"
                       >
                         <Trash2 size={14} aria-hidden="true" /> Delete
                       </button>

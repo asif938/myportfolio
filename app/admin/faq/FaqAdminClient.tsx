@@ -68,17 +68,14 @@ export default function FaqAdminClient({
   return (
     <div className="max-w-4xl space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">FAQ</h2>
-        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        <h2 className="text-2xl font-semibold text-fg">FAQ</h2>
+        <p className="mt-1 text-sm text-muted">
           Answers here are added to the chatbot&apos;s knowledge, so it can answer these questions
           itself next time.
         </p>
       </div>
 
-      <form
-        onSubmit={handleSave}
-        className="space-y-4 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800"
-      >
+      <form onSubmit={handleSave} className="space-y-4 rounded-lg bg-surface p-6 shadow-sm">
         <h3 className="text-lg font-semibold">{isEditing ? "Edit FAQ" : "Add FAQ"}</h3>
         <div>
           <label htmlFor="faq-question" className={labelClass}>
@@ -124,15 +121,12 @@ export default function FaqAdminClient({
         </div>
       </form>
 
-      <section
-        aria-labelledby="faq-list"
-        className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800"
-      >
+      <section aria-labelledby="faq-list" className="rounded-lg bg-surface p-6 shadow-sm">
         <h3 id="faq-list" className="mb-4 text-lg font-semibold">
           Questions ({faqs.length})
         </h3>
         {faqs.length === 0 ? (
-          <p className="text-gray-500">
+          <p className="text-muted">
             No FAQs yet. Use &quot;Add to FAQ&quot; on a conversation, or add one above.
           </p>
         ) : (
@@ -140,13 +134,11 @@ export default function FaqAdminClient({
             {faqs.map((faq, index) => (
               <li
                 key={faq.id}
-                className="flex items-start justify-between gap-4 rounded-lg border p-4 dark:border-gray-700"
+                className="flex items-start justify-between gap-4 rounded-lg border p-4"
               >
                 <div className="min-w-0">
                   <p className="font-semibold">{faq.question}</p>
-                  <p className="mt-1 whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300">
-                    {faq.answer}
-                  </p>
+                  <p className="mt-1 whitespace-pre-wrap text-sm text-fg">{faq.answer}</p>
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
                   <ReorderButtons
@@ -163,7 +155,7 @@ export default function FaqAdminClient({
                       setCurrent({ id: faq.id, question: faq.question, answer: faq.answer });
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
-                    className="text-blue-600 hover:text-blue-900 dark:text-blue-400"
+                    className="text-accent hover:opacity-80"
                   >
                     <Pencil size={18} />
                   </button>
@@ -172,7 +164,7 @@ export default function FaqAdminClient({
                     aria-label={`Delete FAQ: ${faq.question}`}
                     disabled={busyId === faq.id}
                     onClick={() => void handleDelete(faq)}
-                    className="text-red-600 hover:text-red-900 disabled:opacity-50 dark:text-red-400"
+                    className="text-danger hover:opacity-80 disabled:opacity-50"
                   >
                     <Trash2 size={18} />
                   </button>

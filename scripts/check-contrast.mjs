@@ -116,7 +116,7 @@ for (const [key, vars] of Object.entries(blocks)) {
   check(palette, mode, "cta-chip-fg on cta-chip-bg", solid("--cta-chip-fg"), solid("--cta-chip-bg"), 4.5);
   check(palette, mode, "white on brand-gradient-deep (monogram)", [{ r: 255, g: 255, b: 255, a: 1 }], solid("--brand-gradient-deep"), 4.5);
   check(palette, mode, "focus ring vs page (UI 3:1)", solid("--focus"), [...bgs.bg, ...bgs["bg-2"]], 3);
-  for (const kind of ["danger", "success"]) {
+  for (const kind of ["danger", "success", "warning"]) {
     const kindBg = over(get(`--${kind}-bg`)[0], bgs.bg[0]);
     check(palette, mode, `${kind} text on ${kind}-bg`, solid(`--${kind}`), [kindBg], 4.5);
     check(palette, mode, `${kind} text on page`, solid(`--${kind}`), bgs.bg, 4.5);
