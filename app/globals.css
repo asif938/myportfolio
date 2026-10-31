@@ -106,6 +106,27 @@
   50% { transform: translate3d(-10px, -10px, 0); }
 }
 
+/* Scroll reveal for timeline entries: progressive enhancement only.
+   Where scroll-driven animations are unsupported, entries are simply visible. */
+@keyframes edu-in {
+  from { opacity: 0; transform: translate3d(var(--edu-x, 0), 14px, 0); }
+  to { opacity: 1; transform: none; }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .edu-reveal {
+      --edu-x: 16px;
+      animation: edu-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+    @media (min-width: 768px) {
+      .edu-reveal[data-side="left"] { --edu-x: -24px; }
+      .edu-reveal[data-side="right"] { --edu-x: 24px; }
+    }
+  }
+}
+
 /* Reduced motion: freeze every decorative animation, static cursor, no smooth scroll */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
