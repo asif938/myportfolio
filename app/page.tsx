@@ -52,17 +52,12 @@ export default async function Home() {
   };
 
   return (
-    <div className="bg-gray-50 text-gray-900 selection:bg-indigo-500 selection:text-white dark:bg-gray-950 dark:text-gray-100">
+    <div className="text-fg">
       {person && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(person) }} />
       )}
-      <Navbar showExperience={experience.length > 0} />
-      {/* Sections alternate background colours no matter which ones are hidden. */}
-      <main
-        id="main-content"
-        tabIndex={-1}
-        className="outline-none [&>section:nth-of-type(even)]:bg-white dark:[&>section:nth-of-type(even)]:bg-gray-900 [&>section:nth-of-type(odd)]:bg-gray-50 dark:[&>section:nth-of-type(odd)]:bg-gray-950"
-      >
+      <Navbar name={profile?.name} showExperience={experience.length > 0} />
+      <main id="main-content" tabIndex={-1} className="outline-none">
         <Hero profile={profile} />
         <About profile={profile} />
         <Skills skills={skills} />

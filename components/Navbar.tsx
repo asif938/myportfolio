@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
+import Button from "@/components/ui/Button";
 import SkipLink from "@/components/SkipLink";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -38,10 +39,23 @@ function useActiveSection(ids: string[], enabled: boolean): string | null {
   return enabled ? active : null;
 }
 
-export default function Navbar({ showExperience = false }: { showExperience?: boolean }) {
+function initials(name?: string) {
+  const parts = (name ?? "").trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "P";
+  return (parts[0][0] + (parts[1]?.[0] ?? "")).toUpperCase();
+}
+
+const PILL_BASE_WIDTH = 100;
+
+export default function Navbar({
+  showExperience = false,
+  name,
+}: {
+  showExperience?: boolean;
+  name?: string;
+}) {
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks: NavLink[] = [
@@ -60,12 +74,19 @@ export default function Navbar({ showExperience = false }: { showExperience?: bo
   );
   const activeId = isHome ? activeSection : pathname.startsWith("/projects") ? "projects" : null;
 
+  // Sliding active pill: moved with transform only (translate + scale), no layout animation.
+  const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
+  const [pill, setPill] = useState<{ x: number; w: number } | null>(null);
+
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    const measure = () => {
+      const el = activeId ? linkRefs.current[activeId] : null;
+      setPill(el ? { x: el.offsetLeft, w: el.offsetWidth } : null);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [activeId, showExperience]);
 
   useEffect(() => {
     if (!isMobileMenuOpen) return;
@@ -93,97 +114,115 @@ export default function Navbar({ showExperience = false }: { showExperience?: bo
     window.history.replaceState(null, "", `#${id}`);
   };
 
-  const linkClass = (id: string, mobile: boolean) => {
-    const active = activeId === id;
-    if (mobile) {
-      return `block rounded-md px-3 py-2 text-base font-medium ${
-        active
-          ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300"
-          : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-indigo-400"
-      }`;
-    }
-    return `relative rounded-sm py-1 text-sm font-medium transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-indigo-600 after:transition-transform dark:after:bg-indigo-400 ${
-      active
-        ? "text-indigo-600 after:scale-x-100 dark:text-indigo-400"
-        : "text-gray-700 after:scale-x-0 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400"
-    }`;
-  };
+  const ariaCurrent = (id: string) =>
+    activeId === id ? (isHome ? ("location" as const) : ("page" as const)) : undefined;
 
   return (
-    <header
-      className={`fixed top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled || isMobileMenuOpen
-          ? "bg-white/90 shadow-md backdrop-blur-md dark:bg-gray-950/90"
-          : "bg-transparent"
-      }`}
-    >
+    <header className="fixed inset-x-0 top-3 z-50 px-3 sm:top-4 sm:px-4">
       <SkipLink />
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between gap-4">
+      <div className="mx-auto max-w-6xl">
+        <div className="flex h-14 items-center justify-between gap-2 rounded-full border border-line-strong bg-[var(--nav-bg)] py-1.5 pl-2 pr-2 shadow-card backdrop-blur-xl sm:h-16 sm:pl-3 sm:pr-3">
           <Link
             href="/"
-            className="flex-shrink-0 rounded-sm text-2xl font-extrabold tracking-tighter text-indigo-600 dark:text-indigo-400"
+            aria-label={`${name ?? "Portfolio"} – home`}
+            className="flex items-center gap-2.5 rounded-full pr-2"
           >
-            Portfolio<span className="text-gray-900 dark:text-white">.</span>
+            <span
+              aria-hidden
+              className="grid h-10 w-10 place-items-center rounded-full bg-brand-gradient-deep font-display text-sm font-bold text-white"
+            >
+              {initials(name)}
+            </span>
+            <span className="hidden font-display text-base font-bold tracking-tight text-fg xl:block">
+              {name?.split(" ")[0] ?? "Portfolio"}
+              <span className="text-accent">.</span>
+            </span>
           </Link>
 
-          <div className="hidden items-center gap-6 lg:flex">
-            <nav aria-label="Main">
-              <ul className="flex gap-6 xl:gap-8">
-                {navLinks.map((link) => (
-                  <li key={link.id}>
-                    <Link
-                      href={`/#${link.id}`}
-                      onClick={(e) => handleNavClick(e, link.id)}
-                      aria-current={
-                        activeId === link.id ? (isHome ? "location" : "page") : undefined
-                      }
-                      className={linkClass(link.id, false)}
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-            <ThemeToggle />
-          </div>
+          <nav aria-label="Main" className="hidden lg:block">
+            <ul className="relative flex items-center gap-0.5">
+              {pill && (
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute left-0 top-0 h-full rounded-full bg-highlight transition-transform duration-300 ease-out"
+                  style={{
+                    width: PILL_BASE_WIDTH,
+                    transformOrigin: "left center",
+                    transform: `translateX(${pill.x}px) scaleX(${pill.w / PILL_BASE_WIDTH})`,
+                  }}
+                />
+              )}
+              {navLinks.map((link) => (
+                <li key={link.id}>
+                  <Link
+                    href={`/#${link.id}`}
+                    ref={(el) => {
+                      linkRefs.current[link.id] = el;
+                    }}
+                    onClick={(e) => handleNavClick(e, link.id)}
+                    aria-current={ariaCurrent(link.id)}
+                    className={`relative block rounded-full px-3.5 py-2 text-sm font-medium transition-colors ${
+                      activeId === link.id ? "text-highlight-fg" : "text-muted hover:text-fg"
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-          <div className="flex items-center gap-1 lg:hidden">
+          <div className="flex items-center gap-2">
             <ThemeToggle />
+            <Button
+              href="/#contact"
+              size="sm"
+              onClick={(e) => handleNavClick(e, "contact")}
+              className="hidden xl:inline-flex"
+            >
+              Let&apos;s talk
+            </Button>
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-menu"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-md text-gray-700 dark:text-gray-300"
+              className="grid h-10 w-10 place-items-center rounded-full border border-line-strong bg-surface text-fg lg:hidden"
             >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {isMobileMenuOpen ? <X size={20} aria-hidden /> : <Menu size={20} aria-hidden />}
             </button>
           </div>
         </div>
-      </div>
 
-      {isMobileMenuOpen && (
-        <nav
-          id="mobile-menu"
-          aria-label="Mobile"
-          className="max-h-[calc(100vh-4rem)] overflow-y-auto bg-white px-2 pb-3 pt-2 shadow-lg dark:bg-gray-900 lg:hidden"
-        >
-          {navLinks.map((link) => (
-            <Link
-              key={link.id}
-              href={`/#${link.id}`}
-              onClick={(e) => handleNavClick(e, link.id)}
-              aria-current={activeId === link.id ? (isHome ? "location" : "page") : undefined}
-              className={linkClass(link.id, true)}
-            >
-              {link.name}
-            </Link>
-          ))}
-        </nav>
-      )}
+        {isMobileMenuOpen && (
+          <nav
+            id="mobile-menu"
+            aria-label="Mobile"
+            className="mt-2 max-h-[calc(100vh-6rem)] overflow-y-auto rounded-3xl border border-line-strong bg-[var(--nav-bg)] p-3 shadow-card backdrop-blur-xl lg:hidden"
+          >
+            <ul className="flex flex-col">
+              {navLinks.map((link) => (
+                <li key={link.id}>
+                  <Link
+                    href={`/#${link.id}`}
+                    onClick={(e) => handleNavClick(e, link.id)}
+                    aria-current={ariaCurrent(link.id)}
+                    className={`flex min-h-12 items-center rounded-2xl px-4 text-base font-medium ${
+                      activeId === link.id ? "bg-highlight text-highlight-fg" : "text-fg hover:bg-surface-2"
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <Button href="/#contact" onClick={(e) => handleNavClick(e, "contact")} className="mt-3 w-full">
+              Let&apos;s talk
+            </Button>
+          </nav>
+        )}
+      </div>
     </header>
   );
 }
