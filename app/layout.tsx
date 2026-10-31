@@ -1,13 +1,33 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Space_Grotesk, Hind_Siliguri } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Providers from "@/components/Providers";
 import { getProfile, getSkills } from "@/lib/data";
 import { SITE_URL, truncate } from "@/lib/site";
+import "./palettes/prism.css";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], display: "swap" });
+const display = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  display: "swap",
+  variable: "--font-display",
+});
+const body = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
+  variable: "--font-body",
+});
+// Bangla fallback so Bangla text never drops to a system font (only fetched when used).
+const bangla = Hind_Siliguri({
+  subsets: ["bengali"],
+  weight: ["400", "500", "600"],
+  display: "swap",
+  variable: "--font-bangla",
+  preload: false,
+});
 
 const FALLBACK_NAME = "Portfolio";
 
@@ -53,8 +73,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f9fafb" },
-    { media: "(prefers-color-scheme: dark)", color: "#030712" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#080616" },
   ],
 };
 
@@ -65,8 +85,13 @@ export default function RootLayout({
 }>) {
   return (
     // next-themes sets the theme class on <html> before hydration.
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+    <html
+      lang="en"
+      data-palette="prism"
+      suppressHydrationWarning
+      className={`${display.variable} ${body.variable} ${bangla.variable}`}
+    >
+      <body className="font-sans antialiased">
         <noscript>
           {/* Without JavaScript the scroll-reveal never runs; show the content anyway. */}
           <style>{"[data-reveal]{opacity:1!important;transform:none!important}"}</style>

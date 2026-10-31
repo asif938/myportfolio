@@ -2,34 +2,118 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  color-scheme: light;
-}
-
-.dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  color-scheme: dark;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-}
+/* Palette tokens are imported in app/layout.tsx (app/palettes/*.css). */
 
 @layer base {
-  /* Smooth in-page scrolling, unless the user asked for reduced motion. */
-  @media (prefers-reduced-motion: no-preference) {
-    html {
-      scroll-behavior: smooth;
-    }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
-  /* Visible keyboard focus everywhere. Mouse clicks don't trigger :focus-visible. */
+  body {
+    background: var(--bg-wash, var(--bg));
+    background-color: var(--bg);
+    color: var(--fg);
+    line-height: 1.65;
+  }
+
+  ::selection {
+    background: var(--selection-bg);
+    color: var(--selection-fg);
+  }
+
   :focus-visible {
-    outline: 2px solid #6366f1;
-    outline-offset: 2px;
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+    border-radius: 0.5rem;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display), var(--font-bangla), system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  /* Display sizes (fluid) */
+  .text-hero {
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .text-h2 {
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+  }
+
+  /* Palette-driven highlighter: marker or gradient pill */
+  .hl {
+    background: var(--highlight-bg);
+    color: var(--highlight-fg);
+    border-radius: var(--highlight-radius);
+    padding: 0.02em 0.28em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  /* Blinking underscore cursor for eyebrow labels */
+  .cursor::after {
+    content: "_";
+    margin-left: 1px;
+    animation: blink 1.1s steps(1) infinite;
+  }
+
+  /* Tinted cards: set --t-bg / --t-fg / --t-border from the palette */
+  .tint-1 { --t-bg: var(--tint-1-bg); --t-fg: var(--tint-1-fg); --t-border: var(--tint-1-border); }
+  .tint-2 { --t-bg: var(--tint-2-bg); --t-fg: var(--tint-2-fg); --t-border: var(--tint-2-border); }
+  .tint-3 { --t-bg: var(--tint-3-bg); --t-fg: var(--tint-3-fg); --t-border: var(--tint-3-border); }
+  .tint-4 { --t-bg: var(--tint-4-bg); --t-fg: var(--tint-4-fg); --t-border: var(--tint-4-border); }
+  .tint-5 { --t-bg: var(--tint-5-bg); --t-fg: var(--tint-5-fg); --t-border: var(--tint-5-border); }
+  .tint-6 { --t-bg: var(--tint-6-bg); --t-fg: var(--tint-6-fg); --t-border: var(--tint-6-border); }
+
+  /* Faint dot-matrix texture, fades toward the edges */
+  .dot-matrix {
+    background-image: radial-gradient(var(--dot) 1.2px, transparent 1.4px);
+    background-size: 24px 24px;
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 20%, transparent 75%);
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 20%, transparent 75%);
+  }
+}
+
+@layer utilities {
+  .float-a { animation: float-a 9s ease-in-out infinite; }
+  .float-b { animation: float-b 11s ease-in-out infinite; }
+  .float-c { animation: float-c 13s ease-in-out infinite; }
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes float-a {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(0, -14px, 0) rotate(4deg); }
+}
+@keyframes float-b {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(8px, -18px, 0) rotate(-5deg); }
+}
+@keyframes float-c {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-10px, -10px, 0); }
+}
+
+/* Reduced motion: freeze every decorative animation, static cursor, no smooth scroll */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .float-a, .float-b, .float-c { animation: none; }
+  .cursor::after { animation: none; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }

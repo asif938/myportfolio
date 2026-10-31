@@ -12,7 +12,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "design:contrast": "node scripts/check-contrast.mjs"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.92",

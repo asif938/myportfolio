@@ -28,7 +28,7 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
   // so the server and client HTML match.
   useEffect(() => setMounted(true), []);
 
-  const baseClass = `inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-700 transition-colors hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-indigo-400 ${className}`;
+  const baseClass = `inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-line-strong bg-surface text-fg transition-[transform,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-brand ${className}`;
 
   if (!mounted) {
     return <span aria-hidden="true" className={baseClass} />;
