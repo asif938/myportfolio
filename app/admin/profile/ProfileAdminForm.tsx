@@ -50,9 +50,7 @@ export default function ProfileAdmin({ initialProfile }: { initialProfile: Profi
 
   return (
     <div className="max-w-4xl rounded-lg bg-surface p-8 shadow-sm">
-      <h2 className="mb-6 text-2xl font-semibold text-fg">
-        Profile & Hero Section
-      </h2>
+      <h2 className="mb-6 text-2xl font-semibold text-fg">Profile & Hero Section</h2>
 
       <form onSubmit={handleSave} className="space-y-6">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

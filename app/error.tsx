@@ -20,7 +20,9 @@ export default function Error({
     <main className="relative grid min-h-screen place-items-center overflow-hidden px-4 text-center text-fg">
       <Atmosphere variant="soft" side="left" />
       <div className="relative flex flex-col items-center">
-        <p className="cursor mb-6 text-sm font-semibold uppercase tracking-[0.18em] text-accent">Error</p>
+        <p className="cursor mb-6 text-sm font-semibold uppercase tracking-[0.18em] text-accent">
+          Error
+        </p>
         <h1 className="text-hero font-bold">
           Something went <span className="hl">wrong</span>
         </h1>

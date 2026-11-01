@@ -72,7 +72,9 @@ export default function Contact({ profile }: { profile: Profile | null }) {
       key: "phone",
       label: profile.whatsapp ? "WhatsApp" : "Phone",
       value: profile.whatsapp || publicPhone,
-      href: profile.whatsapp ? `https://wa.me/${profile.whatsapp.replace(/\D/g, "")}` : `tel:${publicPhone}`,
+      href: profile.whatsapp
+        ? `https://wa.me/${profile.whatsapp.replace(/\D/g, "")}`
+        : `tel:${publicPhone}`,
       external: true,
       Icon: Phone,
     },
@@ -88,10 +90,15 @@ export default function Contact({ profile }: { profile: Profile | null }) {
   return (
     <Section id="contact" backdrop={<Atmosphere variant="soft" side="left" />}>
       <Reveal>
-        <SectionHeading eyebrow="Contact" title="Get In Touch" highlight="Touch" className="!mb-6" />
+        <SectionHeading
+          eyebrow="Contact"
+          title="Get In Touch"
+          highlight="Touch"
+          className="!mb-6"
+        />
         <p className="mx-auto mb-12 max-w-3xl text-center text-base text-muted sm:mb-16 sm:text-lg">
-          I&apos;m currently open for new opportunities. Whether you have a question or just want to say hi,
-          I&apos;ll try my best to get back to you!
+          I&apos;m currently open for new opportunities. Whether you have a question or just want to
+          say hi, I&apos;ll try my best to get back to you!
         </p>
       </Reveal>
 
@@ -155,7 +162,14 @@ export default function Contact({ profile }: { profile: Profile | null }) {
               <label htmlFor="email" className="mb-2 block text-sm font-medium text-fg">
                 Your Email
               </label>
-              <input type="email" name="email" id="email" required placeholder="john@example.com" className={field} />
+              <input
+                type="email"
+                name="email"
+                id="email"
+                required
+                placeholder="john@example.com"
+                className={field}
+              />
             </div>
             <div>
               <label htmlFor="subject" className="mb-2 block text-sm font-medium text-fg">
@@ -186,7 +200,12 @@ export default function Contact({ profile }: { profile: Profile | null }) {
                 className={`${field} resize-none`}
               />
             </div>
-            <Button type="submit" disabled={isSubmitting} chipIcon={Send} className="w-full justify-between">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              chipIcon={Send}
+              className="w-full justify-between"
+            >
               {isSubmitting ? "Sending..." : "Send Message"}
             </Button>
             <div aria-live="polite">

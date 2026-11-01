@@ -6,7 +6,9 @@
 import { chromium } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 
-const [stage = "stage-1", base = "http://localhost:3100"] = process.argv.slice(2).filter((a) => !a.startsWith("--"));
+const [stage = "stage-1", base = "http://localhost:3100"] = process.argv
+  .slice(2)
+  .filter((a) => !a.startsWith("--"));
 const full = process.argv.includes("--full");
 const palette = "prism";
 const sizes = [
@@ -20,7 +22,11 @@ mkdirSync(out, { recursive: true });
 const browser = await chromium.launch();
 for (const mode of ["light", "dark"]) {
   for (const { w, h } of sizes) {
-    const ctx = await browser.newContext({ viewport: { width: w, height: h }, colorScheme: mode, reducedMotion: "reduce" });
+    const ctx = await browser.newContext({
+      viewport: { width: w, height: h },
+      colorScheme: mode,
+      reducedMotion: "reduce",
+    });
     const page = await ctx.newPage();
     const errors = [];
     page.on("console", (m) => m.type() === "error" && errors.push(m.text()));

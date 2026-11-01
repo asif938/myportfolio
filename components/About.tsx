@@ -13,7 +13,12 @@ export default function About({ profile }: { profile: Profile | null }) {
 
   const contacts: Contact[] = [];
   if (profile.email) {
-    contacts.push({ label: "Email", value: profile.email, href: `mailto:${profile.email}`, Icon: Mail });
+    contacts.push({
+      label: "Email",
+      value: profile.email,
+      href: `mailto:${profile.email}`,
+      Icon: Mail,
+    });
   }
   if (profile.showPhone && profile.phone) {
     contacts.push({
@@ -35,7 +40,9 @@ export default function About({ profile }: { profile: Profile | null }) {
 
       <Reveal className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         <div className="space-y-6 lg:col-start-2 lg:row-start-1">
-          <h3 className="text-2xl font-bold text-fg sm:text-3xl">My Journey as a {profile.designation}</h3>
+          <h3 className="text-2xl font-bold text-fg sm:text-3xl">
+            My Journey as a {profile.designation}
+          </h3>
           <p className="max-w-[65ch] whitespace-pre-line text-base leading-[1.7] text-muted sm:text-lg">
             {profile.aboutMe}
           </p>
@@ -52,7 +59,9 @@ export default function About({ profile }: { profile: Profile | null }) {
                       <Icon size={18} />
                     </span>
                     <span className="min-w-0 leading-tight">
-                      <span className="block text-xs font-semibold uppercase tracking-wider text-muted">{label}</span>
+                      <span className="block text-xs font-semibold uppercase tracking-wider text-muted">
+                        {label}
+                      </span>
                       <span className="block break-all text-sm font-medium text-fg">{value}</span>
                     </span>
                   </>
@@ -79,7 +88,7 @@ export default function About({ profile }: { profile: Profile | null }) {
         </div>
 
         <div className="flex justify-center lg:col-start-1 lg:row-start-1">
-          <div className="relative w-full max-w-[300px] pb-4 lg:max-w-md pr-4">
+          <div className="relative w-full max-w-[300px] pb-4 pr-4 lg:max-w-md">
             {/* gradient accent offset behind the frame */}
             <div
               aria-hidden
@@ -95,7 +104,9 @@ export default function About({ profile }: { profile: Profile | null }) {
                   className="object-cover"
                 />
               ) : (
-                <div className="grid h-full w-full place-items-center text-muted">No Image Available</div>
+                <div className="grid h-full w-full place-items-center text-muted">
+                  No Image Available
+                </div>
               )}
             </div>
           </div>

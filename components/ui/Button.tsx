@@ -55,7 +55,14 @@ function Chip({ Icon, small }: { Icon: LucideIcon; small?: boolean }) {
 }
 
 export default function Button(props: AsLink | AsButton) {
-  const { variant = "primary", size = "md", chipIcon = ArrowRight, className, children, ...rest } = props;
+  const {
+    variant = "primary",
+    size = "md",
+    chipIcon = ArrowRight,
+    className,
+    children,
+    ...rest
+  } = props;
   const cls = cn(base, styles[variant][size], className);
   const content = (
     <>

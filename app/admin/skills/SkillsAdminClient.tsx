@@ -195,9 +195,7 @@ export default function SkillsAdminClient({ initialSkills }: { initialSkills: Sk
                       "-"
                     )}
                   </td>
-                  <td className="px-4 py-3 font-medium text-fg">
-                    {skill.name}
-                  </td>
+                  <td className="px-4 py-3 font-medium text-fg">{skill.name}</td>
                   <td className="px-4 py-3">{skill.category}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">

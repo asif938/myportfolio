@@ -403,10 +403,7 @@ export default function ProjectsAdminClient({ initialProjects }: { initialProjec
         </p>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           {projects.map((project, index) => (
-            <div
-              key={project.id}
-              className="flex flex-col justify-between rounded-lg border p-4"
-            >
+            <div key={project.id} className="flex flex-col justify-between rounded-lg border p-4">
               <div>
                 {project.imageUrl && (
                   <Image
@@ -420,7 +417,7 @@ export default function ProjectsAdminClient({ initialProjects }: { initialProjec
                 <div className="mb-1 flex items-center gap-2">
                   <h4 className="text-lg font-bold">{project.name}</h4>
                   {project.featured && (
-                    <span className="inline-flex items-center gap-1 tint-5 rounded border border-t-border bg-t-bg px-1.5 py-0.5 text-xs font-medium text-t-fg">
+                    <span className="tint-5 inline-flex items-center gap-1 rounded border border-t-border bg-t-bg px-1.5 py-0.5 text-xs font-medium text-t-fg">
                       <Star size={12} /> Featured
                     </span>
                   )}

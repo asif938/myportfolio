@@ -19,7 +19,9 @@ export default function Card({ tint, gradientBorder, className, children, ...res
     <div
       className={cn(
         "relative rounded-3xl border p-6 shadow-card transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-1",
-        tint === undefined ? "border-line bg-surface" : cn(tintClass(tint), "border-t-border bg-t-bg text-t-fg"),
+        tint === undefined
+          ? "border-line bg-surface"
+          : cn(tintClass(tint), "border-t-border bg-t-bg text-t-fg"),
         gradientBorder && "gborder",
         className,
       )}

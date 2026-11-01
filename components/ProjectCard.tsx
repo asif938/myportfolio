@@ -65,7 +65,9 @@ export default function ProjectCard({
             ))}
             {project.mainTechStack.length > 3 && (
               <li>
-                <Chip className="px-3 py-1 text-xs text-muted">+{project.mainTechStack.length - 3} more</Chip>
+                <Chip className="px-3 py-1 text-xs text-muted">
+                  +{project.mainTechStack.length - 3} more
+                </Chip>
               </li>
             )}
           </ul>

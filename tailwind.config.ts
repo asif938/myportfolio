@@ -4,10 +4,7 @@ import typography from "@tailwindcss/typography";
 /** All colors are semantic tokens defined per palette/mode in app/palettes/*.css */
 const config: Config = {
   darkMode: "class",
-  content: [
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+  content: ["./components/**/*.{js,ts,jsx,tsx,mdx}", "./app/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
       colors: {

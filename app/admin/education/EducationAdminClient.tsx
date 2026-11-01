@@ -188,15 +188,10 @@ export default function EducationAdminClient({
         <h3 className="mb-4 text-lg font-semibold">Educational Qualifications</h3>
         <div className="space-y-4">
           {educations.map((edu, index) => (
-            <div
-              key={edu.id}
-              className="flex items-start justify-between rounded-lg border p-4"
-            >
+            <div key={edu.id} className="flex items-start justify-between rounded-lg border p-4">
               <div className="min-w-0">
                 <h4 className="text-lg font-bold">{edu.degree}</h4>
-                <p className="font-medium text-accent">
-                  {edu.institution}
-                </p>
+                <p className="font-medium text-accent">{edu.institution}</p>
                 <p className="mb-2 text-sm text-muted">
                   {edu.startYear} - {edu.endYear}
                 </p>
@@ -230,9 +225,7 @@ export default function EducationAdminClient({
               </div>
             </div>
           ))}
-          {educations.length === 0 && (
-            <p className="text-muted">No education entries added yet.</p>
-          )}
+          {educations.length === 0 && <p className="text-muted">No education entries added yet.</p>}
         </div>
       </div>
     </div>

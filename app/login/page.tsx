@@ -35,16 +35,10 @@ export default function LoginPage() {
     <div className="flex h-screen items-center justify-center bg-bg-2">
       <div className="w-full max-w-md space-y-8 rounded-xl bg-surface p-8 shadow-lg">
         <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-fg">
-            Admin Login
-          </h2>
+          <h2 className="text-3xl font-bold tracking-tight text-fg">Admin Login</h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="rounded bg-danger-bg p-3 text-sm text-danger">
-              {error}
-            </div>
-          )}
+          {error && <div className="rounded bg-danger-bg p-3 text-sm text-danger">{error}</div>}
           <div className="space-y-4 rounded-md shadow-sm">
             <div>
               <label className="sr-only" htmlFor="username">

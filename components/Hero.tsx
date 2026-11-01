@@ -18,15 +18,17 @@ export default function Hero({ profile }: { profile: Profile | null }) {
     <section
       id="home"
       tabIndex={-1}
-      className="relative flex min-h-screen min-h-[100svh] scroll-mt-16 items-start lg:items-center overflow-hidden py-[var(--nav-h)] outline-none [--nav-h:6rem] sm:[--nav-h:7rem]"
+      className="relative flex min-h-[100svh] min-h-screen scroll-mt-16 items-start overflow-hidden py-[var(--nav-h)] outline-none [--nav-h:6rem] sm:[--nav-h:7rem] lg:items-center"
     >
       <Atmosphere />
 
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 items-start gap-10 lg:items-center lg:gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-8">
+        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-8">
           <div className="space-y-8">
             <div className="space-y-5">
-              <p className="cursor text-sm font-semibold uppercase tracking-[0.18em] text-accent">Hello, I am</p>
+              <p className="cursor text-sm font-semibold uppercase tracking-[0.18em] text-accent">
+                Hello, I am
+              </p>
               <h1 className="text-hero font-bold text-fg">{profile.name}</h1>
               <p className="font-display text-2xl font-semibold text-fg sm:text-3xl">
                 <Highlight>&lt; {profile.designation} &gt;</Highlight>
@@ -38,7 +40,10 @@ export default function Hero({ profile }: { profile: Profile | null }) {
               )}
               {profile.availability && (
                 <p className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface px-3.5 py-1.5 text-sm font-medium text-fg backdrop-blur-md">
-                  <span className="h-2 w-2 rounded-full bg-highlight ring-2 ring-line-strong" aria-hidden="true" />
+                  <span
+                    className="h-2 w-2 rounded-full bg-highlight ring-2 ring-line-strong"
+                    aria-hidden="true"
+                  />
                   {profile.availability}
                 </p>
               )}
@@ -83,7 +88,10 @@ export default function Hero({ profile }: { profile: Profile | null }) {
               <div
                 aria-hidden
                 className="absolute -inset-8 rounded-full"
-                style={{ background: "radial-gradient(closest-side, var(--glow-2), transparent)", opacity: 0.7 }}
+                style={{
+                  background: "radial-gradient(closest-side, var(--glow-2), transparent)",
+                  opacity: 0.7,
+                }}
               />
               <div className="relative rounded-[2.75rem] bg-brand-gradient p-1 shadow-glow">
                 <div className="relative aspect-square overflow-hidden rounded-[2.5rem] bg-surface-2">
@@ -97,7 +105,9 @@ export default function Hero({ profile }: { profile: Profile | null }) {
                       className="object-cover"
                     />
                   ) : (
-                    <div className="grid h-full w-full place-items-center text-muted">No Image Available</div>
+                    <div className="grid h-full w-full place-items-center text-muted">
+                      No Image Available
+                    </div>
                   )}
                 </div>
               </div>

@@ -45,7 +45,15 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   };
 }
 
-function Block({ index, title, children }: { index: number; title: string; children: React.ReactNode }) {
+function Block({
+  index,
+  title,
+  children,
+}: {
+  index: number;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <section>
       <h2 className="mb-5 flex items-center gap-4 border-b border-line pb-4 text-2xl font-bold">
@@ -64,7 +72,9 @@ function Block({ index, title, children }: { index: number; title: string; child
 
 function Prose({ text }: { text: string }) {
   return (
-    <div className="max-w-[65ch] whitespace-pre-line text-base leading-[1.75] text-muted sm:text-lg">{text}</div>
+    <div className="max-w-[65ch] whitespace-pre-line text-base leading-[1.75] text-muted sm:text-lg">
+      {text}
+    </div>
   );
 }
 
@@ -99,9 +109,16 @@ export default async function ProjectDetails({ params }: Params) {
   const blocks: { title: string; node: React.ReactNode }[] = [
     ...textSections.filter(hasText).map((s) => ({ title: s.title, node: <Prose text={s.text} /> })),
     ...(project.images.length > 0
-      ? [{ title: "Gallery", node: <ProjectGallery images={project.images} title={project.name} /> }]
+      ? [
+          {
+            title: "Gallery",
+            node: <ProjectGallery images={project.images} title={project.name} />,
+          },
+        ]
       : []),
-    ...closingSections.filter(hasText).map((s) => ({ title: s.title, node: <Prose text={s.text} /> })),
+    ...closingSections
+      .filter(hasText)
+      .map((s) => ({ title: s.title, node: <Prose text={s.text} /> })),
   ];
 
   const url = absoluteUrl(`/projects/${project.slug}`);
@@ -150,7 +167,9 @@ export default async function ProjectDetails({ params }: Params) {
             <ArrowLeft size={16} className="mr-2" aria-hidden="true" /> All Projects
           </Link>
 
-          <p className="cursor mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-accent">Project</p>
+          <p className="cursor mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-accent">
+            Project
+          </p>
           <h1 className="mb-6 text-[clamp(2.2rem,6vw,3.75rem)] font-bold leading-[1.05] tracking-[-0.02em]">
             {project.name}
           </h1>

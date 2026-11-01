@@ -209,7 +209,9 @@ export default function Navbar({
                     onClick={(e) => handleNavClick(e, link.id)}
                     aria-current={ariaCurrent(link.id)}
                     className={`flex min-h-12 items-center rounded-2xl px-4 text-base font-medium ${
-                      activeId === link.id ? "bg-highlight text-highlight-fg" : "text-fg hover:bg-surface-2"
+                      activeId === link.id
+                        ? "bg-highlight text-highlight-fg"
+                        : "text-fg hover:bg-surface-2"
                     }`}
                   >
                     {link.name}
@@ -217,7 +219,11 @@ export default function Navbar({
                 </li>
               ))}
             </ul>
-            <Button href="/#contact" onClick={(e) => handleNavClick(e, "contact")} className="mt-3 w-full">
+            <Button
+              href="/#contact"
+              onClick={(e) => handleNavClick(e, "contact")}
+              className="mt-3 w-full"
+            >
               Let&apos;s talk
             </Button>
           </nav>

@@ -77,28 +77,20 @@ export default async function AdminDashboard() {
               <Link
                 href={stat.href}
                 className={`block h-full rounded-lg p-5 shadow-sm transition-shadow hover:shadow-md ${
-                  stat.highlight
-                    ? "bg-brand-gradient-deep text-white"
-                    : "bg-surface text-fg  "
+                  stat.highlight ? "bg-brand-gradient-deep text-white" : "bg-surface text-fg"
                 }`}
               >
                 <stat.icon
                   size={20}
                   aria-hidden="true"
-                  className={
-                    stat.highlight ? "text-white/90" : "text-accent "
-                  }
+                  className={stat.highlight ? "text-white/90" : "text-accent"}
                 />
                 <p className="mt-3 text-3xl font-bold">{stat.value}</p>
-                <p
-                  className={`text-sm ${stat.highlight ? "text-white/90" : "text-muted "}`}
-                >
+                <p className={`text-sm ${stat.highlight ? "text-white/90" : "text-muted"}`}>
                   {stat.label}
                 </p>
                 {stat.detail && (
-                  <p
-                    className={`mt-1 text-xs ${stat.highlight ? "text-white/80" : "text-muted "}`}
-                  >
+                  <p className={`mt-1 text-xs ${stat.highlight ? "text-white/80" : "text-muted"}`}>
                     {stat.detail}
                   </p>
                 )}
@@ -153,9 +145,7 @@ export default async function AdminDashboard() {
                           {dateFormatter.format(m.createdAt)}
                         </time>
                       </span>
-                      <span className="block truncate text-sm text-muted">
-                        {m.subject}
-                      </span>
+                      <span className="block truncate text-sm text-muted">{m.subject}</span>
                     </span>
                   </Link>
                 </li>
@@ -165,10 +155,7 @@ export default async function AdminDashboard() {
         </section>
 
         <div className="space-y-6">
-          <section
-            aria-labelledby="quick-links"
-            className="rounded-lg bg-surface p-6 shadow-sm"
-          >
+          <section aria-labelledby="quick-links" className="rounded-lg bg-surface p-6 shadow-sm">
             <h3 id="quick-links" className="mb-3 text-lg font-semibold">
               Quick links
             </h3>
@@ -179,11 +166,7 @@ export default async function AdminDashboard() {
                     href={link.href}
                     className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-fg hover:bg-surface-2"
                   >
-                    <link.icon
-                      size={16}
-                      aria-hidden="true"
-                      className="text-accent"
-                    />
+                    <link.icon size={16} aria-hidden="true" className="text-accent" />
                     {link.label}
                   </Link>
                 </li>
@@ -195,35 +178,21 @@ export default async function AdminDashboard() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-fg hover:bg-surface-2"
                 >
-                  <ExternalLink
-                    size={16}
-                    aria-hidden="true"
-                    className="text-accent"
-                  />
+                  <ExternalLink size={16} aria-hidden="true" className="text-accent" />
                   View the website
                 </a>
               </li>
             </ul>
           </section>
 
-          <section
-            aria-labelledby="chatbot-status"
-            className="rounded-lg bg-surface p-6 shadow-sm"
-          >
+          <section aria-labelledby="chatbot-status" className="rounded-lg bg-surface p-6 shadow-sm">
             <h3 id="chatbot-status" className="mb-2 flex items-center gap-2 text-lg font-semibold">
-              <Sparkles
-                size={18}
-                aria-hidden="true"
-                className="text-accent"
-              />
+              <Sparkles size={18} aria-hidden="true" className="text-accent" />
               AI chatbot
             </h3>
             <p className="text-sm text-muted">
               {chatbotLive ? "Live on the website." : "Hidden (not enabled or not configured)."}{" "}
-              <Link
-                href="/admin/ai"
-                className="text-accent hover:underline"
-              >
+              <Link href="/admin/ai" className="text-accent hover:underline">
                 Settings
               </Link>
             </p>

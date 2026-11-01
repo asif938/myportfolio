@@ -6,7 +6,8 @@
 import { chromium } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 
-const [selector, out, widthsArg = "390,1280", base = "http://localhost:3100"] = process.argv.slice(2);
+const [selector, out, widthsArg = "390,1280", base = "http://localhost:3100"] =
+  process.argv.slice(2);
 const widths = widthsArg.split(",").map(Number);
 mkdirSync(out, { recursive: true });
 const name = selector.replace(/[^\w]/g, "");
@@ -14,7 +15,10 @@ const name = selector.replace(/[^\w]/g, "");
 const browser = await chromium.launch();
 for (const mode of ["light", "dark"]) {
   for (const w of widths) {
-    const ctx = await browser.newContext({ viewport: { width: w, height: 900 }, colorScheme: mode });
+    const ctx = await browser.newContext({
+      viewport: { width: w, height: 900 },
+      colorScheme: mode,
+    });
     const page = await ctx.newPage();
     await page.goto(base, { waitUntil: "networkidle" });
     const el = page.locator(selector);
@@ -22,11 +26,16 @@ for (const mode of ["light", "dark"]) {
     // scroll through so scroll-driven reveals complete
     const h = await el.evaluate((n) => n.getBoundingClientRect().height);
     for (let y = 0; y <= h; y += 300) {
-      await el.evaluate((n, dy) => window.scrollTo(0, n.getBoundingClientRect().top + scrollY + dy - 300), y);
+      await el.evaluate(
+        (n, dy) => window.scrollTo(0, n.getBoundingClientRect().top + scrollY + dy - 300),
+        y,
+      );
       await page.waitForTimeout(120);
     }
     await page.waitForTimeout(500);
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
     await page.addStyleTag({ content: "header{visibility:hidden!important}" });
     await el.screenshot({ path: `${out}/${name}-${mode}-${w}.png` });
     console.log(`${mode} ${w}px horizontal overflow: ${overflow}px`);

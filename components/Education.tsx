@@ -57,7 +57,9 @@ export default function Education({ education }: { education: EducationEntry[] }
               <span
                 aria-hidden
                 className={`absolute top-[41px] hidden h-0.5 w-4 md:block ${
-                  left ? "right-6 bg-gradient-to-l from-brand to-brand-2" : "left-6 bg-gradient-to-r from-brand to-brand-2"
+                  left
+                    ? "right-6 bg-gradient-to-l from-brand to-brand-2"
+                    : "left-6 bg-gradient-to-r from-brand to-brand-2"
                 }`}
               />
 
@@ -73,15 +75,24 @@ export default function Education({ education }: { education: EducationEntry[] }
                   >
                     <GraduationCap size={20} />
                   </span>
-                  <h3 className="min-w-0 break-words font-display text-xl font-bold text-fg">{edu.degree}</h3>
+                  <h3 className="min-w-0 break-words font-display text-xl font-bold text-fg">
+                    {edu.degree}
+                  </h3>
                 </div>
-                <p className="break-words text-[15px] font-semibold text-accent">{edu.institution}</p>
+                <p className="break-words text-[15px] font-semibold text-accent">
+                  {edu.institution}
+                </p>
                 {edu.description && (
-                  <p className="break-words text-[14.5px] leading-[1.65] text-muted">{edu.description}</p>
+                  <p className="break-words text-[14.5px] leading-[1.65] text-muted">
+                    {edu.description}
+                  </p>
                 )}
                 <time className="inline-flex max-w-full items-center gap-1.5 self-start rounded-full border border-line-strong bg-surface-2 px-3 py-1 text-xs font-semibold text-accent">
                   {current && (
-                    <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--success)]" />
+                    <span
+                      aria-hidden
+                      className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--success)]"
+                    />
                   )}
                   {edu.startYear} – {edu.endYear.trim() === "" ? "Present" : edu.endYear}
                 </time>
