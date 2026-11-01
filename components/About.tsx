@@ -34,30 +34,7 @@ export default function About({ profile }: { profile: Profile | null }) {
       </Reveal>
 
       <Reveal className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
-        <div className="flex justify-center">
-          <div className="relative w-full max-w-md pb-4 pr-4">
-            {/* gradient accent offset behind the frame */}
-            <div
-              aria-hidden
-              className="absolute inset-0 left-4 top-4 rounded-[2.5rem] bg-brand-gradient opacity-90"
-            />
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] border border-line-strong bg-surface-2 shadow-card">
-              {profile.aboutPhotoUrl ? (
-                <Image
-                  src={profile.aboutPhotoUrl}
-                  alt={`About ${profile.name}`}
-                  fill
-                  sizes="(min-width: 1024px) 448px, 90vw"
-                  className="object-cover"
-                />
-              ) : (
-                <div className="grid h-full w-full place-items-center text-muted">No Image Available</div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-6">
+        <div className="order-1 space-y-6 md:order-2">
           <h3 className="text-2xl font-bold text-fg sm:text-3xl">My Journey as a {profile.designation}</h3>
           <p className="max-w-[65ch] whitespace-pre-line text-base leading-[1.7] text-muted sm:text-lg">
             {profile.aboutMe}
@@ -99,6 +76,29 @@ export default function About({ profile }: { profile: Profile | null }) {
               })}
             </ul>
           )}
+        </div>
+
+        <div className="order-2 flex justify-center md:order-1">
+          <div className="relative w-full max-w-[300px] pb-4 md:max-w-md pr-4">
+            {/* gradient accent offset behind the frame */}
+            <div
+              aria-hidden
+              className="absolute inset-0 left-4 top-4 rounded-[2.5rem] bg-brand-gradient opacity-90"
+            />
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] border border-line-strong bg-surface-2 shadow-card">
+              {profile.aboutPhotoUrl ? (
+                <Image
+                  src={profile.aboutPhotoUrl}
+                  alt={`About ${profile.name}`}
+                  fill
+                  sizes="(min-width: 768px) 448px, 300px"
+                  className="object-cover"
+                />
+              ) : (
+                <div className="grid h-full w-full place-items-center text-muted">No Image Available</div>
+              )}
+            </div>
+          </div>
         </div>
       </Reveal>
     </Section>
