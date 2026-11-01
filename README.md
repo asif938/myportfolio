@@ -5,6 +5,73 @@ Personal portfolio built with Next.js 14 (App Router), TypeScript, Tailwind CSS,
 
 > A full README (setup, architecture, deployment) is added in a later phase.
 
+## Design
+
+The visual design is driven by semantic tokens, a small set of shared components and one
+decorative layer, so a look can change without touching any component.
+
+### Tokens (`app/palettes/prism.css`)
+
+Every brand color, gradient, tint, glow and style switch is a CSS variable defined **per palette and
+per mode**: `[data-palette="prism"]` (light) and `.dark[data-palette="prism"]` (dark). `<html>` carries
+`data-palette="prism"`; the `dark` class comes from `next-themes`. Components use only these tokens and
+never a raw brand color (verified by `grep` in review and by the contrast guard).
+
+| Group    | Tokens                                                                                                                |
+| -------- | --------------------------------------------------------------------------------------------------------------------- |
+| Neutrals | `--bg`, `--bg-2`, `--surface`, `--surface-2`, `--line`, `--line-strong`, `--fg`, `--muted`                            |
+| Brand    | `--brand`, `--brand-2`, `--brand-gradient`, `--brand-gradient-deep`, `--accent-text`, `--highlight`, `--highlight-fg` |
+| Buttons  | `--cta-bg`, `--cta-fg`, `--cta-chip-bg`, `--cta-chip-fg`                                                              |
+| Cards    | `--tint-1-bg/fg/border` … `--tint-6-*`                                                                                |
+| Status   | `--danger`, `--success`, `--warning` and their `-bg` pairs                                                            |
+| Depth    | `--shadow-card`, `--shadow-glow`, `--glow-1`, `--glow-2`                                                              |
+| Chrome   | `--nav-bg`, `--progress-bg`, `--focus`, `--selection-*`, and `--atm-*` for the decorative graphics                    |
+
+`tailwind.config.ts` maps them to utilities (`bg-surface`, `text-muted`, `border-line`, `bg-brand-gradient`,
+`shadow-card`, `tint-N` + `bg-t-bg`/`text-t-fg`/`border-t-border`, …). Adding a palette means adding a pair
+of blocks with the same token names in a new file under `app/palettes/`; no component changes.
+
+**Contrast band.** A section with the `band` class re-declares the neutral, tint and button tokens for its
+subtree (a deep violet panel inside the light page, a lifted one in dark mode), so components inside keep
+using plain tokens. The Projects section and the Skills wall use it.
+
+### Components
+
+- `components/ui`: `Button` (round-arrow pill, `primary` / `secondary`, `sm` / `md`), `Card` (optional tint
+  and hover gradient border), `Chip`, `Section` (backdrop slot, programmatic focus target),
+  `SectionHeading` (eyebrow with blinking `_`, exactly one highlighted word), `Highlight`.
+- `Atmosphere`: the decorative layer (`hero` and `soft` variants, light and dark pieces switched with the
+  `dark:` class, so there is no flash). Pure CSS and small inline SVG; `aria-hidden`, frozen under reduced motion.
+- `Navbar` (floating pill, sliding active indicator moved with `transform`), `ThemeToggle` (System / Light /
+  Dark), `ThemeColor` (keeps `<meta name="theme-color">` in step with `--bg`), `ScrollProgress`, `Reveal`.
+
+### Theming
+
+`next-themes` (class strategy, system by default, no flash on load) wraps the app in `components/Providers`.
+Fonts come from `next/font`: Space Grotesk (headings), Inter (body) and Hind Siliguri as the Bangla fallback.
+The design is AA-checked, not eyeballed: `npm run design:contrast` tests every text/background pair of every
+palette, mode and band, and fails below WCAG AA.
+
+### Motion
+
+Only `transform` and `opacity` animate; reveals use the easing `cubic-bezier(0.22, 1, 0.36, 1)`. With
+`prefers-reduced-motion` the floating shapes, the cursor blink, the scroll reveals and smooth scrolling are
+switched off (checked by a test).
+
+### Quality checks
+
+| Command                                 | What it does                                                                           |
+| --------------------------------------- | -------------------------------------------------------------------------------------- |
+| `npm run design:contrast`               | WCAG AA guard over all token pairs                                                     |
+| `npm run qa:build` / `npm run qa:start` | production build in `.next-qa` (a running `next dev` cannot overwrite it) on port 3100 |
+| `npm run test:e2e`                      | Playwright smoke + keyboard tests (desktop and mobile), run against the QA build       |
+| `node scripts/a11y-axe.mjs`             | axe-core audit of the public pages in both modes (`npm i --no-save axe-core` first)    |
+| `node scripts/screenshots.mjs <name>`   | screenshots at 375 / 768 / 1440, light and dark, into `docs/design/<name>`             |
+| `node scripts/verify-motion.mjs`        | progress bar, theme-color, reduced motion and CLS checks                               |
+
+Results of the latest run (Lighthouse, axe, keyboard, e2e) are in `docs/design/qa/README.md`. Always measure
+performance on the QA build: a dev server sharing `.next` corrupts production measurements.
+
 ## AI chatbot admin (`/admin/ai`)
 
 The chatbot is configured from the admin panel; environment variables are only a fallback.
