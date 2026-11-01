@@ -34,7 +34,7 @@ export default function About({ profile }: { profile: Profile | null }) {
       </Reveal>
 
       <Reveal className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
-        <div className="order-1 space-y-6 md:order-2">
+        <div className="space-y-6 lg:col-start-2 lg:row-start-1">
           <h3 className="text-2xl font-bold text-fg sm:text-3xl">My Journey as a {profile.designation}</h3>
           <p className="max-w-[65ch] whitespace-pre-line text-base leading-[1.7] text-muted sm:text-lg">
             {profile.aboutMe}
@@ -78,8 +78,8 @@ export default function About({ profile }: { profile: Profile | null }) {
           )}
         </div>
 
-        <div className="order-2 flex justify-center md:order-1">
-          <div className="relative w-full max-w-[300px] pb-4 md:max-w-md pr-4">
+        <div className="flex justify-center lg:col-start-1 lg:row-start-1">
+          <div className="relative w-full max-w-[300px] pb-4 lg:max-w-md pr-4">
             {/* gradient accent offset behind the frame */}
             <div
               aria-hidden
@@ -91,7 +91,7 @@ export default function About({ profile }: { profile: Profile | null }) {
                   src={profile.aboutPhotoUrl}
                   alt={`About ${profile.name}`}
                   fill
-                  sizes="(min-width: 768px) 448px, 300px"
+                  sizes="(min-width: 1024px) 448px, 300px"
                   className="object-cover"
                 />
               ) : (

@@ -1,60 +1,55 @@
 import type { Skill } from "@prisma/client";
-import Image from "next/image";
-import Atmosphere from "@/components/Atmosphere";
 import Reveal from "@/components/Reveal";
-import Card from "@/components/ui/Card";
-import Chip from "@/components/ui/Chip";
-import Section from "@/components/ui/Section";
 import SectionHeading from "@/components/ui/SectionHeading";
+import SkillsWall from "@/components/SkillsWall";
+import { buildSkillTabs } from "@/lib/skillTabs";
 
+/** Pure-CSS glows behind the content (radial gradients, no blur filter). */
+function BandGlows() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div
+        className="absolute -right-24 -top-24 h-[360px] w-[360px] rounded-full"
+        style={{
+          background: "radial-gradient(closest-side, var(--skills-band-glow-1), transparent)",
+        }}
+      />
+      <div
+        className="absolute -bottom-24 -left-24 hidden h-[360px] w-[360px] rounded-full sm:block"
+        style={{
+          background: "radial-gradient(closest-side, var(--skills-band-glow-2), transparent)",
+        }}
+      />
+    </div>
+  );
+}
+
+/** Full-width deep violet band (tokens come from `.band` + `.skills-band`). */
 export default function Skills({ skills }: { skills: Skill[] }) {
   if (!skills || skills.length === 0) return null;
 
-  const categories = Array.from(new Set(skills.map((s) => s.category)));
+  const data = buildSkillTabs(skills);
 
   return (
-    <Section id="skills" backdrop={<Atmosphere variant="soft" side="left" />}>
-      <Reveal>
-        <SectionHeading eyebrow="Skills" title="My Skills" highlight="Skills" />
-      </Reveal>
-
-      <ul className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:gap-6">
-        {categories.map((category, i) => (
-          <Reveal as="li" key={category} delay={(i % 2) * 0.08} className="flex">
-            <Card tint={i} className="w-full p-6 sm:p-8">
-              <div className="mb-5 flex items-center gap-3">
-                <span className="font-display text-sm font-bold tabular-nums" aria-hidden>
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="text-xl font-bold sm:text-2xl">{category}</h3>
-              </div>
-              <ul className="flex flex-wrap gap-2.5">
-                {skills
-                  .filter((s) => s.category === category)
-                  .map((skill) => (
-                    <li key={skill.id}>
-                      <Chip className="transition-transform duration-200 ease-out hover:-translate-y-0.5 hover:border-brand">
-                        {skill.imageUrl ? (
-                          <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-white p-0.5">
-                            <Image src={skill.imageUrl} alt="" width={20} height={20} className="h-5 w-5 object-contain" />
-                          </span>
-                        ) : (
-                          <span
-                            aria-hidden
-                            className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-brand-gradient-deep text-xs font-bold text-white"
-                          >
-                            {skill.name.charAt(0)}
-                          </span>
-                        )}
-                        {skill.name}
-                      </Chip>
-                    </li>
-                  ))}
-              </ul>
-            </Card>
-          </Reveal>
-        ))}
-      </ul>
-    </Section>
+    <section
+      id="skills"
+      tabIndex={-1}
+      className="band skills-band relative scroll-mt-24 overflow-hidden pb-[52px] pt-12 outline-none sm:pb-[72px] sm:pt-16"
+    >
+      <BandGlows />
+      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Reveal>
+          <SectionHeading
+            eyebrow="Skills"
+            title="My Skills"
+            highlight="Skills"
+            className="!mb-8 sm:!mb-10"
+          />
+        </Reveal>
+        <Reveal>
+          <SkillsWall data={data} />
+        </Reveal>
+      </div>
+    </section>
   );
 }

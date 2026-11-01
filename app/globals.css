@@ -146,6 +146,13 @@
   from { opacity: 0; transform: rotate(-80deg) scale(0.5); }
   to { opacity: 1; transform: none; }
 }
+@keyframes dot-pulse {
+  0% { box-shadow: 0 0 0 0 var(--success); }
+  100% { box-shadow: 0 0 0 7px transparent; }
+}
+.dot-live { animation: dot-pulse 1.8s ease-out infinite; }
+@media (prefers-reduced-motion: reduce) { .dot-live { animation: none; } }
+
 @keyframes blink {
   0%, 49% { opacity: 1; }
   50%, 100% { opacity: 0; }
@@ -184,6 +191,56 @@
   }
 }
 
+/* ───────── Education timeline ───────── */
+.edu-line-fade {
+  -webkit-mask-image: linear-gradient(to bottom, #000, rgba(0, 0, 0, 0.1));
+  mask-image: linear-gradient(to bottom, #000, rgba(0, 0, 0, 0.1));
+}
+.edu-line { background: linear-gradient(to bottom, var(--brand), var(--brand-2)); }
+.dark .edu-line { box-shadow: 0 0 18px var(--glow-1); }
+
+.edu-node {
+  border: 2px solid transparent;
+  background: linear-gradient(var(--bg), var(--bg)) padding-box, var(--brand-gradient) border-box;
+  color: var(--accent-text);
+}
+.edu-node-current {
+  background: var(--brand-gradient);
+  color: #fff;
+  animation: edu-node-pulse 2.8s ease-out infinite;
+}
+@keyframes edu-node-pulse {
+  0% { box-shadow: 0 0 0 0 var(--glow-1); }
+  70%, 100% { box-shadow: 0 0 0 14px transparent; }
+}
+
+.edu-card { transition: transform 250ms ease-out; }
+@media (hover: hover) {
+  .edu-card:hover { transform: translateY(-3px); }
+}
+
+/* gradient border on the current entry: a 1.5px ring painted over the 1px border, inner size unchanged */
+.edu-card-current { border-color: transparent; }
+.edu-card-current::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: var(--brand-gradient);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+.dark .edu-card-current { box-shadow: var(--shadow-card), 0 24px 60px -24px var(--glow-1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .edu-node-current { animation: none; }
+  .edu-card { transition: none; }
+  .edu-card:hover { transform: none; }
+}
+
 /* Reduced motion: freeze every decorative animation, static cursor, no smooth scroll */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -194,4 +251,63 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
+}
+
+/* Skills wall: glass tiles with a spotlight-style hover (values come from --skills-* tokens) */
+.skill-tab {
+  background: var(--skills-tab-bg);
+  color: var(--skills-tab-fg);
+  border: 1px solid var(--skills-tab-border);
+  transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+.skill-tab .skill-badge { background: var(--skills-tab-badge-bg); }
+.skill-tab[aria-pressed="true"] {
+  background: var(--skills-tab-active-bg);
+  color: var(--skills-tab-active-fg);
+  border-color: transparent;
+  box-shadow: var(--skills-tab-active-glow);
+}
+.skill-tab[aria-pressed="true"] .skill-badge { background: var(--skills-tab-active-badge-bg); }
+.skill-tab:focus-visible, .skill-tile :focus-visible { outline: 2px solid var(--skills-focus); outline-offset: 3px; }
+
+.skill-tile {
+  background: var(--skills-tile-bg);
+  border: 1px solid var(--skills-tile-border);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+@media (hover: hover) {
+  .skill-tile:hover, .skill-tile:focus-within {
+    background: var(--skills-tile-bg-hover);
+    border-color: var(--skills-tile-border-hover);
+    box-shadow: var(--skills-tile-glow);
+  }
+}
+@media (hover: none) {
+  .skill-tile:active {
+    background: var(--skills-tile-bg-hover);
+    border-color: var(--skills-tile-border-hover);
+    box-shadow: var(--skills-tile-glow);
+  }
+}
+
+/* all tab panels share one grid cell, so the area keeps the tallest panel's height (no layout shift) */
+.skill-panel {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease-out, visibility 0s linear 0.15s;
+}
+.skill-panel[data-active="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.15s ease-out, visibility 0s;
+}
+.skill-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (min-width: 700px) {
+  .skill-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skill-panel, .skill-panel[data-active="true"] { transition: none; }
 }

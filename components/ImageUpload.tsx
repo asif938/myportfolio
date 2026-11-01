@@ -9,12 +9,15 @@ interface ImageUploadProps {
   buttonText?: string;
   /** Allow selecting several files; onUploadAction is called once per uploaded file. */
   multiple?: boolean;
+  /** Max file size in bytes (default 10 MB). */
+  maxFileSize?: number;
 }
 
 export default function ImageUpload({
   onUploadAction,
   buttonText = "Upload Image",
   multiple = false,
+  maxFileSize = 10_000_000,
 }: ImageUploadProps) {
   return (
     <CldUploadWidget
@@ -23,7 +26,7 @@ export default function ImageUpload({
         folder: CLOUDINARY_UPLOAD_FOLDER,
         resourceType: "image",
         clientAllowedFormats: ALLOWED_IMAGE_FORMATS,
-        maxFileSize: 10_000_000,
+        maxFileSize,
         multiple,
         maxFiles: multiple ? 20 : 1,
       }}

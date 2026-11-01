@@ -129,6 +129,53 @@ for (const [key, vars] of Object.entries(blocks)) {
       check(palette, mode, `tint-${i} fg on tint bg`, solid(`--tint-${i}-fg`), [tintBg], 4.5);
     }
   }
+  // education icon tile: icon (UI 3:1) on its tint, composited over the card surface
+  for (const base of [bgs.surface[0], surfaceOnBg2[0]]) {
+    check(palette, mode, "edu-icon-fg on edu-icon-bg (UI 3:1)", solid("--edu-icon-fg"), [over(get("--edu-icon-bg")[0], base)], 3);
+  }
+  // experience featured card (white text on every stop of the gradient, chips composited on each stop)
+  const white = [{ r: 255, g: 255, b: 255, a: 1 }];
+  const featureStops = solid("--feature-bg");
+  check(palette, mode, "feature-fg on feature-bg (every stop)", solid("--feature-fg"), featureStops, 4.5);
+  check(palette, mode, "feature-fg-soft on feature-bg (every stop)", get("--feature-fg-soft").flatMap((c) => featureStops.map((st) => over(c, st))), featureStops, 4.5);
+  check(
+    palette, mode, "feature-chip-fg on chip over feature-bg",
+    white,
+    get("--feature-chip-bg").flatMap((c) => featureStops.map((st) => over(c, st))),
+    4.5,
+  );
+  check(palette, mode, "feature-box-1-fg on feature-box-1-bg", solid("--feature-box-1-fg"), solid("--feature-box-1-bg"), 4.5);
+  check(palette, mode, "feature-box-2-fg on feature-box-2-bg", solid("--feature-box-2-fg"), solid("--feature-box-2-bg"), 4.5);
+  check(palette, mode, "highlight pill on feature-bg (UI 3:1)", solid("--highlight-bg"), featureStops, 3);
+  // skills band: text/tab/tile pairs over every stop of the band gradient
+  const bandStops = solid("--skills-band-bg");
+  const onBand = (name, base = bandStops) => get(name).flatMap((c) => base.map((st) => over(c, st)));
+  check(palette, mode, "skills fg on band", solid("--skills-fg"), bandStops, 4.5);
+  check(palette, mode, "skills muted on band", solid("--skills-muted"), bandStops, 4.5);
+  check(palette, mode, "skills eyebrow on band", solid("--skills-eyebrow"), bandStops, 4.5);
+  check(palette, mode, "skills focus ring on band (UI 3:1)", solid("--skills-focus"), bandStops, 3);
+  check(palette, mode, "skill name on tile (rest) over band", solid("--skills-fg"), onBand("--skills-tile-bg"), 4.5);
+  check(palette, mode, "skill name on tile (hover) over band", solid("--skills-fg"), onBand("--skills-tile-bg-hover"), 4.5);
+  const tabBgs = onBand("--skills-tab-bg");
+  check(palette, mode, "tab text (unselected) over band", solid("--skills-tab-fg"), tabBgs, 4.5);
+  check(
+    palette, mode, "tab badge text (unselected)",
+    solid("--skills-tab-fg"),
+    get("--skills-tab-badge-bg").flatMap((c) => tabBgs.map((b) => over(c, b))),
+    4.5,
+  );
+  const activeBgs = solid("--skills-tab-active-bg");
+  check(palette, mode, "tab text (selected) on gradient", solid("--skills-tab-active-fg"), activeBgs, 4.5);
+  check(
+    palette, mode, "tab badge text (selected)",
+    solid("--skills-tab-active-fg"),
+    get("--skills-tab-active-badge-bg").flatMap((c) => activeBgs.map((b) => over(c, b))),
+    4.5,
+  );
+  // the band class remaps the tints to light-on-dark; the dots only ever render inside it
+  for (let i = 1; i <= 6 && band; i++) {
+    check(palette, mode, "category dot (tint fg) on tile (UI 3:1)", solid(`--tint-${i}-fg`), onBand("--skills-tile-bg"), 3);
+  }
 }
 
 /* ---------- report ---------- */

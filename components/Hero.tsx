@@ -18,13 +18,13 @@ export default function Hero({ profile }: { profile: Profile | null }) {
     <section
       id="home"
       tabIndex={-1}
-      className="relative flex min-h-screen min-h-[100svh] scroll-mt-16 items-start md:items-center overflow-hidden py-[var(--nav-h)] outline-none [--nav-h:6rem] sm:[--nav-h:7rem]"
+      className="relative flex min-h-screen min-h-[100svh] scroll-mt-16 items-start lg:items-center overflow-hidden py-[var(--nav-h)] outline-none [--nav-h:6rem] sm:[--nav-h:7rem]"
     >
       <Atmosphere />
 
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 items-start gap-10 md:items-center md:gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-8">
-          <div className="order-1 space-y-8 md:order-2 lg:order-1">
+        <div className="grid grid-cols-1 items-start gap-10 lg:items-center lg:gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-8">
+          <div className="space-y-8">
             <div className="space-y-5">
               <p className="cursor text-sm font-semibold uppercase tracking-[0.18em] text-accent">Hello, I am</p>
               <h1 className="text-hero font-bold text-fg">{profile.name}</h1>
@@ -78,8 +78,8 @@ export default function Hero({ profile }: { profile: Profile | null }) {
             </ul>
           </div>
 
-          <div className="order-2 flex justify-center md:order-1 lg:order-2 lg:justify-end">
-            <div className="relative w-[min(70%,280px)] md:w-[min(64vw,26rem)] lg:w-[min(36vw,28rem)]">
+          <div className="flex justify-center lg:justify-end">
+            <div className="relative w-[min(70%,280px)] sm:w-[min(50vw,320px)] lg:w-[min(36vw,28rem)]">
               <div
                 aria-hidden
                 className="absolute -inset-8 rounded-full"
@@ -93,7 +93,7 @@ export default function Hero({ profile }: { profile: Profile | null }) {
                       alt={profile.name}
                       fill
                       priority
-                      sizes="(min-width: 1024px) 448px, (min-width: 768px) 64vw, 280px"
+                      sizes="(min-width: 1024px) 448px, (min-width: 640px) 320px, 280px"
                       className="object-cover"
                     />
                   ) : (

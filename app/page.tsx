@@ -44,7 +44,13 @@ export default async function Home() {
     address: profile.location
       ? { "@type": "PostalAddress", addressLocality: profile.location }
       : undefined,
-    worksFor: currentJob ? { "@type": "Organization", name: currentJob.company } : undefined,
+    worksFor: currentJob
+      ? {
+          "@type": "Organization",
+          name: currentJob.company,
+          logo: currentJob.companyLogoUrl ?? undefined,
+        }
+      : undefined,
     knowsAbout: skills.map((s) => s.name),
     sameAs: [profile.githubUrl, profile.linkedinUrl, profile.facebookUrl].filter(
       (url): url is string => Boolean(url),

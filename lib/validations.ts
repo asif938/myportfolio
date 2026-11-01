@@ -190,6 +190,7 @@ export const experienceSchema = z
     achievements: stringList("achievement", 20, 500).default([]),
     techStack: stringList("technology", 30, 40).default([]),
     companyUrl: optionalUrl("Company URL"),
+    companyLogoUrl: optionalImageUrl("Company logo"),
   })
   .refine((e) => !e.endDate || e.endDate >= e.startDate, {
     message: "End date must be after the start date",

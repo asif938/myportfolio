@@ -91,6 +91,7 @@ model Experience {
   achievements   String[]       @default([])
   techStack      String[]       @default([])
   companyUrl     String?
+  companyLogoUrl String?
   order          Int            @default(0)
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @default(now()) @updatedAt

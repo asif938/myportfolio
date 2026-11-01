@@ -48,39 +48,6 @@ function PaperPlane({ className }: { className?: string }) {
   );
 }
 
-/* ───────── deterministic skyline (no randomness => stable SSR) ───────── */
-
-function lcg(seed: number) {
-  let s = seed;
-  return () => {
-    s = (s * 1664525 + 1013904223) % 4294967296;
-    return s / 4294967296;
-  };
-}
-
-const SKYLINE = (() => {
-  const rnd = lcg(7);
-  const buildings: { x: number; w: number; h: number }[] = [];
-  const windows: { x: number; y: number; c: 1 | 2 }[] = [];
-  let x = 0;
-  while (x < 1200) {
-    const w = 16 + Math.floor(rnd() * 30);
-    const center = 1 - Math.abs(x + w / 2 - 600) / 600; // 0 at edges, 1 in the middle
-    const h = Math.round(14 + center ** 1.5 * 112 * (0.3 + rnd() * 0.7));
-    buildings.push({ x, w, h });
-    const n = Math.floor(rnd() * 4);
-    for (let i = 0; i < n; i++) {
-      windows.push({
-        x: x + 5 + Math.floor(rnd() * (w - 12)),
-        y: 140 - h + 8 + Math.floor(rnd() * Math.max(1, h - 20)),
-        c: rnd() > 0.5 ? 1 : 2,
-      });
-    }
-    x += w + 1 + Math.floor(rnd() * 5);
-  }
-  return { buildings, windows };
-})();
-
 const STARS = [
   [6, 12], [14, 34], [22, 8], [31, 22], [43, 10], [57, 28], [66, 9], [74, 20], [83, 12], [91, 30], [96, 8], [49, 36],
 ];
@@ -123,42 +90,7 @@ function PrismNight() {
       <Crystal id="cr2" a="--atm-c" b="--atm-a" className="float-b absolute left-[5%] top-[30%] hidden w-10 drop-shadow-[0_0_20px_var(--glow-1)] md:block lg:left-[48%] lg:top-[62%] lg:w-14" />
       <Crystal id="cr3" a="--atm-d" b="--atm-c" className="float-c absolute right-[3%] top-[58%] hidden w-8 drop-shadow-[0_0_18px_var(--glow-1)] sm:block sm:w-10 lg:w-12" />
       <Crystal id="cr4" a="--atm-b" b="--atm-c" className="float-b absolute right-[36%] top-[12%] hidden w-7 opacity-80 lg:block" />
-      <PaperPlane className="float-a absolute left-[3%] top-[11%] w-12 drop-shadow-[0_0_18px_var(--glow-1)] sm:w-16 lg:left-[49%] lg:top-[20%] lg:w-20" />
-
-      {/* horizon / planet + skyline */}
-      <div className="absolute inset-x-0 bottom-0 h-44 sm:h-56 lg:h-64">
-        <div
-          className="absolute inset-x-0 bottom-0 h-full"
-          style={{ background: "radial-gradient(60% 70% at 50% 100%, var(--glow-2), transparent 70%)" }}
-        />
-        <div
-          className="absolute left-1/2 top-[68%] aspect-square w-[190%] -translate-x-1/2 rounded-full"
-          style={{
-            background: "radial-gradient(closest-side at 50% 0%, var(--atm-planet-top), var(--bg-2) 70%)",
-            boxShadow: "inset 0 2px 0 var(--atm-planet-rim), 0 -18px 90px var(--glow-1)",
-          }}
-        />
-        <svg
-          viewBox="0 0 1200 200"
-          preserveAspectRatio="xMidYMax slice"
-          className="absolute inset-x-0 bottom-0 h-full w-full"
-          aria-hidden
-          focusable="false"
-        >
-          <defs>
-            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" style={stop("--atm-sky-top")} />
-              <stop offset="1" style={stop("--atm-sky-bottom")} />
-            </linearGradient>
-          </defs>
-          {SKYLINE.buildings.map((b, i) => (
-            <rect key={i} x={b.x} y={140 - b.h} width={b.w} height={b.h + 60} fill="url(#sky)" opacity=".92" />
-          ))}
-          {SKYLINE.windows.map((w, i) => (
-            <rect key={i} x={w.x} y={w.y} width="3" height="4" style={fill(w.c === 1 ? "--atm-window-1" : "--atm-window-2")} opacity=".9" />
-          ))}
-        </svg>
-      </div>
+      <PaperPlane className="float-a absolute right-4 top-[calc(var(--nav-h,6rem)-0.25rem)] w-10 drop-shadow-[0_0_18px_var(--glow-1)] sm:right-auto sm:left-[3%] sm:top-[11%] sm:w-16 lg:left-[49%] lg:top-[20%] lg:w-20" />
     </div>
   );
 }

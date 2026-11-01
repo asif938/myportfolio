@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Pencil, Trash2 } from "lucide-react";
+import ImageUpload from "@/components/ImageUpload";
 import type { EmploymentType, Experience } from "@prisma/client";
 import {
   addExperience,
@@ -32,6 +34,7 @@ type ExperienceForm = {
   achievements: string;
   techStack: string;
   companyUrl: string;
+  companyLogoUrl: string;
 };
 
 const emptyExperience: ExperienceForm = {
@@ -46,6 +49,7 @@ const emptyExperience: ExperienceForm = {
   achievements: "",
   techStack: "",
   companyUrl: "",
+  companyLogoUrl: "",
 };
 
 function toForm(exp: Experience): ExperienceForm {
@@ -61,6 +65,7 @@ function toForm(exp: Experience): ExperienceForm {
     achievements: exp.achievements.join("\n"),
     techStack: exp.techStack.join(", "),
     companyUrl: exp.companyUrl ?? "",
+    companyLogoUrl: exp.companyLogoUrl ?? "",
   };
 }
 
@@ -272,6 +277,37 @@ export default function ExperienceAdminClient({
               onChange={handleChange}
               className={inputClass}
             />
+          </div>
+          <div className="space-y-2">
+            <span className={labelClass}>Company logo (optional)</span>
+            {current.companyLogoUrl && (
+              <div className="flex items-center gap-3">
+                <span className="grid h-12 w-12 place-items-center rounded-[15px] border bg-white p-1.5">
+                  <Image
+                    src={current.companyLogoUrl}
+                    alt="Company logo preview"
+                    width={48}
+                    height={48}
+                    className="h-full w-full object-contain"
+                  />
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setCurrent({ ...current, companyLogoUrl: "" })}
+                  className={secondaryButtonClass}
+                >
+                  Remove logo
+                </button>
+              </div>
+            )}
+            <ImageUpload
+              buttonText={current.companyLogoUrl ? "Replace Logo" : "Upload Logo"}
+              maxFileSize={2_000_000}
+              onUploadAction={(url) => setCurrent((c) => ({ ...c, companyLogoUrl: url }))}
+            />
+            <p className="text-xs text-muted">
+              Square image, at least 200x200, transparent or white background works best, max 2 MB.
+            </p>
           </div>
           <div className="flex gap-2">
             <button type="submit" disabled={saving} className={primaryButtonClass}>
