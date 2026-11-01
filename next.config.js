@@ -33,6 +33,8 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
+  // QA builds (npm run qa:build) use their own folder so a running `next dev` cannot overwrite them.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   reactStrictMode: true,
   images: {
     // Cloudinary resizes and converts images itself (see lib/cloudinaryLoader.ts).

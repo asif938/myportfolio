@@ -13,7 +13,10 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "design:contrast": "node scripts/check-contrast.mjs"
+    "design:contrast": "node scripts/check-contrast.mjs",
+    "qa:build": "node scripts/next-qa.mjs build",
+    "qa:start": "node scripts/next-qa.mjs start -p 3100",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.92",
@@ -42,6 +45,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@tailwindcss/typography": "^0.5.20",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",

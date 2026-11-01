@@ -32,10 +32,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-bg-2">
+    <main className="flex h-screen items-center justify-center bg-bg-2 px-4">
       <div className="w-full max-w-md space-y-8 rounded-xl bg-surface p-8 shadow-lg">
         <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-fg">Admin Login</h2>
+          <h1 className="text-3xl font-bold tracking-tight text-fg">Admin Login</h1>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && <div className="rounded bg-danger-bg p-3 text-sm text-danger">{error}</div>}
@@ -82,6 +82,6 @@ export default function LoginPage() {
           </div>
         </form>
       </div>
-    </div>
+    </main>
   );
 }

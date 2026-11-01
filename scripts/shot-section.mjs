@@ -27,7 +27,11 @@ for (const mode of ["light", "dark"]) {
     const h = await el.evaluate((n) => n.getBoundingClientRect().height);
     for (let y = 0; y <= h; y += 300) {
       await el.evaluate(
-        (n, dy) => window.scrollTo(0, n.getBoundingClientRect().top + scrollY + dy - 300),
+        (n, dy) =>
+          window.scrollTo({
+            top: n.getBoundingClientRect().top + scrollY + dy - 300,
+            behavior: "instant",
+          }),
         y,
       );
       await page.waitForTimeout(120);

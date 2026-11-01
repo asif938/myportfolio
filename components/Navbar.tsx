@@ -122,18 +122,19 @@ export default function Navbar({
       <SkipLink />
       <div className="mx-auto max-w-6xl">
         <div className="flex h-14 items-center justify-between gap-2 rounded-full border border-line-strong bg-[var(--nav-bg)] py-1.5 pl-2 pr-2 shadow-card backdrop-blur-xl sm:h-16 sm:pl-3 sm:pr-3">
-          <Link
-            href="/"
-            aria-label={`${name ?? "Portfolio"} – home`}
-            className="flex items-center gap-2.5 rounded-full pr-2"
-          >
+          <Link href="/" className="flex items-center gap-2.5 rounded-full pr-2">
             <span
               aria-hidden
               className="grid h-10 w-10 place-items-center rounded-full bg-brand-gradient-deep font-display text-sm font-bold text-white"
             >
               {initials(name)}
             </span>
-            <span className="hidden font-display text-base font-bold tracking-tight text-fg xl:block">
+            {/* The accessible name comes from this text (no aria-label to disagree with the visible label). */}
+            <span className="sr-only">{name ?? "Portfolio"} – home</span>
+            <span
+              aria-hidden
+              className="hidden font-display text-base font-bold tracking-tight text-fg xl:block"
+            >
               {name?.split(" ")[0] ?? "Portfolio"}
               <span className="text-accent">.</span>
             </span>
