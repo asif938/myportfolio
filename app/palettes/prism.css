@@ -1,0 +1,341 @@
+/*
+ * Palette "Prism" (default). Every brand color lives here, per mode.
+ * Adding a palette = adding another pair of blocks with the same token names
+ * ([data-palette="volt"] and .dark[data-palette="volt"]). Components only use
+ * semantic tokens, never raw brand colors.
+ * Mode is driven by the `dark` class on <html> (next-themes).
+ */
+
+/* ───────────── Prism · Pastel Day (light) ───────────── */
+[data-palette="prism"] {
+  color-scheme: light;
+
+  /* neutrals */
+  --bg: #ffffff;
+  --bg-2: #f7f1ff;
+  --bg-wash: linear-gradient(180deg, #ffffff 0%, #f7f1ff 45%, #fff1f8 100%);
+  --surface: #ffffff;
+  --surface-2: #f4eeff;
+  --line: rgba(76, 29, 149, 0.1);
+  --line-strong: rgba(76, 29, 149, 0.22);
+  --fg: #170f33;
+  --muted: #5b5478;
+  --focus: #6d28d9;
+
+  /* brand */
+  --brand: #7c3aed;
+  --brand-2: #d946ef;
+  --brand-gradient: linear-gradient(135deg, #7c3aed 0%, #d946ef 100%);
+  /* deeper stops so white text on it stays AA (monogram, badges) */
+  --brand-gradient-deep: linear-gradient(135deg, #6d28d9 0%, #c026d3 100%);
+  --accent-text: #6d28d9;
+  --highlight: #d4ff3a;
+  --highlight-fg: #0b0b12;
+  --highlight-style: marker; /* marker | gradient-pill */
+  --highlight-bg: var(--highlight);
+  --highlight-radius: 0.2em;
+
+  /* buttons (gradient pill, white text, lime arrow chip) */
+  --cta-bg: linear-gradient(135deg, #6d28d9 0%, #c026d3 100%);
+  --cta-fg: #ffffff;
+  --cta-chip-bg: #d4ff3a;
+  --cta-chip-fg: #0b0b12;
+
+  /* tinted cards: bg / fg / border */
+  --tint-1-bg: #ede4ff;
+  --tint-1-fg: #5b21b6;
+  --tint-1-border: rgba(124, 58, 237, 0.2);
+  --tint-2-bg: #ffe3f1;
+  --tint-2-fg: #9d174d;
+  --tint-2-border: rgba(219, 39, 119, 0.2);
+  --tint-3-bg: #ddf1ff;
+  --tint-3-fg: #075985;
+  --tint-3-border: rgba(2, 132, 199, 0.2);
+  --tint-4-bg: #ddf8e8;
+  --tint-4-fg: #065f46;
+  --tint-4-border: rgba(5, 150, 105, 0.2);
+  --tint-5-bg: #fff6c4;
+  --tint-5-fg: #713f12;
+  --tint-5-border: rgba(202, 138, 4, 0.25);
+  --tint-6-bg: #ffe8d6;
+  --tint-6-fg: #9a3412;
+  --tint-6-border: rgba(234, 88, 12, 0.2);
+
+  /* depth */
+  /* experience: featured role card + info boxes */
+  --feature-bg: linear-gradient(135deg, #6d28d9 0%, #a21caf 100%);
+  --feature-fg: #ffffff;
+  --feature-fg-soft: rgba(255, 255, 255, 0.9);
+  --feature-chip-bg: rgba(255, 255, 255, 0.16);
+  --feature-chip-fg: #ffffff;
+  --feature-ring: rgba(255, 255, 255, 0.14);
+  --feature-box-1-bg: var(--highlight);
+  --feature-box-1-fg: var(--highlight-fg);
+  --feature-box-2-bg: #bae6fd;
+  --feature-box-2-fg: #0c2a43;
+
+  /* skills: tabbed wall on a deep violet band */
+  --skills-band-bg: linear-gradient(160deg, #241056, #37168a 60%, #2a1166);
+  --skills-band-glow-1: rgba(217, 70, 239, 0.22);
+  --skills-band-glow-2: rgba(59, 130, 246, 0.22);
+  --skills-fg: #f6f2ff;
+  --skills-muted: #cbbff0;
+  --skills-eyebrow: #c8b6ff;
+  --skills-focus: #e9deff;
+  --skills-tab-bg: rgba(255, 255, 255, 0.08);
+  --skills-tab-fg: #f6f2ff;
+  --skills-tab-border: rgba(255, 255, 255, 0.2);
+  --skills-tab-badge-bg: rgba(255, 255, 255, 0.14);
+  --skills-tab-active-bg: linear-gradient(135deg, #6d28d9 0%, #a21caf 100%);
+  --skills-tab-active-fg: #ffffff;
+  --skills-tab-active-badge-bg: rgba(255, 255, 255, 0.18);
+  --skills-tab-active-glow: 0 10px 28px -10px rgba(217, 70, 239, 0.7);
+  --skills-tile-bg: rgba(255, 255, 255, 0.07);
+  --skills-tile-border: rgba(255, 255, 255, 0.14);
+  --skills-tile-bg-hover: rgba(255, 255, 255, 0.13);
+  --skills-tile-border-hover: rgba(255, 255, 255, 0.38);
+  --skills-tile-glow: 0 18px 40px -18px rgba(217, 70, 239, 0.55);
+
+  --shadow-card: 0 20px 50px -24px rgba(124, 58, 237, 0.35);
+  --shadow-glow: 0 14px 34px -10px rgba(168, 40, 220, 0.55);
+  --glow-1: rgba(124, 58, 237, 0.28);
+  --glow-2: rgba(217, 70, 239, 0.22);
+
+  /* atmosphere */
+  --dot: rgba(109, 40, 217, 0.22);
+  --nav-bg: rgba(255, 255, 255, 0.72);
+  --progress-bg: linear-gradient(90deg, #7c3aed 0%, #d946ef 60%, #d4ff3a 100%);
+  --danger: #b91c1c;
+  --danger-bg: #fee2e2;
+  --success: #047857;
+  --success-bg: #d1fae5;
+  --edu-icon-bg: #ede4ff;
+  --edu-icon-border: #d7c6ff;
+  --edu-icon-fg: #4c1d95;
+  /* About picture (circle + orbit) */
+  --about-s1: #8b5cf6;
+  --about-s2: #f472b6;
+  --about-s3: #60a5fa;
+  --about-ring: rgba(109, 40, 217, 0.3);
+  --about-glow: rgba(124, 58, 237, 0.3);
+  --about-glass: rgba(255, 255, 255, 0.84);
+  --about-line-strong: rgba(76, 29, 149, 0.24);
+  --about-spark-a: #8b5cf6;
+  --about-spark-b: #f0abfc;
+  --about-dot: #22c55e;
+  --about-dot-ring: rgba(34, 197, 94, 0.25);
+  --about-orb-dot: #ffffff;
+  --warning: #92400e;
+  --warning-bg: #fef3c7;
+  --selection-bg: #d4ff3a;
+  --selection-fg: #0b0b12;
+
+  /* atmosphere (decorative graphics only) */
+  --atm-a: #7c3aed;
+  --atm-b: #d946ef;
+  --atm-c: #38bdf8;
+  --atm-d: #fbbf24;
+  --atm-blob-1: #c4b5fd;
+  --atm-blob-2: #f9a8d4;
+  --atm-blob-3: #7dd3fc;
+  --atm-scribble: #d946ef;
+}
+
+/* ───────────── Prism · Night (dark) ───────────── */
+.dark[data-palette="prism"] {
+  color-scheme: dark;
+
+  --bg: #080616;
+  --bg-2: #0e0a24;
+  --bg-wash: radial-gradient(120% 60% at 50% 0%, #130e2e 0%, #080616 70%);
+  --surface: rgba(255, 255, 255, 0.045); /* glass over #130E2E */
+  --surface-2: #1b1442;
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.2);
+  --fg: #f1eeff;
+  --muted: #a59fc6;
+  --focus: #b79bff;
+
+  --brand: #7c3aed;
+  --brand-2: #d946ef;
+  --brand-gradient: linear-gradient(135deg, #7c3aed 0%, #d946ef 100%);
+  /* deeper stops so white text on it stays AA (monogram, badges) */
+  --brand-gradient-deep: linear-gradient(135deg, #6d28d9 0%, #c026d3 100%);
+  --accent-text: #b79bff;
+  --highlight: #d4ff3a;
+  --highlight-fg: #0b0b12;
+  --highlight-style: marker;
+  --highlight-bg: var(--highlight);
+  --highlight-radius: 0.2em;
+
+  /* lime pill, ink text, violet arrow chip */
+  --cta-bg: #d4ff3a;
+  --cta-fg: #0b0b12;
+  --cta-chip-bg: #7c3aed;
+  --cta-chip-fg: #ffffff;
+
+  /* translucent glass tints with a colored hairline */
+  --tint-1-bg: rgba(20, 184, 166, 0.14);
+  --tint-1-fg: #5eead4;
+  --tint-1-border: rgba(45, 212, 191, 0.35);
+  --tint-2-bg: rgba(139, 92, 246, 0.16);
+  --tint-2-fg: #c4b5fd;
+  --tint-2-border: rgba(167, 139, 250, 0.38);
+  --tint-3-bg: rgba(244, 63, 94, 0.14);
+  --tint-3-fg: #fda4af;
+  --tint-3-border: rgba(251, 113, 133, 0.35);
+  --tint-4-bg: rgba(99, 102, 241, 0.18);
+  --tint-4-fg: #a5b4fc;
+  --tint-4-border: rgba(129, 140, 248, 0.38);
+  --tint-5-bg: rgba(56, 189, 248, 0.14);
+  --tint-5-fg: #7dd3fc;
+  --tint-5-border: rgba(56, 189, 248, 0.35);
+  --tint-6-bg: rgba(245, 158, 11, 0.14);
+  --tint-6-fg: #fcd34d;
+  --tint-6-border: rgba(251, 191, 36, 0.35);
+
+  /* experience: featured role card + info boxes */
+  --feature-bg: linear-gradient(135deg, #5b21b6 0%, #a21caf 100%);
+  --feature-fg: #ffffff;
+  --feature-fg-soft: rgba(255, 255, 255, 0.9);
+  --feature-chip-bg: rgba(255, 255, 255, 0.16);
+  --feature-chip-fg: #ffffff;
+  --feature-ring: rgba(255, 255, 255, 0.12);
+  --feature-box-1-bg: var(--highlight);
+  --feature-box-1-fg: var(--highlight-fg);
+  --feature-box-2-bg: #7dd3fc;
+  --feature-box-2-fg: #082032;
+
+  /* skills: tabbed wall on a deep violet band */
+  --skills-band-bg: linear-gradient(160deg, #150c3b, #22125f 60%, #160c3e);
+  --skills-band-glow-1: rgba(217, 70, 239, 0.22);
+  --skills-band-glow-2: rgba(59, 130, 246, 0.22);
+  --skills-fg: #f6f2ff;
+  --skills-muted: #cbbff0;
+  --skills-eyebrow: #c8b6ff;
+  --skills-focus: #e9deff;
+  --skills-tab-bg: rgba(255, 255, 255, 0.08);
+  --skills-tab-fg: #f6f2ff;
+  --skills-tab-border: rgba(255, 255, 255, 0.2);
+  --skills-tab-badge-bg: rgba(255, 255, 255, 0.14);
+  --skills-tab-active-bg: linear-gradient(135deg, #6d28d9 0%, #a21caf 100%);
+  --skills-tab-active-fg: #ffffff;
+  --skills-tab-active-badge-bg: rgba(255, 255, 255, 0.18);
+  --skills-tab-active-glow: 0 10px 28px -10px rgba(217, 70, 239, 0.7);
+  --skills-tile-bg: rgba(255, 255, 255, 0.07);
+  --skills-tile-border: rgba(255, 255, 255, 0.14);
+  --skills-tile-bg-hover: rgba(255, 255, 255, 0.13);
+  --skills-tile-border-hover: rgba(255, 255, 255, 0.38);
+  --skills-tile-glow: 0 18px 40px -18px rgba(217, 70, 239, 0.55);
+
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 24px 50px -28px rgba(0, 0, 0, 0.85);
+  --shadow-glow: 0 0 36px -4px rgba(212, 255, 58, 0.45);
+  --glow-1: rgba(124, 58, 237, 0.55);
+  --glow-2: rgba(217, 70, 239, 0.4);
+
+  --dot: rgba(183, 155, 255, 0.2);
+  --nav-bg: rgba(19, 14, 46, 0.62);
+  --danger: #fca5a5;
+  --danger-bg: rgba(239, 68, 68, 0.16);
+  --success: #6ee7b7;
+  --success-bg: rgba(16, 185, 129, 0.16);
+  --edu-icon-bg: rgba(139, 92, 246, 0.16);
+  --edu-icon-border: rgba(167, 139, 250, 0.42);
+  --edu-icon-fg: #d9ccff;
+  /* About picture (circle + orbit) */
+  --about-s1: #5b21b6;
+  --about-s2: #c026d3;
+  --about-s3: #2563eb;
+  --about-ring: rgba(255, 255, 255, 0.22);
+  --about-glow: rgba(168, 85, 247, 0.45);
+  --about-glass: rgba(20, 16, 47, 0.74);
+  --about-line-strong: rgba(255, 255, 255, 0.2);
+  --about-spark-a: #8b5cf6;
+  --about-spark-b: #f0abfc;
+  --about-dot: #22c55e;
+  --about-dot-ring: rgba(34, 197, 94, 0.25);
+  --about-orb-dot: #ffffff;
+  --warning: #fcd34d;
+  --warning-bg: rgba(245, 158, 11, 0.16);
+  --progress-bg: linear-gradient(90deg, #7c3aed 0%, #d946ef 55%, #d4ff3a 100%);
+  --selection-bg: #d4ff3a;
+  --selection-fg: #0b0b12;
+
+  /* atmosphere (decorative graphics only) */
+  --atm-a: #7c3aed;
+  --atm-b: #d946ef;
+  --atm-c: #3b82f6;
+  --atm-d: #22d3ee;
+  --atm-star: #ffffff;
+}
+
+/* ───────── Prism · contrast band ─────────
+ * One deliberate dark panel inside the light page (and a lifted, glowing one in
+ * dark mode). Apply class "band" to a section: every token below is re-declared
+ * for its subtree, so components inside keep using plain semantic tokens. */
+[data-palette="prism"] .band {
+  color-scheme: dark;
+  --bg: #140b33;
+  --bg-2: #1b1042;
+  --surface: rgba(255, 255, 255, 0.06);
+  --surface-2: #241757;
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.22);
+  --fg: #f1eeff;
+  --muted: #b3add3;
+  --focus: #c4b0ff;
+  --accent-text: #c4b0ff;
+  --highlight-bg: var(--highlight);
+  --cta-bg: #d4ff3a;
+  --cta-fg: #0b0b12;
+  --cta-chip-bg: #7c3aed;
+  --cta-chip-fg: #ffffff;
+  --tint-1-bg: rgba(20, 184, 166, 0.14);
+  --tint-1-fg: #5eead4;
+  --tint-1-border: rgba(45, 212, 191, 0.35);
+  --tint-2-bg: rgba(139, 92, 246, 0.18);
+  --tint-2-fg: #c4b5fd;
+  --tint-2-border: rgba(167, 139, 250, 0.38);
+  --tint-3-bg: rgba(244, 63, 94, 0.14);
+  --tint-3-fg: #fda4af;
+  --tint-3-border: rgba(251, 113, 133, 0.35);
+  --tint-4-bg: rgba(99, 102, 241, 0.18);
+  --tint-4-fg: #a5b4fc;
+  --tint-4-border: rgba(129, 140, 248, 0.38);
+  --tint-5-bg: rgba(56, 189, 248, 0.14);
+  --tint-5-fg: #7dd3fc;
+  --tint-5-border: rgba(56, 189, 248, 0.35);
+  --tint-6-bg: rgba(245, 158, 11, 0.14);
+  --tint-6-fg: #fcd34d;
+  --tint-6-border: rgba(251, 191, 36, 0.35);
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 24px 50px -28px rgba(0, 0, 0, 0.8);
+  --shadow-glow: 0 0 36px -4px rgba(212, 255, 58, 0.4);
+  --band-glow-1: rgba(124, 58, 237, 0.5);
+  --band-glow-2: rgba(217, 70, 239, 0.32);
+  --nav-bg: rgba(19, 14, 46, 0.62);
+  --danger: #fca5a5;
+  --danger-bg: rgba(239, 68, 68, 0.16);
+  --success: #6ee7b7;
+  --success-bg: rgba(16, 185, 129, 0.16);
+  --warning: #fcd34d;
+  --warning-bg: rgba(245, 158, 11, 0.16);
+  background-color: var(--bg);
+  color: var(--fg);
+}
+.dark[data-palette="prism"] .band {
+  --bg: #130e2e;
+  --bg-2: #1b1442;
+  --surface-2: #231a57;
+  --band-glow-1: rgba(124, 58, 237, 0.6);
+  --band-glow-2: rgba(217, 70, 239, 0.4);
+}
+
+/* Skills band: same deep violet in both modes; remaps the text tokens for its subtree. */
+[data-palette="prism"] .skills-band {
+  background: var(--skills-band-bg);
+  --fg: var(--skills-fg);
+  --muted: var(--skills-muted);
+  --accent-text: var(--skills-eyebrow);
+  --focus: var(--skills-focus);
+  color: var(--skills-fg);
+}

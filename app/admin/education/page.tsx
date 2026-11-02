@@ -1,16 +1,10 @@
-import { prisma } from "@/lib/prisma";
+import { db } from "@/lib/data";
 import EducationAdminClient from "./EducationAdminClient";
 
-export const revalidate = 0;
+export const dynamic = "force-dynamic";
 
 export default async function EducationPage() {
-  const education = await prisma.education.findMany({
-    orderBy: { startYear: 'desc' }
-  });
-  
-  return (
-    <div>
-      <EducationAdminClient initialEducation={education} />
-    </div>
-  );
+  const education = await db.education();
+
+  return <EducationAdminClient initialEducation={education} />;
 }

@@ -5,7 +5,7 @@ export const revalidate = 0;
 
 export default async function ProfilePage() {
   const profile = await prisma.profile.findFirst();
-  
+
   return (
     <div>
       <ProfileAdminForm initialProfile={profile} />

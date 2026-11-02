@@ -1,102 +1,116 @@
+import type { Profile } from "@prisma/client";
 import Image from "next/image";
-import Link from "next/link";
-import { Download, ArrowRight, Github, Linkedin, Facebook } from "lucide-react";
+import { Download, Github, Linkedin, Facebook } from "lucide-react";
+import Atmosphere from "@/components/Atmosphere";
+import Button from "@/components/ui/Button";
+import Highlight from "@/components/ui/Highlight";
 
-export default function Hero({ profile }: { profile: any }) {
+const socials = [
+  { key: "githubUrl", label: "GitHub", Icon: Github },
+  { key: "linkedinUrl", label: "LinkedIn", Icon: Linkedin },
+  { key: "facebookUrl", label: "Facebook", Icon: Facebook },
+] as const;
+
+export default function Hero({ profile }: { profile: Profile | null }) {
   if (!profile) return null;
 
   return (
-    <section id="home" className="relative flex min-h-screen items-center overflow-hidden pt-16">
-      {/* Background Decor */}
-      <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl dark:bg-indigo-500/20" />
-      <div className="absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-purple-500/10 blur-3xl dark:bg-purple-500/20" />
+    <section
+      id="home"
+      tabIndex={-1}
+      className="relative flex min-h-[100svh] min-h-screen scroll-mt-16 items-start overflow-hidden py-[var(--nav-h)] outline-none [--nav-h:6rem] sm:[--nav-h:7rem] lg:items-center"
+    >
+      <Atmosphere />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full z-10">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-          <div className="order-2 lg:order-1 space-y-8">
-            <div className="space-y-4">
-              <h2 className="text-xl font-medium tracking-widest text-indigo-600 dark:text-indigo-400 uppercase">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-8">
+          <div className="space-y-8">
+            <div className="space-y-5">
+              <p className="cursor text-sm font-semibold uppercase tracking-[0.18em] text-accent">
                 Hello, I am
-              </h2>
-              <h1 className="text-5xl font-extrabold tracking-tight text-gray-900 sm:text-6xl dark:text-white">
-                {profile.name}
-              </h1>
-              <p className="text-2xl font-semibold text-gray-600 dark:text-gray-300">
-                {profile.designation}
               </p>
-              <p className="max-w-xl text-lg text-gray-500 dark:text-gray-400 leading-relaxed">
-                {/* {profile.aboutMe.substring(0, 150)}... */}
-                I build modern web applications with clean code and scalable architecture using the MERN stack. Passionate about graphics design, backend systems, and continuously expanding into cybersecurity. Always learning. Always building.
+              <h1 className="text-hero font-bold text-fg">{profile.name}</h1>
+              <p className="font-display text-2xl font-semibold text-fg sm:text-3xl">
+                <Highlight>&lt; {profile.designation} &gt;</Highlight>
               </p>
+              {profile.tagline && (
+                <p className="max-w-xl whitespace-pre-line text-base leading-relaxed text-muted sm:text-lg">
+                  {profile.tagline}
+                </p>
+              )}
+              {profile.availability && (
+                <p className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface px-3.5 py-1.5 text-sm font-medium text-fg backdrop-blur-md">
+                  <span
+                    className="h-2 w-2 rounded-full bg-highlight ring-2 ring-line-strong"
+                    aria-hidden="true"
+                  />
+                  {profile.availability}
+                </p>
+              )}
             </div>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-3 sm:gap-4">
               {profile.resumeUrl ? (
-                <a
-                  href={profile.resumeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-full bg-indigo-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all hover:-translate-y-1 hover:bg-indigo-500 hover:shadow-indigo-500/50"
-                >
-                  <Download size={18} />
+                <Button href={profile.resumeUrl} external chipIcon={Download}>
                   Download Resume
-                </a>
+                </Button>
               ) : (
-                <button
-                  disabled
-                  className="flex items-center gap-2 rounded-full bg-gray-300 px-8 py-3.5 text-sm font-semibold text-gray-500 cursor-not-allowed dark:bg-gray-800 dark:text-gray-500"
-                >
-                  <Download size={18} />
+                <Button variant="secondary" disabled>
                   Resume Coming Soon
-                </button>
+                </Button>
               )}
-              <Link
-                href="#projects"
-                className="flex items-center gap-2 rounded-full border-2 border-gray-200 px-8 py-3.5 text-sm font-semibold text-gray-900 transition-all hover:-translate-y-1 hover:border-gray-300 dark:border-gray-800 dark:text-white dark:hover:border-gray-700"
-              >
-                View Work <ArrowRight size={18} />
-              </Link>
+              <Button href="#projects" variant="secondary">
+                View Work
+              </Button>
             </div>
 
-            <div className="flex gap-6 pt-4">
-              {profile.githubUrl && (
-                <a href={profile.githubUrl} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
-                  <Github size={24} />
-                  <span className="sr-only">GitHub</span>
-                </a>
+            <ul className="flex gap-3 pt-2">
+              {socials.map(({ key, label, Icon }) =>
+                profile[key] ? (
+                  <li key={key}>
+                    <a
+                      href={profile[key] ?? undefined}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      className="grid h-11 w-11 place-items-center rounded-full border border-line-strong bg-surface text-fg backdrop-blur-md transition-[transform,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-brand"
+                    >
+                      <Icon size={20} aria-hidden />
+                    </a>
+                  </li>
+                ) : null,
               )}
-              {profile.linkedinUrl && (
-                <a href={profile.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                  <Linkedin size={24} />
-                  <span className="sr-only">LinkedIn</span>
-                </a>
-              )}
-              {profile.facebookUrl && (
-                <a href={profile.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
-                  <Facebook size={24} />
-                  <span className="sr-only">Facebook</span>
-                </a>
-              )}
-            </div>
+            </ul>
           </div>
 
-          <div className="order-1 lg:order-2 flex justify-center lg:justify-end">
-            <div className="relative h-[350px] w-[350px] sm:h-[450px] sm:w-[450px]">
-              <div className="absolute inset-0 rounded-full border-2 border-dashed border-indigo-200 dark:border-indigo-800 animate-[spin_20s_linear_infinite]" />
-              <div className="absolute inset-4 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 opacity-20 blur-2xl" />
-              {profile.heroPhotoUrl ? (
-                <Image
-                  src={profile.heroPhotoUrl}
-                  alt={profile.name}
-                  fill
-                  className="rounded-full object-cover shadow-2xl p-4"
-                  priority
-                />
-              ) : (
-                <div className="absolute inset-4 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-400">
-                  No Image Available
+          <div className="flex justify-center lg:justify-end">
+            <div className="relative w-[min(70%,280px)] sm:w-[min(50vw,320px)] lg:w-[min(36vw,28rem)]">
+              <div
+                aria-hidden
+                className="absolute -inset-8 rounded-full"
+                style={{
+                  background: "radial-gradient(closest-side, var(--glow-2), transparent)",
+                  opacity: 0.7,
+                }}
+              />
+              <div className="relative rounded-[2.75rem] bg-brand-gradient p-1 shadow-glow">
+                <div className="relative aspect-square overflow-hidden rounded-[2.5rem] bg-surface-2">
+                  {profile.heroPhotoUrl ? (
+                    <Image
+                      src={profile.heroPhotoUrl}
+                      alt={profile.name}
+                      fill
+                      priority
+                      sizes="(min-width: 1024px) 448px, (min-width: 640px) 320px, 280px"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="grid h-full w-full place-items-center text-muted">
+                      No Image Available
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </div>

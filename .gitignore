@@ -10,6 +10,11 @@
 
 # next.js
 /.next/
+/.next-qa/
+
+# playwright
+/test-results/
+/playwright-report/
 /out/
 
 # production

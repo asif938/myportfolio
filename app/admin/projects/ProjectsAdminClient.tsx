@@ -1,122 +1,393 @@
 "use client";
 
 import { useState } from "react";
-import ImageUpload from "@/components/ImageUpload";
-import { addProject, updateProject, deleteProject } from "@/app/actions/projectActions";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Pencil, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, ArrowRight, ExternalLink, Pencil, Star, Trash2, X } from "lucide-react";
+import type { Project } from "@prisma/client";
+import ImageUpload from "@/components/ImageUpload";
+import {
+  addProject,
+  updateProject,
+  deleteProject,
+  reorderProjects,
+} from "@/app/actions/projectActions";
+import { confirmDelete, runAdminAction } from "@/lib/adminFeedback";
+import { slugify } from "@/lib/slug";
+import ReorderButtons, { moveId } from "../ReorderButtons";
+import { inputClass, labelClass, primaryButtonClass, secondaryButtonClass } from "../formStyles";
 
-export default function ProjectsAdminClient({ initialProjects }: { initialProjects: any[] }) {
-  const [projects, setProjects] = useState(initialProjects);
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentProject, setCurrentProject] = useState({ 
-    id: "", name: "", imageUrl: "", mainTechStack: "", description: "", liveLink: "", githubLink: "", challenges: "", futurePlans: "" 
-  });
-  
-  const [saving, setSaving] = useState(false);
+type ProjectForm = {
+  id: string;
+  name: string;
+  slug: string;
+  imageUrl: string;
+  images: string[];
+  mainTechStack: string;
+  description: string;
+  liveLink: string;
+  githubLink: string;
+  challenges: string;
+  futurePlans: string;
+  role: string;
+  architecture: string;
+  impact: string;
+  featured: boolean;
+};
 
-  const resetForm = () => {
-    setCurrentProject({ id: "", name: "", imageUrl: "", mainTechStack: "", description: "", liveLink: "", githubLink: "", challenges: "", futurePlans: "" });
-    setIsEditing(false);
+type TextField = Exclude<keyof ProjectForm, "images" | "featured">;
+
+const emptyProject: ProjectForm = {
+  id: "",
+  name: "",
+  slug: "",
+  imageUrl: "",
+  images: [],
+  mainTechStack: "",
+  description: "",
+  liveLink: "",
+  githubLink: "",
+  challenges: "",
+  futurePlans: "",
+  role: "",
+  architecture: "",
+  impact: "",
+  featured: false,
+};
+
+function toForm(project: Project): ProjectForm {
+  return {
+    id: project.id,
+    name: project.name,
+    slug: project.slug,
+    imageUrl: project.imageUrl ?? "",
+    images: project.images,
+    mainTechStack: project.mainTechStack.join(", "),
+    description: project.description,
+    liveLink: project.liveLink ?? "",
+    githubLink: project.githubLink ?? "",
+    challenges: project.challenges,
+    futurePlans: project.futurePlans,
+    role: project.role ?? "",
+    architecture: project.architecture ?? "",
+    impact: project.impact ?? "",
+    featured: project.featured,
   };
+}
 
-  const handleEditClick = (project: any) => {
-    setCurrentProject({
-      ...project,
-      mainTechStack: Array.isArray(project.mainTechStack) ? project.mainTechStack.join(", ") : project.mainTechStack
-    });
-    setIsEditing(true);
+export default function ProjectsAdminClient({ initialProjects }: { initialProjects: Project[] }) {
+  const router = useRouter();
+  const projects = initialProjects;
+  const [currentProject, setCurrentProject] = useState<ProjectForm>(emptyProject);
+  const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [reordering, setReordering] = useState(false);
+  const isEditing = currentProject.id !== "";
+
+  const resetForm = () => setCurrentProject(emptyProject);
+
+  const handleEditClick = (project: Project) => {
+    setCurrentProject(toForm(project));
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setCurrentProject({ ...currentProject, [e.target.name]: e.target.value });
+    const name = e.target.name as TextField;
+    setCurrentProject({ ...currentProject, [name]: e.target.value });
+  };
+
+  const moveGalleryImage = (index: number, delta: -1 | 1) => {
+    setCurrentProject((p) => ({ ...p, images: moveId(p.images, index, delta) }));
   };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    
+
+    const { id, ...rest } = currentProject;
     const projectData = {
-      ...currentProject,
-      mainTechStack: currentProject.mainTechStack.split(",").map(t => t.trim()).filter(Boolean)
+      ...rest,
+      mainTechStack: rest.mainTechStack.split(",").map((t) => t.trim()),
     };
-    // @ts-ignore
-    delete projectData.id;
 
-    if (isEditing) {
-      await updateProject(currentProject.id, projectData);
-      window.location.reload();
-    } else {
-      await addProject(projectData);
-      window.location.reload();
+    const ok = await runAdminAction(
+      () => (isEditing ? updateProject(id, projectData) : addProject(projectData)),
+      isEditing ? "Project updated" : "Project added",
+    );
+    if (ok) {
+      resetForm();
+      router.refresh();
     }
+    setSaving(false);
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this project?")) {
-      await deleteProject(id);
-      setProjects(projects.filter(p => p.id !== id));
+  const handleDelete = async (project: Project) => {
+    if (!(await confirmDelete(`"${project.name}"`))) return;
+    setDeletingId(project.id);
+    const ok = await runAdminAction(() => deleteProject(project.id), "Project deleted");
+    if (ok) {
+      if (currentProject.id === project.id) resetForm();
+      router.refresh();
     }
+    setDeletingId(null);
   };
+
+  const handleMove = async (index: number, delta: -1 | 1) => {
+    setReordering(true);
+    const ids = moveId(
+      projects.map((p) => p.id),
+      index,
+      delta,
+    );
+    if (await runAdminAction(() => reorderProjects(ids), "Order saved")) router.refresh();
+    setReordering(false);
+  };
+
+  const textArea = (
+    name: TextField,
+    label: string,
+    rows: number,
+    required = false,
+    hint?: string,
+  ) => (
+    <div className="md:col-span-2">
+      <label htmlFor={`project-${name}`} className={labelClass}>
+        {label}
+      </label>
+      <textarea
+        id={`project-${name}`}
+        required={required}
+        name={name}
+        rows={rows}
+        value={currentProject[name]}
+        onChange={handleChange}
+        className={inputClass}
+      />
+      {hint && <p className="mt-1 text-xs text-muted">{hint}</p>}
+    </div>
+  );
 
   return (
     <div className="space-y-8">
-      <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
-        <h3 className="mb-4 text-lg font-semibold">{isEditing ? "Edit Project" : "Add New Project"}</h3>
+      <div className="rounded-lg bg-surface p-6 shadow-sm">
+        <h3 className="mb-4 text-lg font-semibold">
+          {isEditing ? "Edit Project" : "Add New Project"}
+        </h3>
         <form onSubmit={handleSave} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium">Project Name</label>
-              <input required type="text" name="name" value={currentProject.name} onChange={handleChange} className="mt-1 block w-full rounded-md border p-2 dark:bg-gray-700 dark:border-gray-600" />
+              <label htmlFor="project-name" className={labelClass}>
+                Project Name
+              </label>
+              <input
+                id="project-name"
+                required
+                type="text"
+                name="name"
+                value={currentProject.name}
+                onChange={handleChange}
+                className={inputClass}
+              />
             </div>
             <div>
-              <label className="block text-sm font-medium">Main Tech Stack (comma separated)</label>
-              <input required type="text" name="mainTechStack" value={currentProject.mainTechStack} onChange={handleChange} placeholder="e.g. Next.js, Tailwind, Prisma" className="mt-1 block w-full rounded-md border p-2 dark:bg-gray-700 dark:border-gray-600" />
+              <label htmlFor="project-slug" className={labelClass}>
+                URL slug
+              </label>
+              <input
+                id="project-slug"
+                type="text"
+                name="slug"
+                pattern="[a-z0-9]+(-[a-z0-9]+)*"
+                placeholder={slugify(currentProject.name || "my-project")}
+                value={currentProject.slug}
+                onChange={handleChange}
+                className={inputClass}
+              />
+              <p className="mt-1 text-xs text-muted">
+                {isEditing
+                  ? "Changing it changes the page URL. Leave empty to keep the current one."
+                  : "Leave empty to generate it from the name."}
+              </p>
             </div>
-            
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium">Brief Description</label>
-              <textarea required name="description" rows={2} value={currentProject.description} onChange={handleChange} className="mt-1 block w-full rounded-md border p-2 dark:bg-gray-700 dark:border-gray-600" />
+              <label htmlFor="project-mainTechStack" className={labelClass}>
+                Main Tech Stack (comma separated)
+              </label>
+              <input
+                id="project-mainTechStack"
+                required
+                type="text"
+                name="mainTechStack"
+                value={currentProject.mainTechStack}
+                onChange={handleChange}
+                placeholder="e.g. Next.js, Tailwind, Prisma"
+                className={inputClass}
+              />
             </div>
 
+            {textArea("description", "Brief Description", 2, true)}
+
             <div>
-              <label className="block text-sm font-medium">Live Link (optional)</label>
-              <input type="text" name="liveLink" value={currentProject.liveLink} onChange={handleChange} className="mt-1 block w-full rounded-md border p-2 dark:bg-gray-700 dark:border-gray-600" />
+              <label htmlFor="project-liveLink" className={labelClass}>
+                Live Link (optional)
+              </label>
+              <input
+                id="project-liveLink"
+                type="url"
+                name="liveLink"
+                value={currentProject.liveLink}
+                onChange={handleChange}
+                className={inputClass}
+              />
             </div>
             <div>
-              <label className="block text-sm font-medium">GitHub Repository Link (optional)</label>
-              <input type="text" name="githubLink" value={currentProject.githubLink} onChange={handleChange} className="mt-1 block w-full rounded-md border p-2 dark:bg-gray-700 dark:border-gray-600" />
+              <label htmlFor="project-githubLink" className={labelClass}>
+                GitHub Repository Link (optional)
+              </label>
+              <input
+                id="project-githubLink"
+                type="url"
+                name="githubLink"
+                value={currentProject.githubLink}
+                onChange={handleChange}
+                className={inputClass}
+              />
             </div>
 
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium">Challenges Faced</label>
-              <textarea required name="challenges" rows={3} value={currentProject.challenges} onChange={handleChange} className="mt-1 block w-full rounded-md border p-2 dark:bg-gray-700 dark:border-gray-600" />
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium">Future Plans / Improvements</label>
-              <textarea required name="futurePlans" rows={3} value={currentProject.futurePlans} onChange={handleChange} className="mt-1 block w-full rounded-md border p-2 dark:bg-gray-700 dark:border-gray-600" />
-            </div>
+            {textArea("role", "My Role (optional)", 3, false, "What you were responsible for.")}
+            {textArea(
+              "architecture",
+              "Architecture (optional)",
+              4,
+              false,
+              "How it works: main components, data flow, notable technical choices.",
+            )}
+            {textArea(
+              "impact",
+              "Impact (optional)",
+              3,
+              false,
+              "Results: users, metrics, outcomes.",
+            )}
+            {textArea("challenges", "Challenges Faced", 3, true)}
+            {textArea("futurePlans", "Future Plans / Improvements", 3, true)}
 
-            <div className="md:col-span-2 space-y-2">
-              <label className="block text-sm font-medium">Project Image</label>
+            <label className="flex items-center gap-2 text-sm font-medium md:col-span-2">
+              <input
+                type="checkbox"
+                checked={currentProject.featured}
+                onChange={(e) =>
+                  setCurrentProject({ ...currentProject, featured: e.target.checked })
+                }
+              />
+              Featured (shown on the home page)
+            </label>
+
+            <div className="space-y-2">
+              <span className={labelClass}>Cover Image</span>
               {currentProject.imageUrl && (
-                <div className="mb-2">
-                  <Image src={currentProject.imageUrl} alt="Project Image" width={200} height={120} className="rounded object-cover" />
+                <div className="mb-2 flex items-start gap-2">
+                  <Image
+                    src={currentProject.imageUrl}
+                    alt="Cover image preview"
+                    width={200}
+                    height={120}
+                    className="rounded object-cover"
+                  />
+                  <button
+                    type="button"
+                    aria-label="Remove cover image"
+                    onClick={() => setCurrentProject({ ...currentProject, imageUrl: "" })}
+                    className="rounded p-1 text-danger hover:bg-danger-bg"
+                  >
+                    <X size={16} />
+                  </button>
                 </div>
               )}
-              <ImageUpload 
-                buttonText="Upload Project Image" 
-                onUploadAction={(url) => setCurrentProject({ ...currentProject, imageUrl: url })} 
+              <ImageUpload
+                buttonText="Upload Cover Image"
+                onUploadAction={(url) => setCurrentProject((p) => ({ ...p, imageUrl: url }))}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <span className={labelClass}>Gallery ({currentProject.images.length}/20)</span>
+              {currentProject.images.length > 0 && (
+                <ul className="mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {currentProject.images.map((url, index) => (
+                    <li key={url} className="relative rounded border p-1">
+                      <Image
+                        src={url}
+                        alt={`Gallery image ${index + 1}`}
+                        width={160}
+                        height={100}
+                        className="h-20 w-full rounded object-cover"
+                      />
+                      <div className="mt-1 flex justify-between">
+                        <div className="flex">
+                          <button
+                            type="button"
+                            aria-label={`Move image ${index + 1} left`}
+                            disabled={index === 0}
+                            onClick={() => moveGalleryImage(index, -1)}
+                            className="rounded p-1 disabled:opacity-30"
+                          >
+                            <ArrowLeft size={14} />
+                          </button>
+                          <button
+                            type="button"
+                            aria-label={`Move image ${index + 1} right`}
+                            disabled={index === currentProject.images.length - 1}
+                            onClick={() => moveGalleryImage(index, 1)}
+                            className="rounded p-1 disabled:opacity-30"
+                          >
+                            <ArrowRight size={14} />
+                          </button>
+                        </div>
+                        <button
+                          type="button"
+                          aria-label={`Remove image ${index + 1}`}
+                          onClick={() =>
+                            setCurrentProject((p) => ({
+                              ...p,
+                              images: p.images.filter((_, i) => i !== index),
+                            }))
+                          }
+                          className="rounded p-1 text-danger"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <ImageUpload
+                multiple
+                buttonText="Add Gallery Images"
+                onUploadAction={(url) =>
+                  setCurrentProject((p) =>
+                    p.images.includes(url) || p.images.length >= 20
+                      ? p
+                      : { ...p, images: [...p.images, url] },
+                  )
+                }
               />
             </div>
           </div>
-          
+
           <div className="flex gap-2 pt-4">
-            <button type="submit" disabled={saving} className="rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
+            <button type="submit" disabled={saving} className={primaryButtonClass}>
               {saving ? "Saving..." : "Save Project"}
             </button>
             {isEditing && (
-              <button type="button" onClick={resetForm} className="rounded bg-gray-200 px-4 py-2 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">
+              <button
+                type="button"
+                onClick={resetForm}
+                disabled={saving}
+                className={secondaryButtonClass}
+              >
                 Cancel
               </button>
             )}
@@ -124,28 +395,80 @@ export default function ProjectsAdminClient({ initialProjects }: { initialProjec
         </form>
       </div>
 
-      <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
-        <h3 className="mb-4 text-lg font-semibold">Existing Projects</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project) => (
-            <div key={project.id} className="border rounded-lg p-4 dark:border-gray-700 flex flex-col justify-between">
+      <div className="rounded-lg bg-surface p-6 shadow-sm">
+        <h3 className="mb-1 text-lg font-semibold">Existing Projects</h3>
+        <p className="mb-4 text-sm text-muted">
+          Shown in this order on the site. Featured projects appear on the home page; if none are
+          featured, the first six are shown.
+        </p>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {projects.map((project, index) => (
+            <div key={project.id} className="flex flex-col justify-between rounded-lg border p-4">
               <div>
-                {project.imageUrl && <Image src={project.imageUrl} alt={project.name} width={400} height={200} className="rounded mb-3 object-cover h-32 w-full" />}
-                <h4 className="font-bold text-lg mb-1">{project.name}</h4>
-                <p className="text-sm text-gray-500 mb-2 truncate">{project.description}</p>
-                <div className="flex flex-wrap gap-1 mb-4">
-                  {project.mainTechStack.map((tech: string, i: number) => (
-                    <span key={i} className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded dark:bg-gray-700 dark:text-gray-300">{tech}</span>
+                {project.imageUrl && (
+                  <Image
+                    src={project.imageUrl}
+                    alt={project.name}
+                    width={400}
+                    height={200}
+                    className="mb-3 h-32 w-full rounded object-cover"
+                  />
+                )}
+                <div className="mb-1 flex items-center gap-2">
+                  <h4 className="text-lg font-bold">{project.name}</h4>
+                  {project.featured && (
+                    <span className="tint-5 inline-flex items-center gap-1 rounded border border-t-border bg-t-bg px-1.5 py-0.5 text-xs font-medium text-t-fg">
+                      <Star size={12} /> Featured
+                    </span>
+                  )}
+                </div>
+                <p className="mb-2 font-mono text-xs text-muted">/projects/{project.slug}</p>
+                <p className="mb-2 truncate text-sm text-muted">{project.description}</p>
+                <div className="mb-4 flex flex-wrap gap-1">
+                  {project.mainTechStack.map((tech, i) => (
+                    <span
+                      key={`${tech}-${i}`}
+                      className="rounded bg-bg-2 px-2 py-1 text-xs text-muted"
+                    >
+                      {tech}
+                    </span>
                   ))}
                 </div>
               </div>
-              <div className="flex gap-2 border-t pt-3 dark:border-gray-700">
-                <button onClick={() => handleEditClick(project)} className="text-blue-600 hover:text-blue-900 flex items-center gap-1 text-sm"><Pencil size={14}/> Edit</button>
-                <button onClick={() => handleDelete(project.id)} className="text-red-600 hover:text-red-900 flex items-center gap-1 text-sm"><Trash2 size={14}/> Delete</button>
+              <div className="flex flex-wrap items-center gap-4 border-t pt-3">
+                <ReorderButtons
+                  label={project.name}
+                  index={index}
+                  count={projects.length}
+                  disabled={reordering}
+                  onMove={(delta) => handleMove(index, delta)}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleEditClick(project)}
+                  className="flex items-center gap-1 text-sm text-accent hover:opacity-80"
+                >
+                  <Pencil size={14} /> Edit
+                </button>
+                <button
+                  type="button"
+                  disabled={deletingId === project.id}
+                  onClick={() => handleDelete(project)}
+                  className="flex items-center gap-1 text-sm text-danger hover:opacity-80 disabled:opacity-50"
+                >
+                  <Trash2 size={14} /> {deletingId === project.id ? "Deleting..." : "Delete"}
+                </button>
+                <Link
+                  href={`/projects/${project.slug}`}
+                  target="_blank"
+                  className="flex items-center gap-1 text-sm text-muted hover:text-fg"
+                >
+                  <ExternalLink size={14} /> View
+                </Link>
               </div>
             </div>
           ))}
-          {projects.length === 0 && <p className="text-gray-500">No projects added yet.</p>}
+          {projects.length === 0 && <p className="text-muted">No projects added yet.</p>}
         </div>
       </div>
     </div>

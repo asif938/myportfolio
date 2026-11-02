@@ -1,14 +1,10 @@
-import { prisma } from "@/lib/prisma";
+import { db } from "@/lib/data";
 import ProjectsAdminClient from "./ProjectsAdminClient";
 
-export const revalidate = 0;
+export const dynamic = "force-dynamic";
 
 export default async function ProjectsPage() {
-  const projects = await prisma.project.findMany();
-  
-  return (
-    <div>
-      <ProjectsAdminClient initialProjects={projects} />
-    </div>
-  );
+  const projects = await db.projects();
+
+  return <ProjectsAdminClient initialProjects={projects} />;
 }

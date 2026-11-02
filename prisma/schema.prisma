@@ -21,12 +21,16 @@ model Profile {
   aboutPhotoUrl String?
   email        String?
   phone        String?
+  showPhone    Boolean @default(false)
   whatsapp     String?
   resumeUrl    String?
   githubUrl    String?
   linkedinUrl  String?
   facebookUrl  String?
   heroPhotoUrl String?
+  tagline      String?
+  location     String?
+  availability String?
 }
 
 model Skill {
@@ -34,6 +38,7 @@ model Skill {
   name     String
   category String
   imageUrl String?
+  order    Int     @default(0)
 }
 
 model Education {
@@ -43,16 +48,147 @@ model Education {
   startYear   String
   endYear     String
   description String
+  order       Int    @default(0)
 }
 
 model Project {
-  id              String   @id @default(uuid())
-  name            String
-  imageUrl        String?
-  mainTechStack   String[]
-  description     String
-  liveLink        String?
-  githubLink      String?
-  challenges      String
-  futurePlans     String
+  id            String   @id @default(uuid())
+  slug          String   @unique
+  name          String
+  imageUrl      String?
+  images        String[] @default([])
+  mainTechStack String[]
+  description   String
+  liveLink      String?
+  githubLink    String?
+  challenges    String
+  futurePlans   String
+  role          String?
+  architecture  String?
+  impact        String?
+  featured      Boolean  @default(false)
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  INTERNSHIP
+  FREELANCE
+  CONTRACT
+}
+
+model Experience {
+  id             String         @id @default(uuid())
+  company        String
+  role           String
+  employmentType EmploymentType @default(FULL_TIME)
+  location       String?
+  startDate      DateTime
+  endDate        DateTime?
+  achievements   String[]       @default([])
+  techStack      String[]       @default([])
+  companyUrl     String?
+  companyLogoUrl String?
+  order          Int            @default(0)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @default(now()) @updatedAt
+}
+
+/// Chatbot configuration, edited at /admin/ai. Single row with id "default".
+model AiSettings {
+  id                String   @id @default("default")
+  enabled           Boolean  @default(false)
+  provider          String
+  model             String
+  /// AES-256-GCM ciphertext (see lib/crypto.ts). Never sent to the browser.
+  apiKeyEncrypted   String?
+  apiKeyLast4       String?
+  temperature       Float    @default(0.3)
+  maxOutputTokens   Int      @default(500)
+  perMinuteLimit    Int      @default(10)
+  dailyLimit        Int      @default(50)
+  extraInstructions String?
+  updatedAt         DateTime @updatedAt
+}
+
+/// Chatbot usage counters, one row per UTC day.
+model AiUsage {
+  day               DateTime @id @db.Date
+  requests          Int      @default(0)
+  rateLimited       Int      @default(0)
+  errors            Int      @default(0)
+  inputTokens       Int      @default(0)
+  outputTokens      Int      @default(0)
+  cachedInputTokens Int      @default(0)
+}
+
+/// Messages sent through the public contact form.
+model Message {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  subject   String
+  body      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([read, createdAt])
+  @@index([createdAt])
+}
+
+enum ConversationStatus {
+  bot
+  needs_human
+  human
+  closed
+}
+
+enum ChatRole {
+  visitor
+  bot
+  admin
+}
+
+/// A visitor's chat thread. The visitor proves ownership with a random token;
+/// only its SHA-256 hash is stored.
+model Conversation {
+  id               String             @id @default(uuid())
+  visitorTokenHash String             @unique
+  status           ConversationStatus @default(bot)
+  visitorName      String?
+  visitorEmail     String?
+  unreadByAdmin    Boolean            @default(false)
+  lastMessageAt    DateTime           @default(now())
+  createdAt        DateTime           @default(now())
+  messages         ChatMessage[]
+
+  @@index([lastMessageAt])
+  @@index([status])
+}
+
+model ChatMessage {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  /// Always set by the server, never taken from the client.
+  role           ChatRole
+  content        String
+  /// The bot could not answer this visitor message (handoff or error).
+  unanswered     Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+/// Questions and answers the chatbot can use (part of its knowledge base).
+model Faq {
+  id        String   @id @default(uuid())
+  question  String
+  answer    String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }

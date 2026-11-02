@@ -1,50 +1,54 @@
-import Image from "next/image";
+import type { Skill } from "@prisma/client";
+import Reveal from "@/components/Reveal";
+import SectionHeading from "@/components/ui/SectionHeading";
+import SkillsWall from "@/components/SkillsWall";
+import { buildSkillTabs } from "@/lib/skillTabs";
 
-export default function Skills({ skills }: { skills: any[] }) {
+/** Pure-CSS glows behind the content (radial gradients, no blur filter). */
+function BandGlows() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div
+        className="absolute -right-24 -top-24 h-[360px] w-[360px] rounded-full"
+        style={{
+          background: "radial-gradient(closest-side, var(--skills-band-glow-1), transparent)",
+        }}
+      />
+      <div
+        className="absolute -bottom-24 -left-24 hidden h-[360px] w-[360px] rounded-full sm:block"
+        style={{
+          background: "radial-gradient(closest-side, var(--skills-band-glow-2), transparent)",
+        }}
+      />
+    </div>
+  );
+}
+
+/** Full-width deep violet band (tokens come from `.band` + `.skills-band`). */
+export default function Skills({ skills }: { skills: Skill[] }) {
   if (!skills || skills.length === 0) return null;
 
-  const categories = Array.from(new Set(skills.map(s => s.category)));
+  const data = buildSkillTabs(skills);
 
   return (
-    <section id="skills" className="py-24 bg-gray-50 dark:bg-gray-950">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl dark:text-white">
-            My Skills
-          </h2>
-          <div className="mt-4 h-1 w-20 bg-indigo-600 mx-auto rounded-full" />
-        </div>
-
-        <div className="space-y-16">
-          {categories.map(category => (
-            <div key={category as string}>
-              <h3 className="text-2xl font-semibold mb-8 text-center text-gray-800 dark:text-gray-200">
-                {category}
-              </h3>
-              <div className="flex flex-wrap justify-center gap-6">
-                {skills.filter(s => s.category === category).map(skill => (
-                  <div 
-                    key={skill.id}
-                    className="flex flex-col items-center justify-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-sm hover:shadow-md transition-shadow w-32 h-32 border border-gray-100 dark:border-gray-800 group"
-                  >
-                    {skill.imageUrl ? (
-                      <div className="relative w-12 h-12 mb-3 group-hover:scale-110 transition-transform">
-                        <Image src={skill.imageUrl} alt={skill.name} fill className="object-contain" />
-                      </div>
-                    ) : (
-                      <div className="w-12 h-12 mb-3 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center text-xs font-bold text-gray-400">
-                        {skill.name.charAt(0)}
-                      </div>
-                    )}
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300 text-center">
-                      {skill.name}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+    <section
+      id="skills"
+      tabIndex={-1}
+      className="band skills-band relative scroll-mt-24 overflow-hidden pb-[52px] pt-12 outline-none sm:pb-[72px] sm:pt-16"
+    >
+      <BandGlows />
+      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Reveal>
+          <SectionHeading
+            eyebrow="Skills"
+            title="My Skills"
+            highlight="Skills"
+            className="!mb-8 sm:!mb-10"
+          />
+        </Reveal>
+        <Reveal>
+          <SkillsWall data={data} />
+        </Reveal>
       </div>
     </section>
   );

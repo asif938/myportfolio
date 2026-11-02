@@ -1,16 +1,10 @@
-import { prisma } from "@/lib/prisma";
+import { db } from "@/lib/data";
 import SkillsAdminClient from "./SkillsAdminClient";
 
-export const revalidate = 0;
+export const dynamic = "force-dynamic";
 
 export default async function SkillsPage() {
-  const skills = await prisma.skill.findMany({
-    orderBy: { category: "asc" }
-  });
-  
-  return (
-    <div>
-      <SkillsAdminClient initialSkills={skills} />
-    </div>
-  );
+  const skills = await db.skills();
+
+  return <SkillsAdminClient initialSkills={skills} />;
 }
