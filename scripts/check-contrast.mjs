@@ -185,6 +185,10 @@ for (const [key, vars] of Object.entries(blocks)) {
       3,
     );
   }
+  // about chips: fg on glass composited over the page
+  if (!band) {
+    check(palette, mode, "fg on about-glass chip", solid("--fg"), get("--about-glass").map((c) => over(c, bgs.bg[0])), 4.5);
+  }
   // experience featured card (white text on every stop of the gradient, chips composited on each stop)
   const white = [{ r: 255, g: 255, b: 255, a: 1 }];
   const featureStops = solid("--feature-bg");

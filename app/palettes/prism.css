@@ -112,6 +112,19 @@
   --edu-icon-bg: #ede4ff;
   --edu-icon-border: #d7c6ff;
   --edu-icon-fg: #4c1d95;
+  /* About picture (circle + orbit) */
+  --about-s1: #8b5cf6;
+  --about-s2: #f472b6;
+  --about-s3: #60a5fa;
+  --about-ring: rgba(109, 40, 217, 0.3);
+  --about-glow: rgba(124, 58, 237, 0.3);
+  --about-glass: rgba(255, 255, 255, 0.84);
+  --about-line-strong: rgba(76, 29, 149, 0.24);
+  --about-spark-a: #8b5cf6;
+  --about-spark-b: #f0abfc;
+  --about-dot: #22c55e;
+  --about-dot-ring: rgba(34, 197, 94, 0.25);
+  --about-orb-dot: #ffffff;
   --warning: #92400e;
   --warning-bg: #fef3c7;
   --selection-bg: #d4ff3a;
@@ -229,6 +242,19 @@
   --edu-icon-bg: rgba(139, 92, 246, 0.16);
   --edu-icon-border: rgba(167, 139, 250, 0.42);
   --edu-icon-fg: #d9ccff;
+  /* About picture (circle + orbit) */
+  --about-s1: #5b21b6;
+  --about-s2: #c026d3;
+  --about-s3: #2563eb;
+  --about-ring: rgba(255, 255, 255, 0.22);
+  --about-glow: rgba(168, 85, 247, 0.45);
+  --about-glass: rgba(20, 16, 47, 0.74);
+  --about-line-strong: rgba(255, 255, 255, 0.2);
+  --about-spark-a: #8b5cf6;
+  --about-spark-b: #f0abfc;
+  --about-dot: #22c55e;
+  --about-dot-ring: rgba(34, 197, 94, 0.25);
+  --about-orb-dot: #ffffff;
   --warning: #fcd34d;
   --warning-bg: rgba(245, 158, 11, 0.16);
   --progress-bg: linear-gradient(90deg, #7c3aed 0%, #d946ef 55%, #d4ff3a 100%);

@@ -76,6 +76,9 @@ export default function ProfileAdmin({ initialProfile }: { initialProfile: Profi
 
           <div className="space-y-2">
             <label className="block text-sm font-medium">About Section Photo</label>
+            <p className="text-xs text-muted">
+              Upload a transparent-background PNG or WebP, cropped tight around the person (about 600x800 or larger)
+            </p>
             {formData.aboutPhotoUrl && (
               <div className="mb-2">
                 <Image

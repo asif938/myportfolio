@@ -1,5 +1,5 @@
 import type { Profile } from "@prisma/client";
-import Image from "next/image";
+import AboutPhoto from "@/components/AboutPhoto";
 import { Mail, MapPin, Phone, type LucideIcon } from "lucide-react";
 import Atmosphere from "@/components/Atmosphere";
 import Reveal from "@/components/Reveal";
@@ -88,28 +88,7 @@ export default function About({ profile }: { profile: Profile | null }) {
         </div>
 
         <div className="flex justify-center lg:col-start-1 lg:row-start-1">
-          <div className="relative w-full max-w-[300px] pb-4 pr-4 lg:max-w-md">
-            {/* gradient accent offset behind the frame */}
-            <div
-              aria-hidden
-              className="absolute inset-0 left-4 top-4 rounded-[2.5rem] bg-brand-gradient opacity-90"
-            />
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] border border-line-strong bg-surface-2 shadow-card">
-              {profile.aboutPhotoUrl ? (
-                <Image
-                  src={profile.aboutPhotoUrl}
-                  alt={`About ${profile.name}`}
-                  fill
-                  sizes="(min-width: 1024px) 448px, 300px"
-                  className="object-cover"
-                />
-              ) : (
-                <div className="grid h-full w-full place-items-center text-muted">
-                  No Image Available
-                </div>
-              )}
-            </div>
-          </div>
+          <AboutPhoto name={profile.name} photoUrl={profile.aboutPhotoUrl} />
         </div>
       </Reveal>
     </Section>
